@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew:*)",
+      "Bash(cmake:*)",
+      "Bash(git submodule add:*)",
+      "Bash(git clone:*)",
+      "Bash(timeout:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

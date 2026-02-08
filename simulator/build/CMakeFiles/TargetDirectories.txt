@@ -1,0 +1,3 @@
+/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles/simulator.dir
+/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles/edit_cache.dir
+/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles/rebuild_cache.dir
