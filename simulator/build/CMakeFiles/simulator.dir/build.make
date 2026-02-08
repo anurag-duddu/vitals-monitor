@@ -5980,6 +5980,188 @@ CMakeFiles/simulator.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/main.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/simulator/main.c -o CMakeFiles/simulator.dir/main.c.s
 
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_423) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_424) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_425) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_426) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_427) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_428) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_429) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_430) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_431) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_432) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_433) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_434) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_435) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s
+
 # Object files for target simulator
 simulator_OBJECTS = \
 "CMakeFiles/simulator.dir/lvgl/src/core/lv_group.c.o" \
@@ -6403,7 +6585,20 @@ simulator_OBJECTS = \
 "CMakeFiles/simulator.dir/lvgl/src/widgets/win/lv_win.c.o" \
 "CMakeFiles/simulator.dir/sdl_display.c.o" \
 "CMakeFiles/simulator.dir/sdl_input.c.o" \
-"CMakeFiles/simulator.dir/main.c.o"
+"CMakeFiles/simulator.dir/main.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o"
 
 # External object files for target simulator
 simulator_EXTERNAL_OBJECTS =
@@ -6830,10 +7025,23 @@ simulator: CMakeFiles/simulator.dir/lvgl/src/widgets/win/lv_win.c.o
 simulator: CMakeFiles/simulator.dir/sdl_display.c.o
 simulator: CMakeFiles/simulator.dir/sdl_input.c.o
 simulator: CMakeFiles/simulator.dir/main.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o
 simulator: CMakeFiles/simulator.dir/build.make
 simulator: /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib
 simulator: CMakeFiles/simulator.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_423) "Linking C executable simulator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_436) "Linking C executable simulator"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/simulator.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

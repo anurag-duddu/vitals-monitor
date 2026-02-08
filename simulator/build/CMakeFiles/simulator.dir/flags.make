@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE
 
-C_INCLUDES = -I/opt/homebrew/Cellar/sdl2/2.32.10/include -I/Users/anuragduddu/code-projects/vitals-monitor/simulator -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl -F/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
+C_INCLUDES = -I/opt/homebrew/Cellar/sdl2/2.32.10/include -I/Users/anuragduddu/code-projects/vitals-monitor/simulator -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/../src -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/widgets -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/themes -I/Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core -F/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2
 
 C_FLAGSarm64 = -std=gnu99 -arch arm64 -Wall -Wextra -O2
 

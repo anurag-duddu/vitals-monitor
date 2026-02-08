@@ -460,7 +460,6 @@ CMakeFiles/simulator.dir/main.c.o: \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl/src/lv_api_map_v8.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl/src/lv_api_map_v9_0.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl/src/lv_api_map_v9_1.h \
-  /Users/anuragduddu/code-projects/vitals-monitor/simulator/sdl_display.h \
   /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2/SDL.h \
   /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2/SDL_main.h \
   /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2/SDL_stdinc.h \
@@ -632,7 +631,17 @@ CMakeFiles/simulator.dir/main.c.o: \
   /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2/SDL_version.h \
   /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2/SDL_locale.h \
   /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2/SDL_misc.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/sdl_display.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/sdl_input.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/themes/theme_vitals.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_manager.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_main_vitals.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_trends.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_alarms.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_patient.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_settings.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core/mock_data.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core/waveform_gen.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/unistd.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_posix_vdisable.h \

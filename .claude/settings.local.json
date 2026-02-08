@@ -6,7 +6,9 @@
       "Bash(git submodule add:*)",
       "Bash(git clone:*)",
       "Bash(timeout:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(gtimeout:*)",
+      "Bash(perl -e 'alarm 5; exec \"\"./simulator\"\"')"
     ]
   }
 }

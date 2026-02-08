@@ -19,6 +19,11 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/lvgl
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/themes
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core
 )
 
 # Collect LVGL source files
@@ -37,15 +42,38 @@ set(APP_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
 )
 
+# UI source files (from src/)
+set(UI_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_manager.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_main_vitals.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_trends.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_alarms.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_patient.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_settings.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_numeric_display.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_alarm_banner.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_nav_bar.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_waveform.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/themes/theme_vitals.c
+)
+
+# Core source files (from src/)
+set(CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/mock_data.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/waveform_gen.c
+)
+
 # Create executable
 add_executable(simulator
     ${LVGL_SOURCES}
     ${SDL_WRAPPER_SOURCES}
     ${APP_SOURCES}
+    ${UI_SOURCES}
+    ${CORE_SOURCES}
 )
 
 # Link SDL2
-target_link_libraries(simulator ${SDL2_LIBRARIES})
+target_link_libraries(simulator ${SDL2_LIBRARIES} m)
 
 # macOS specific: Link against AppKit framework for SDL2
 if(APPLE)

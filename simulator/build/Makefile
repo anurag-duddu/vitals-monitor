@@ -129,6 +129,318 @@ simulator/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/build
 .PHONY : simulator/fast
 
+Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.o: Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.i: Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.s: Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.o: Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.i: Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.s: Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.c.s
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.o: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.i: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.s: Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.s
+
 lvgl/src/core/lv_group.o: lvgl/src/core/lv_group.c.o
 .PHONY : lvgl/src/core/lv_group.o
 
@@ -10266,6 +10578,45 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... simulator"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_manager.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_patient.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_settings.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_trends.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_alarm_banner.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_numeric_display.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.s"
 	@echo "... lvgl/src/core/lv_group.o"
 	@echo "... lvgl/src/core/lv_group.i"
 	@echo "... lvgl/src/core/lv_group.s"

@@ -21,7 +21,7 @@
  *=========================*/
 
 /* Size of the memory available for LVGL's internal management purposes */
-#define LV_MEM_SIZE (64 * 1024U)  /* 64KB */
+#define LV_MEM_SIZE (192 * 1024U)  /* 192KB - increased for waveform charts */
 
 /* Set an address for the memory pool instead of allocating it as a normal array */
 #define LV_MEM_ADR 0     /* 0: unused */
@@ -112,6 +112,13 @@
 #define LV_USE_WIN              1
 
 /*==================
+   LAYOUT ENGINES
+ *==================*/
+
+#define LV_USE_FLEX 1
+#define LV_USE_GRID 1
+
+/*==================
    OTHERS
  *==================*/
 
@@ -125,7 +132,8 @@
   #define LV_LOG_PRINTF 1  /* Use printf for logging */
 #endif  /*LV_USE_LOG*/
 
-/* Enable performance monitor */
-#define LV_USE_PERF_MONITOR 1
+/* Performance monitor (LVGL v9 uses LV_USE_SYSMON) */
+#define LV_USE_SYSMON 0
+#define LV_USE_PERF_MONITOR 0
 
 #endif /*LV_CONF_H*/

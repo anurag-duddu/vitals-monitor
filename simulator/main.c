@@ -2,84 +2,200 @@
  * @file main.c
  * @brief LVGL simulator main application for Vitals Monitor
  *
- * This is the Mac development simulator using SDL2. It allows rapid UI development
- * without needing the target hardware.
+ * Phase 2: Waveform Display + Responsive Design
+ * - Screen manager with stack-based navigation
+ * - Main vitals screen with HR, SpO2, NIBP, Temp, RR
+ * - Real-time ECG and Pleth waveforms (lv_chart, circular sweep)
+ * - Mock data generator updating values every second
+ * - Waveform generator synthesizing samples every frame
+ * - Alarm color coding based on threshold evaluation
+ * - Navigation bar with placeholder screens
  */
 
 #include "lvgl.h"
+#include <SDL2/SDL.h>
 #include "sdl_display.h"
 #include "sdl_input.h"
+
+/* Application modules */
+#include "theme_vitals.h"
+#include "screen_manager.h"
+#include "screen_main_vitals.h"
+#include "screen_trends.h"
+#include "screen_alarms.h"
+#include "screen_patient.h"
+#include "screen_settings.h"
+#include "mock_data.h"
+#include "waveform_gen.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <time.h>
 
 static bool running = true;
 
-/* Signal handler for clean exit */
+/* ── Waveform generators ──────────────────────────────────── */
+
+static waveform_gen_t ecg_gen;
+static waveform_gen_t pleth_gen;
+static lv_timer_t *waveform_timer = NULL;
+
+/*
+ * Waveform sample rate:
+ *   25mm/s sweep speed at 130 DPI = ~128 pixels/sec
+ *   At 30 FPS = 128/30 ~= 4.3 samples/frame
+ *   We push 4 samples per frame for smooth animation.
+ */
+#define WAVEFORM_SAMPLES_PER_SEC   128
+#define WAVEFORM_SAMPLES_PER_FRAME 4
+#define WAVEFORM_TIMER_PERIOD_MS   33
+
+/* ── Signal handler ────────────────────────────────────────── */
+
 static void signal_handler(int signum) {
     (void)signum;
     printf("\nShutting down simulator...\n");
     running = false;
 }
 
-/**
- * @brief Create a simple demo screen with "Hello, Vitals Monitor"
- */
-static void create_demo_screen(void) {
-    /* Get the active screen */
-    lv_obj_t *scr = lv_screen_active();
+/* ── Alarm threshold evaluation ────────────────────────────── */
 
-    /* Set background color */
-    lv_obj_set_style_bg_color(scr, lv_color_hex(0x000000), 0);
+static vm_alarm_severity_t highest_alarm = VM_ALARM_NONE;
+static vm_alarm_severity_t prev_alarm = VM_ALARM_NONE;
+static const char *alarm_message = NULL;
 
-    /* Create a label for the title */
-    lv_obj_t *label = lv_label_create(scr);
-    lv_label_set_text(label, "Hello, Vitals Monitor");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_32, 0);
-    lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, -40);
+static void evaluate_alarms(const vitals_data_t *data) {
+    highest_alarm = VM_ALARM_NONE;
+    alarm_message = NULL;
 
-    /* Create a subtitle label */
-    lv_obj_t *subtitle = lv_label_create(scr);
-    lv_label_set_text(subtitle, "LVGL Simulator Running\nPhase 0 Complete!");
-    lv_obj_set_style_text_align(subtitle, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_set_style_text_color(subtitle, lv_color_hex(0x00FF00), 0);
-    lv_obj_align(subtitle, LV_ALIGN_CENTER, 0, 20);
+    /* HR thresholds (from PRD-004) */
+    if (data->hr > 150 || data->hr < 40) {
+        highest_alarm = VM_ALARM_HIGH;
+        alarm_message = data->hr > 150 ? "HR Very High" : "HR Very Low";
+    } else if (data->hr > 120 || data->hr < 50) {
+        if (highest_alarm < VM_ALARM_MEDIUM) {
+            highest_alarm = VM_ALARM_MEDIUM;
+            alarm_message = data->hr > 120 ? "HR High" : "HR Low";
+        }
+    }
 
-    /* Create a status label at the bottom */
-    lv_obj_t *status = lv_label_create(scr);
-    lv_label_set_text(status, "Ready for Phase 1: Basic UI Framework");
-    lv_obj_set_style_text_font(status, &lv_font_montserrat_14, 0);
-    lv_obj_set_style_text_color(status, lv_color_hex(0x00FFFF), 0);
-    lv_obj_align(status, LV_ALIGN_BOTTOM_MID, 0, -20);
+    /* SpO2 thresholds */
+    if (data->spo2 < 85) {
+        highest_alarm = VM_ALARM_HIGH;
+        alarm_message = "SpO2 Critical";
+    } else if (data->spo2 < 90) {
+        if (highest_alarm < VM_ALARM_MEDIUM) {
+            highest_alarm = VM_ALARM_MEDIUM;
+            alarm_message = "SpO2 Low";
+        }
+    }
 
-    /* Add a simple button */
-    lv_obj_t *btn = lv_button_create(scr);
-    lv_obj_align(btn, LV_ALIGN_CENTER, 0, 80);
-    lv_obj_set_size(btn, 200, 60);
+    /* RR thresholds */
+    if (data->rr > 30 || data->rr < 8) {
+        if (highest_alarm < VM_ALARM_HIGH) {
+            highest_alarm = VM_ALARM_HIGH;
+            alarm_message = data->rr > 30 ? "RR Very High" : "RR Very Low";
+        }
+    } else if (data->rr > 24 || data->rr < 10) {
+        if (highest_alarm < VM_ALARM_MEDIUM) {
+            highest_alarm = VM_ALARM_MEDIUM;
+            alarm_message = data->rr > 24 ? "RR High" : "RR Low";
+        }
+    }
 
-    lv_obj_t *btn_label = lv_label_create(btn);
-    lv_label_set_text(btn_label, "Click Me!");
-    lv_obj_center(btn_label);
-
-    printf("Demo screen created successfully\n");
+    /* Temperature thresholds */
+    if (data->temp > 39.0f || data->temp < 35.0f) {
+        if (highest_alarm < VM_ALARM_HIGH) {
+            highest_alarm = VM_ALARM_HIGH;
+            alarm_message = data->temp > 39.0f ? "Temp Very High" : "Temp Very Low";
+        }
+    } else if (data->temp > 38.0f || data->temp < 36.0f) {
+        if (highest_alarm < VM_ALARM_MEDIUM) {
+            highest_alarm = VM_ALARM_MEDIUM;
+            alarm_message = data->temp > 38.0f ? "Temp High" : "Temp Low";
+        }
+    }
 }
 
-/**
- * @brief Main application entry point
- */
+/* ── Waveform timer callback ──────────────────────────────── */
+
+static void waveform_timer_cb(lv_timer_t *timer) {
+    (void)timer;
+
+    /* Only generate waveforms when main vitals screen is active */
+    if (screen_manager_get_active() != SCREEN_ID_MAIN_VITALS) return;
+
+    /* Push multiple samples per frame for smooth sweep */
+    for (int i = 0; i < WAVEFORM_SAMPLES_PER_FRAME; i++) {
+        int32_t ecg_val  = waveform_gen_next_sample(&ecg_gen);
+        int32_t pleth_val = waveform_gen_next_sample(&pleth_gen);
+        screen_main_vitals_push_ecg_sample(ecg_val);
+        screen_main_vitals_push_pleth_sample(pleth_val);
+    }
+
+    /* Single chart refresh after all samples pushed (efficient) */
+    screen_main_vitals_refresh_waveforms();
+}
+
+/* ── Mock data callback ────────────────────────────────────── */
+
+static void on_mock_data_update(const vitals_data_t *data) {
+    /* Update vital sign displays */
+    screen_main_vitals_update_hr(data->hr);
+    screen_main_vitals_update_spo2(data->spo2);
+    screen_main_vitals_update_temp(data->temp);
+    screen_main_vitals_update_rr(data->rr);
+
+    /* NIBP only updates when a measurement is taken */
+    if (data->nibp_fresh) {
+        screen_main_vitals_update_nibp(data->nibp_sys, data->nibp_dia, data->nibp_map);
+    }
+
+    /* Update waveform generators with current heart rate */
+    waveform_gen_set_hr(&ecg_gen,  data->hr, WAVEFORM_SAMPLES_PER_SEC);
+    waveform_gen_set_hr(&pleth_gen, data->hr, WAVEFORM_SAMPLES_PER_SEC);
+
+    /* Evaluate alarm thresholds */
+    evaluate_alarms(data);
+
+    /* Get current time for alarm logging */
+    time_t now = time(NULL);
+    struct tm *tm_info = localtime(&now);
+    char time_buf[8];
+    snprintf(time_buf, sizeof(time_buf), "%02d:%02d", tm_info->tm_hour, tm_info->tm_min);
+
+    /* Log alarm transitions (only on state change to avoid flooding) */
+    if (highest_alarm != prev_alarm && highest_alarm != VM_ALARM_NONE && alarm_message) {
+        mock_data_log_alarm(highest_alarm, alarm_message, time_buf);
+    }
+    prev_alarm = highest_alarm;
+
+    /* Update alarm banner */
+    if (highest_alarm != VM_ALARM_NONE && alarm_message) {
+        screen_main_vitals_set_alarm(highest_alarm, alarm_message);
+    } else {
+        screen_main_vitals_set_alarm(VM_ALARM_NONE, NULL);
+    }
+
+    /* Update clock */
+    screen_main_vitals_update_time(time_buf);
+}
+
+/* ── Main ──────────────────────────────────────────────────── */
+
 int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
 
     printf("========================================\n");
     printf("  Bedside Vitals Monitor - Simulator\n");
-    printf("  Phase 0: Development Environment\n");
+    printf("  Phase 2: Waveform Display\n");
     printf("========================================\n\n");
 
-    /* Set up signal handlers for clean exit */
+    /* Signal handlers for clean exit */
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
@@ -88,11 +204,14 @@ int main(int argc, char **argv) {
     printf("LVGL initialized (version %d.%d.%d)\n",
            lv_version_major(), lv_version_minor(), lv_version_patch());
 
-    /* Initialize SDL display */
-    if (!sdl_display_init(800, 480)) {
+    /* Initialize SDL display (must be before lv_tick_set_cb since SDL needs init first) */
+    if (!sdl_display_init(VM_SCREEN_WIDTH, VM_SCREEN_HEIGHT)) {
         fprintf(stderr, "Failed to initialize SDL display\n");
         return 1;
     }
+
+    /* Provide SDL tick as LVGL's time source (SDL must be initialized first) */
+    lv_tick_set_cb(SDL_GetTicks);
 
     /* Initialize SDL input */
     if (!sdl_input_init()) {
@@ -101,11 +220,51 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    /* Create the demo screen */
-    create_demo_screen();
+    /* Initialize theme */
+    theme_vitals_init();
+
+    /* Initialize screen manager */
+    screen_manager_init();
+
+    /* Register all screens */
+    screen_reg_t registrations[] = {
+        { SCREEN_ID_MAIN_VITALS, screen_main_vitals_create, screen_main_vitals_destroy, "Main Vitals" },
+        { SCREEN_ID_TRENDS,      screen_trends_create,      screen_trends_destroy,      "Trends" },
+        { SCREEN_ID_ALARMS,      screen_alarms_create,      screen_alarms_destroy,      "Alarms" },
+        { SCREEN_ID_PATIENT,     screen_patient_create,      screen_patient_destroy,      "Patient" },
+        { SCREEN_ID_SETTINGS,    screen_settings_create,    screen_settings_destroy,    "Settings" },
+    };
+    for (int i = 0; i < (int)(sizeof(registrations) / sizeof(registrations[0])); i++) {
+        screen_manager_register(&registrations[i]);
+    }
+
+    /* Navigate to main vitals screen */
+    screen_manager_push(SCREEN_ID_MAIN_VITALS);
+
+    /* Auto-return to main vitals after 2 minutes of inactivity */
+    screen_manager_set_auto_return(120000);
+
+    /* Initialize and start mock data */
+    mock_data_init();
+    mock_data_set_callback(on_mock_data_update);
+    mock_data_start(1000);  /* 1 second interval */
+
+    /* Initialize waveform generators */
+    waveform_gen_init(&ecg_gen,  WAVEFORM_ECG,  180, 200);  /* scaled to chart Y range [0..400] */
+    waveform_gen_init(&pleth_gen, WAVEFORM_PLETH, 150, 200);
+
+    /* Set initial HR (72 bpm baseline from mock_data) */
+    waveform_gen_set_hr(&ecg_gen,  72, WAVEFORM_SAMPLES_PER_SEC);
+    waveform_gen_set_hr(&pleth_gen, 72, WAVEFORM_SAMPLES_PER_SEC);
+
+    /* Start waveform timer (fires each frame) */
+    waveform_timer = lv_timer_create(waveform_timer_cb, WAVEFORM_TIMER_PERIOD_MS, NULL);
+    printf("Waveform generators started (%d samples/sec, %d per frame)\n",
+           WAVEFORM_SAMPLES_PER_SEC, WAVEFORM_SAMPLES_PER_FRAME);
 
     printf("\nSimulator running. Press Ctrl+C to exit.\n");
-    printf("Window size: 800x480 (matching target hardware)\n\n");
+    printf("Window size: %dx%d (matching target hardware)\n\n",
+           VM_SCREEN_WIDTH, VM_SCREEN_HEIGHT);
 
     /* Main event loop */
     while (running) {
@@ -124,6 +283,11 @@ int main(int argc, char **argv) {
 
     /* Cleanup */
     printf("Cleaning up...\n");
+    if (waveform_timer) {
+        lv_timer_delete(waveform_timer);
+        waveform_timer = NULL;
+    }
+    mock_data_stop();
     sdl_display_deinit();
 
     printf("Simulator exited cleanly.\n");
