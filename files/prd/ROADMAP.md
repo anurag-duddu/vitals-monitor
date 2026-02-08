@@ -4,7 +4,22 @@
 
 This document provides a phased implementation plan for building the bedside vitals monitor. Each phase has clear deliverables and can be executed incrementally.
 
-**Total Estimated Timeline:** 6-9 months to MVP
+**V1.0 Target Timeline:** 6-12 months to CDSCO submission
+
+> **Note:** See [REQ-000 Clarifications](requirements/00-clarifications.md) for detailed scope decisions.
+
+### V1.0 Scope Summary
+- Core monitoring: SpO2, ECG, HR, NIBP, Temperature, Respiration Rate
+- Dual-patient mode with split-screen UI
+- Cortex-M4 required for ECG sampling
+- Medical-grade OEM sensor modules
+- **Offline-only** (no EHR/ABDM integration)
+- USB firmware updates
+
+### V2.0+ Scope (Deferred)
+- EHR/FHIR integration
+- ABDM/ABHA integration
+- OTA network updates
 
 ---
 
@@ -302,15 +317,18 @@ This document provides a phased implementation plan for building the bedside vit
 
 ---
 
-## Phase 9: Network & Integration
+## Phase 9: Network & Integration ⚠️ V2.0+
 **Duration:** 3-4 weeks
+**Status:** DEFERRED TO V2.0
 
-### Goals
+> **V1.0 Decision:** Focus on offline-only operation. Network integration deferred to reduce scope and accelerate time to market.
+
+### Goals (V2.0)
 - Network configuration UI
 - EHR integration (FHIR)
 - ABDM integration
 
-### Tasks
+### Tasks (V2.0)
 
 | Task | Description | Done |
 |------|-------------|------|
@@ -324,7 +342,7 @@ This document provides a phased implementation plan for building the bedside vit
 | 9.8 | Add network status indicator | ☐ |
 | 9.9 | Test offline → online sync | ☐ |
 
-### Deliverables
+### Deliverables (V2.0)
 - [ ] WiFi configurable from UI
 - [ ] Vitals export to test EHR
 - [ ] ABHA ID lookup works
@@ -389,30 +407,41 @@ This document provides a phased implementation plan for building the bedside vit
 ---
 
 ## Phase 12: Hardware Integration
-**Duration:** 3-4 weeks
+**Duration:** 4-6 weeks
 
 ### Goals
-- Real sensor drivers
-- Cortex-M4 co-processor (optional)
+- OEM medical-grade sensor integration
+- Cortex-M4 co-processor for ECG (REQUIRED)
 - Production sensor validation
+- Additional hardware (ambient light, relay, RFID)
 
 ### Tasks
 
 | Task | Description | Done |
 |------|-------------|------|
-| 12.1 | Integrate MAX30102 SpO2 driver | ☐ |
-| 12.2 | Integrate ADS1292R ECG driver | ☐ |
-| 12.3 | Integrate temperature sensor driver | ☐ |
-| 12.4 | Implement NIBP driver (if applicable) | ☐ |
-| 12.5 | Validate sensor accuracy | ☐ |
-| 12.6 | Optimize sampling rates | ☐ |
-| 12.7 | (Optional) Port sensor sampling to M4 | ☐ |
-| 12.8 | (Optional) Implement A7-M4 communication | ☐ |
+| 12.1 | Evaluate and select OEM SpO2 module vendor | ☐ |
+| 12.2 | Evaluate and select OEM ECG module vendor | ☐ |
+| 12.3 | Evaluate and select OEM NIBP module vendor | ☐ |
+| 12.4 | Integrate OEM SpO2 module driver | ☐ |
+| 12.5 | Integrate OEM ECG module driver | ☐ |
+| 12.6 | Integrate OEM NIBP module driver | ☐ |
+| 12.7 | Integrate temperature sensor driver | ☐ |
+| 12.8 | Port ECG sampling to Cortex-M4 (REQUIRED) | ☐ |
+| 12.9 | Implement A7-M4 RPMsg communication | ☐ |
+| 12.10 | Integrate ambient light sensor | ☐ |
+| 12.11 | Integrate dry contact relay output | ☐ |
+| 12.12 | Integrate 13.56 MHz RFID reader | ☐ |
+| 12.13 | Validate sensor accuracy against reference | ☐ |
 
 ### Deliverables
-- [ ] Real SpO2 readings display
-- [ ] Real ECG waveform displays
-- [ ] Sensor accuracy validated
+- [ ] OEM sensor modules selected and ordered
+- [ ] Real SpO2 readings display (OEM module)
+- [ ] Real ECG waveform displays (M4 sampling)
+- [ ] NIBP measurements working
+- [ ] Ambient light sensor triggers night mode
+- [ ] Relay activates on high-priority alarm
+- [ ] RFID badge reads working
+- [ ] Sensor accuracy validated per IEC 60601-2-49
 
 ---
 
@@ -446,14 +475,23 @@ This document provides a phased implementation plan for building the bedside vit
 
 ## Milestones Summary
 
-| Milestone | Phases | Target |
-|-----------|--------|--------|
-| **M1: Simulator Demo** | 0-3 | Week 8 |
-| **M2: Target Boot** | 4-8 | Week 16 |
-| **M3: Connected Device** | 9 | Week 20 |
-| **M4: Secure Device** | 10-11 | Week 24 |
-| **M5: Hardware Integrated** | 12 | Week 28 |
-| **M6: Regulatory Ready** | 13 | Week 32 |
+### V1.0 Milestones (6-12 Month Target)
+
+| Milestone | Phases | Target | Description |
+|-----------|--------|--------|-------------|
+| **M1: Simulator Demo** | 0-3 | Month 2 | UI, waveforms, alarms working in simulator |
+| **M2: Target Boot** | 4-8 | Month 4 | Device boots, services running on hardware |
+| **M3: Secure Device** | 10-11 | Month 5 | Secure boot, encryption, USB updates |
+| **M4: Hardware Integrated** | 12 | Month 7-8 | OEM sensors + M4 working |
+| **M5: Regulatory Ready** | 13 | Month 9-12 | Testing complete, docs ready for CDSCO |
+
+### V2.0 Milestones (Future)
+
+| Milestone | Phases | Description |
+|-----------|--------|-------------|
+| **M6: Connected Device** | 9 | EHR/ABDM integration, OTA updates |
+
+> **Note:** Phase 9 (Network & Integration) is deferred to V2.0 per clarifications in REQ-000.
 
 ---
 
@@ -476,6 +514,9 @@ A phase is complete when:
 |------|------------|
 | LVGL performance issues | Profile early, optimize waveform rendering |
 | Buildroot complexity | Start with ST's reference, customize incrementally |
-| Sensor driver issues | Use eval boards with known-good drivers first |
-| Regulatory timeline | Begin documentation in parallel with development |
-| ABDM API changes | Abstract integration layer, monitor NHA updates |
+| OEM sensor module lead times | Begin vendor evaluation in Phase 0, order early |
+| OEM sensor integration issues | Request eval kits, allocate extra time in Phase 12 |
+| M4 co-processor complexity | Prototype RPMsg early, have A7-only fallback plan |
+| Regulatory timeline (aggressive) | Begin documentation in parallel, prioritize clinical evidence early |
+| Small team capacity | Strict scope control, defer V2.0 features aggressively |
+| Ambient light sensor calibration | Test in various ward lighting conditions |

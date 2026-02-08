@@ -2,12 +2,15 @@
 
 ## Executive Summary
 
-A bedside vitals monitor for Indian hospital general wards, built on embedded Linux (STM32MP157F) with LVGL UI framework. The device provides continuous vital signs monitoring with waveforms, alarms, and bidirectional EHR/ABDM integration.
+A bedside vitals monitor for Indian hospital general wards, built on embedded Linux (STM32MP157F) with LVGL UI framework. The device provides continuous vital signs monitoring with waveforms, alarms, and offline-first operation. V1.0 targets core monitoring functionality with EHR/ABDM integration planned for V2.0.
 
 **Target Market:** India, general ward / med-surg inpatient settings
 **Regulatory Pathway:** CDSCO Class B medical device
 **Hardware Platform:** STM32MP157F-DK2 (Cortex-A7 + M4, 512MB RAM)
 **Software Stack:** Buildroot Linux + LVGL (MIT license)
+**Target Timeline:** 6-12 months to CDSCO submission
+
+> **Note:** See [REQ-000 Clarifications](requirements/00-clarifications.md) for detailed decisions made during requirements review.
 
 ---
 
@@ -16,7 +19,8 @@ A bedside vitals monitor for Indian hospital general wards, built on embedded Li
 Provide Indian hospitals with a modern, connected bedside vitals monitor that:
 - Improves patient safety through reliable monitoring and alarms
 - Enhances nursing efficiency with intuitive touch UI
-- Integrates seamlessly with India's ABDM digital health infrastructure
+- Operates fully offline with local data storage (V1.0)
+- Integrates seamlessly with India's ABDM digital health infrastructure (V2.0+)
 - Meets regulatory requirements for medical devices
 
 ---
@@ -66,9 +70,10 @@ Provide Indian hospitals with a modern, connected bedside vitals monitor that:
 
 ### 4. Patient Management
 
-- Support 1-2 patients per device (configurable)
-- Patient identification: manual entry, barcode, RFID, ABHA ID
-- Demographics import from EHR
+- **Dual-patient mode** (V1.0): Support 2 patients per device with split-screen UI
+- Patient identification: manual entry, barcode, RFID badge
+- ABHA ID lookup (V2.0+)
+- Demographics import from EHR (V2.0+)
 - Clear association/disassociation workflow
 
 ### 5. Data Storage
@@ -80,17 +85,22 @@ Provide Indian hospitals with a modern, connected bedside vitals monitor that:
 
 ### 6. Connectivity & Integration
 
-**EHR Integration (Bidirectional):**
+**V1.0: Offline-Only Operation**
+- Full functionality without network connectivity
+- Local data storage for 72+ hours
+- USB data export capability
+
+**V2.0+: EHR Integration (Bidirectional)**
 - Import: Patient demographics, allergies, alarm presets
 - Export: Vitals, alarms, device status
 - Protocol: HL7 FHIR R4
 
-**ABDM Integration:**
+**V2.0+: ABDM Integration**
 - ABHA ID lookup and verification
 - Health record push (consent-based)
 - NHA certification required
 
-**Network:**
+**Network (Hardware Ready):**
 - WiFi (802.11ac, WPA2/WPA3-Enterprise)
 - Ethernet (Gigabit)
 - Offline-first architecture
@@ -112,12 +122,19 @@ Provide Indian hospitals with a modern, connected bedside vitals monitor that:
 
 **STM32MP157F-DK2:**
 - Dual Cortex-A7 @ 800 MHz (Linux)
-- Cortex-M4 @ 209 MHz (Real-time sensor sampling)
+- Cortex-M4 @ 209 MHz (Real-time ECG sampling - **required for V1.0**)
 - 512 MB DDR3L RAM
 - microSD storage
-- 4" 800×480 MIPI-DSI touchscreen
+- Adaptive display support (4.3" to 10")
 - WiFi/Bluetooth module
 - Gigabit Ethernet
+
+**Additional Hardware (V1.0):**
+- Medical-grade OEM sensor modules (SpO2, ECG, NIBP, Temperature)
+- Ambient light sensor (automatic night mode)
+- Dry contact relay output (nurse call integration)
+- 13.56 MHz NFC/RFID reader (badge authentication)
+- ECG impedance circuit (respiration rate derivation)
 
 ### Software Stack
 
@@ -264,10 +281,11 @@ Main Vitals Screen (default)
 |-----------|--------|-----------|
 | OS | Buildroot Linux | Simpler than Yocto, sufficient for scope |
 | UI Framework | LVGL | MIT license, embedded-optimized, medical precedent |
-| Language | C (primary) | LVGL native, embedded standard |
+| Language | C (critical), Python (services) | C for LVGL/sensors/alarms, Python for network service |
 | Database | SQLite | Reliable, embedded-friendly |
-| IPC | nanomsg + D-Bus | Performance + standard Linux |
+| IPC | nanomsg (data) + D-Bus (control) | nanomsg for sensor pub/sub, D-Bus for config |
 | Security | dm-verity, LUKS, secure boot | Industry standard |
+| Sensors | Medical-grade OEM modules | Pre-certified for regulatory compliance |
 
 ### Development Environment
 
@@ -330,12 +348,20 @@ Main Vitals Screen (default)
 
 ## Out of Scope (V1.0)
 
+**Deferred to V2.0:**
+- EHR/FHIR integration
+- ABDM/ABHA integration
+- OTA network updates
+- Remote monitoring
+
+**Not Planned:**
 - ICU-level monitoring
 - Invasive blood pressure
 - Capnography (ETCO2)
 - Central monitoring station
 - Mobile app companion
 - International markets
+- 12-lead ECG
 
 ---
 
@@ -343,6 +369,7 @@ Main Vitals Screen (default)
 
 | Document | ID | Description |
 |----------|-----|-------------|
+| **Clarifications** | REQ-000 | **Decisions from requirements review (START HERE)** |
 | Product Overview | REQ-001 | Vision, personas, scope |
 | Functional Requirements | REQ-002 | Feature specifications |
 | UI/UX Requirements | REQ-003 | Screens, layouts, interaction |
