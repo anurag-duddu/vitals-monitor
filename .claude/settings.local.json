@@ -15,7 +15,10 @@
       "Bash(/tmp/iconconv/bin/python3:*)",
       "Bash(find:*)",
       "Bash(curl:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(perl -e 'alarm\\(8\\); exec\\(\"\"./simulator\"\"\\)')",
+      "Bash(sqlite3:*)"
     ]
   }
 }

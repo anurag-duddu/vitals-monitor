@@ -26,7 +26,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
-#include "mock_data.h"
+#include "vitals_provider.h"
 #include <stdio.h>
 
 /* ── Module state ──────────────────────────────────────────── */
@@ -106,7 +106,7 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_set_style_text_font(vt, VM_FONT_BODY, 0);
     lv_obj_set_style_text_color(vt, VM_COLOR_TEXT_PRIMARY, 0);
 
-    const vitals_data_t *data = mock_data_get_current();
+    const vitals_data_t *data = vitals_provider_get_current(0);
     char buf[64];
     snprintf(buf, sizeof(buf), "%d bpm", data->hr);
     add_info_row(vitals_panel, "HR",   buf, VM_COLOR_HR);

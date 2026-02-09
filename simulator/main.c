@@ -25,7 +25,7 @@
 #include "screen_alarms.h"
 #include "screen_patient.h"
 #include "screen_settings.h"
-#include "mock_data.h"
+#include "vitals_provider.h"
 #include "trend_db.h"
 #include "waveform_gen.h"
 
@@ -142,9 +142,10 @@ static void waveform_timer_cb(lv_timer_t *timer) {
     screen_main_vitals_refresh_waveforms();
 }
 
-/* ── Mock data callback ────────────────────────────────────── */
+/* ── Vitals data callback ──────────────────────────────────── */
 
-static void on_mock_data_update(const vitals_data_t *data) {
+static void on_vitals_update(const vitals_data_t *data, void *user_data) {
+    (void)user_data;  /* Unused in simulator */
     /* Update vital sign displays */
     screen_main_vitals_update_hr(data->hr);
     screen_main_vitals_update_spo2(data->spo2);
@@ -259,19 +260,19 @@ int main(int argc, char **argv) {
     /* Auto-return to main vitals after 2 minutes of inactivity */
     screen_manager_set_auto_return(120000);
 
-    /* Initialize trend database (before mock_data, which inserts into it) */
+    /* Initialize trend database (before vitals provider, which inserts into it) */
     trend_db_init("vitals_trends.db");
 
-    /* Initialize and start mock data */
-    mock_data_init();
-    mock_data_set_callback(on_mock_data_update);
-    mock_data_start(1000);  /* 1 second interval */
+    /* Initialize and start vitals provider (uses mock implementation for simulator) */
+    vitals_provider_init();
+    vitals_provider_set_vitals_callback(on_vitals_update, NULL);
+    vitals_provider_start(1000);  /* 1 second interval */
 
     /* Initialize waveform generators */
     waveform_gen_init(&ecg_gen,  WAVEFORM_ECG,  180, 200);  /* scaled to chart Y range [0..400] */
     waveform_gen_init(&pleth_gen, WAVEFORM_PLETH, 150, 200);
 
-    /* Set initial HR (72 bpm baseline from mock_data) */
+    /* Set initial HR (72 bpm baseline from vitals provider) */
     waveform_gen_set_hr(&ecg_gen,  72, WAVEFORM_SAMPLES_PER_SEC);
     waveform_gen_set_hr(&pleth_gen, 72, WAVEFORM_SAMPLES_PER_SEC);
 
@@ -312,7 +313,7 @@ int main(int argc, char **argv) {
         lv_timer_delete(waveform_timer);
         waveform_timer = NULL;
     }
-    mock_data_stop();
+    vitals_provider_deinit();  /* This internally calls stop() */
     trend_db_close();
     sdl_display_deinit();
 

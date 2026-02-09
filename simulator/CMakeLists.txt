@@ -113,11 +113,12 @@ elseif(VITALS_PROVIDER STREQUAL "ipc")
     endif()
     message(STATUS "Using IPC vitals provider (target mode)")
 elseif(VITALS_PROVIDER STREQUAL "direct")
+    # Note: direct mode would use HAL-based provider in future
+    # For now, fallback to mock implementation
     list(APPEND CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/mock_data.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/vitals_provider_mock.c
     )
-    message(STATUS "Using DIRECT vitals provider (single-process target test)")
+    message(STATUS "Using DIRECT vitals provider (single-process target test - currently uses mock)")
 endif()
 
 # Create executable
