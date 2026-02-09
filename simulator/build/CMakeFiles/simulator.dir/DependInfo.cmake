@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o" "gcc" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o.d"
+  "/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o" "gcc" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o.d"
   "/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o" "gcc" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o.d"
   "/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o" "gcc" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o.d"
   "/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o" "gcc" "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_main_vitals.c.o.d"
@@ -443,6 +444,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/anuragduddu/code-projects/vitals-monitor/simulator/main.c" "CMakeFiles/simulator.dir/main.c.o" "gcc" "CMakeFiles/simulator.dir/main.c.o.d"
   "/Users/anuragduddu/code-projects/vitals-monitor/simulator/sdl_display.c" "CMakeFiles/simulator.dir/sdl_display.c.o" "gcc" "CMakeFiles/simulator.dir/sdl_display.c.o.d"
   "/Users/anuragduddu/code-projects/vitals-monitor/simulator/sdl_input.c" "CMakeFiles/simulator.dir/sdl_input.c.o" "gcc" "CMakeFiles/simulator.dir/sdl_input.c.o.d"
+  "/Users/anuragduddu/code-projects/vitals-monitor/simulator/sqlite3/sqlite3.c" "CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o" "gcc" "CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

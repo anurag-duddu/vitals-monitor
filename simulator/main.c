@@ -2,7 +2,7 @@
  * @file main.c
  * @brief LVGL simulator main application for Vitals Monitor
  *
- * Phase 2: Waveform Display + Responsive Design
+ * Phase 3: Trends with SQLite + Waveform Display
  * - Screen manager with stack-based navigation
  * - Main vitals screen with HR, SpO2, NIBP, Temp, RR
  * - Real-time ECG and Pleth waveforms (lv_chart, circular sweep)
@@ -26,6 +26,7 @@
 #include "screen_patient.h"
 #include "screen_settings.h"
 #include "mock_data.h"
+#include "trend_db.h"
 #include "waveform_gen.h"
 
 #include <stdio.h>
@@ -36,6 +37,7 @@
 #include <time.h>
 
 static bool running = true;
+static lv_timer_t *purge_timer = NULL;
 
 /* ── Waveform generators ──────────────────────────────────── */
 
@@ -169,7 +171,10 @@ static void on_mock_data_update(const vitals_data_t *data) {
 
     /* Log alarm transitions (only on state change to avoid flooding) */
     if (highest_alarm != prev_alarm && highest_alarm != VM_ALARM_NONE && alarm_message) {
-        mock_data_log_alarm(highest_alarm, alarm_message, time_buf);
+        /* Map vm_alarm_severity_t to vitals_alarm_severity_t (same numeric values) */
+        vitals_alarm_severity_t sev = (vitals_alarm_severity_t)highest_alarm;
+        vitals_provider_log_alarm(sev, alarm_message, time_buf);
+        trend_db_insert_alarm((uint32_t)(data->timestamp_ms / 1000), highest_alarm, alarm_message);
     }
     prev_alarm = highest_alarm;
 
@@ -182,6 +187,16 @@ static void on_mock_data_update(const vitals_data_t *data) {
 
     /* Update clock */
     screen_main_vitals_update_time(time_buf);
+}
+
+/* ── Trend database purge timer ────────────────────────────── */
+
+static void trend_purge_timer_cb(lv_timer_t *timer) {
+    (void)timer;
+    const vitals_data_t *d = vitals_provider_get_current(0);
+    if (d) {
+        trend_db_purge_old((uint32_t)(d->timestamp_ms / 1000));
+    }
 }
 
 /* ── Main ──────────────────────────────────────────────────── */
@@ -244,6 +259,9 @@ int main(int argc, char **argv) {
     /* Auto-return to main vitals after 2 minutes of inactivity */
     screen_manager_set_auto_return(120000);
 
+    /* Initialize trend database (before mock_data, which inserts into it) */
+    trend_db_init("vitals_trends.db");
+
     /* Initialize and start mock data */
     mock_data_init();
     mock_data_set_callback(on_mock_data_update);
@@ -261,6 +279,9 @@ int main(int argc, char **argv) {
     waveform_timer = lv_timer_create(waveform_timer_cb, WAVEFORM_TIMER_PERIOD_MS, NULL);
     printf("Waveform generators started (%d samples/sec, %d per frame)\n",
            WAVEFORM_SAMPLES_PER_SEC, WAVEFORM_SAMPLES_PER_FRAME);
+
+    /* Purge old trend data every 5 minutes */
+    purge_timer = lv_timer_create(trend_purge_timer_cb, 300000, NULL);
 
     printf("\nSimulator running. Press Ctrl+C to exit.\n");
     printf("Window size: %dx%d (matching target hardware)\n\n",
@@ -283,11 +304,16 @@ int main(int argc, char **argv) {
 
     /* Cleanup */
     printf("Cleaning up...\n");
+    if (purge_timer) {
+        lv_timer_delete(purge_timer);
+        purge_timer = NULL;
+    }
     if (waveform_timer) {
         lv_timer_delete(waveform_timer);
         waveform_timer = NULL;
     }
     mock_data_stop();
+    trend_db_close();
     sdl_display_deinit();
 
     printf("Simulator exited cleanly.\n");

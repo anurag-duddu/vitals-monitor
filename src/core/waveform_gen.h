@@ -11,13 +11,10 @@
 #define WAVEFORM_GEN_H
 
 #include <stdint.h>
+#include "vitals_provider.h"
 
-/* Waveform identifiers */
-typedef enum {
-    WAVEFORM_ECG  = 0,
-    WAVEFORM_PLETH,
-    WAVEFORM_COUNT
-} waveform_id_t;
+/* Waveform identifiers - alias to waveform_type_t from vitals_provider.h */
+typedef waveform_type_t waveform_id_t;
 
 /* Waveform generator state (one per waveform) */
 typedef struct {

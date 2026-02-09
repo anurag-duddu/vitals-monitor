@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o"
   "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o.d"
+  "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o"
+  "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o.d"
   "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o"
   "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o.d"
   "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/screens/screen_alarms.c.o"
@@ -869,6 +871,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/simulator.dir/sdl_display.c.o.d"
   "CMakeFiles/simulator.dir/sdl_input.c.o"
   "CMakeFiles/simulator.dir/sdl_input.c.o.d"
+  "CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o"
+  "CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o.d"
   "simulator"
   "simulator.pdb"
 )

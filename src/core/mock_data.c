@@ -9,6 +9,7 @@
  */
 
 #include "mock_data.h"
+#include "trend_db.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -47,11 +48,22 @@ static int          nibp_tick_counter = 0;
 /* Current data snapshot */
 static vitals_data_t current_data;
 
-/* History ring buffer for trends */
-static vitals_history_t history;
+/* Internal history ring buffer (2-minute window at 1Hz) */
+typedef struct {
+    int hr[MOCK_DATA_HISTORY_LEN];
+    int spo2[MOCK_DATA_HISTORY_LEN];
+    int rr[MOCK_DATA_HISTORY_LEN];
+    int count;
+    int write_idx;
+} mock_history_internal_t;
 
-/* Alarm log */
-static alarm_log_t alarm_log;
+static mock_history_internal_t history_internal;
+
+/* vitals_history_t compatible wrapper (with zeros for extra fields) */
+static vitals_history_t history_wrapper;
+
+/* Alarm log (uses vitals_provider.h types) */
+static vitals_alarm_log_t alarm_log;
 static uint32_t tick_counter_s = 0;  /* Seconds since mock_data_init */
 
 /* LVGL timer and callback */
@@ -84,7 +96,8 @@ void mock_data_init(void) {
     nibp_tick_counter = 0;
 
     /* Clear history and alarm log */
-    memset(&history, 0, sizeof(history));
+    memset(&history_internal, 0, sizeof(history_internal));
+    memset(&history_wrapper, 0, sizeof(history_wrapper));
     memset(&alarm_log, 0, sizeof(alarm_log));
     tick_counter_s = 0;
 
@@ -142,15 +155,30 @@ static void timer_cb(lv_timer_t *timer) {
         current_data.nibp_fresh = false;
     }
 
-    /* Record into history ring buffer */
-    int idx = history.write_idx;
-    history.hr[idx]   = current_data.hr;
-    history.spo2[idx] = current_data.spo2;
-    history.rr[idx]   = current_data.rr;
-    history.write_idx = (idx + 1) % MOCK_DATA_HISTORY_LEN;
-    history.count++;
+    /* Record into history ring buffer (kept for main vitals screen) */
+    int idx = history_internal.write_idx;
+    history_internal.hr[idx]   = current_data.hr;
+    history_internal.spo2[idx] = current_data.spo2;
+    history_internal.rr[idx]   = current_data.rr;
+    history_internal.write_idx = (idx + 1) % MOCK_DATA_HISTORY_LEN;
+    history_internal.count++;
 
     tick_counter_s++;
+    current_data.timestamp_ms = (uint64_t)tick_counter_s * 1000;
+
+    /* Insert into trend database (SQLite) */
+    trend_db_insert_sample(tick_counter_s, current_data.hr, current_data.spo2,
+                           current_data.rr, current_data.temp);
+
+    if (current_data.nibp_fresh) {
+        trend_db_insert_nibp(tick_counter_s, current_data.nibp_sys,
+                             current_data.nibp_dia, current_data.nibp_map);
+    }
+
+    /* Aggregate 1-minute summary every 60 seconds */
+    if (tick_counter_s > 0 && tick_counter_s % 60 == 0) {
+        trend_db_aggregate_minute(tick_counter_s);
+    }
 
     /* Notify callback */
     if (user_callback) {
@@ -202,14 +230,24 @@ static float clamp_float(float val, float lo, float hi) {
 /* ── History & Alarm Log API ──────────────────────────────── */
 
 const vitals_history_t * mock_data_get_history(void) {
-    return &history;
+    /* Build wrapper from internal history (copy what fits) */
+    int available = history_internal.count < MOCK_DATA_HISTORY_LEN
+                  ? history_internal.count : MOCK_DATA_HISTORY_LEN;
+    for (int i = 0; i < available && i < VITALS_HISTORY_LEN; i++) {
+        history_wrapper.hr[i] = history_internal.hr[i];
+        history_wrapper.spo2[i] = history_internal.spo2[i];
+        history_wrapper.rr[i] = history_internal.rr[i];
+    }
+    history_wrapper.count = available;
+    history_wrapper.write_idx = history_internal.write_idx;
+    return &history_wrapper;
 }
 
-const alarm_log_t * mock_data_get_alarm_log(void) {
+const vitals_alarm_log_t * mock_data_get_alarm_log(void) {
     return &alarm_log;
 }
 
-void mock_data_log_alarm(vm_alarm_severity_t severity, const char *message,
+void mock_data_log_alarm(vitals_alarm_severity_t severity, const char *message,
                           const char *time_str) {
     int idx = alarm_log.write_idx;
     alarm_log.entries[idx].severity = severity;
@@ -221,8 +259,90 @@ void mock_data_log_alarm(vm_alarm_severity_t severity, const char *message,
     alarm_log.entries[idx].time_str[sizeof(alarm_log.entries[idx].time_str) - 1] = '\0';
     alarm_log.entries[idx].timestamp_s = tick_counter_s;
 
-    alarm_log.write_idx = (idx + 1) % ALARM_LOG_MAX;
-    if (alarm_log.count < ALARM_LOG_MAX) {
+    alarm_log.write_idx = (idx + 1) % VITALS_ALARM_LOG_MAX;
+    if (alarm_log.count < VITALS_ALARM_LOG_MAX) {
         alarm_log.count++;
     }
+}
+
+/* ============================================================
+ *  vitals_provider API Implementation (for mock builds)
+ *  These functions wrap the mock_data_* functions to provide
+ *  the abstract vitals_provider interface that UI code uses.
+ * ============================================================ */
+
+static bool provider_running = false;
+static vitals_callback_t provider_vitals_cb = NULL;
+static void *provider_vitals_user_data = NULL;
+
+/* Internal callback adapter from mock_data to vitals_provider */
+static void provider_callback_adapter(const vitals_data_t *data) {
+    if (provider_vitals_cb) {
+        provider_vitals_cb(data, provider_vitals_user_data);
+    }
+}
+
+int vitals_provider_init(void) {
+    mock_data_init();
+    provider_running = false;
+    printf("[vitals_provider] Initialized (type=mock)\n");
+    return 0;
+}
+
+int vitals_provider_start(uint32_t vitals_interval_ms) {
+    mock_data_set_callback(provider_callback_adapter);
+    mock_data_start(vitals_interval_ms);
+    provider_running = true;
+    return 0;
+}
+
+void vitals_provider_stop(void) {
+    mock_data_stop();
+    provider_running = false;
+}
+
+void vitals_provider_deinit(void) {
+    vitals_provider_stop();
+    provider_vitals_cb = NULL;
+    provider_vitals_user_data = NULL;
+    printf("[vitals_provider] Deinitialized\n");
+}
+
+void vitals_provider_set_vitals_callback(vitals_callback_t callback, void *user_data) {
+    provider_vitals_cb = callback;
+    provider_vitals_user_data = user_data;
+}
+
+void vitals_provider_set_waveform_callback(waveform_callback_t callback, void *user_data) {
+    /* Waveform callback not used in mock mode (main.c has its own waveform gen) */
+    (void)callback;
+    (void)user_data;
+}
+
+const vitals_data_t *vitals_provider_get_current(uint8_t slot) {
+    if (slot > 0) return NULL;  /* Mock only supports slot 0 */
+    return mock_data_get_current();
+}
+
+bool vitals_provider_is_running(void) {
+    return provider_running;
+}
+
+const char *vitals_provider_get_type(void) {
+    return "mock";
+}
+
+const vitals_history_t *vitals_provider_get_history(uint8_t slot) {
+    if (slot > 0) return NULL;  /* Mock only supports slot 0 */
+    return mock_data_get_history();
+}
+
+const vitals_alarm_log_t *vitals_provider_get_alarm_log(void) {
+    return mock_data_get_alarm_log();
+}
+
+void vitals_provider_log_alarm(vitals_alarm_severity_t severity,
+                               const char *message,
+                               const char *time_str) {
+    mock_data_log_alarm(severity, message, time_str);
 }

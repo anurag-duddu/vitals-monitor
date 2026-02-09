@@ -641,6 +641,8 @@ CMakeFiles/simulator.dir/main.c.o: \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_patient.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/screens/screen_settings.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core/mock_data.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core/vitals_provider.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core/trend_db.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/core/waveform_gen.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/unistd.h \

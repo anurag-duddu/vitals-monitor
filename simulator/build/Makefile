@@ -153,6 +153,30 @@ Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
 .PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
 
+Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.o: Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.o
+
+# target to build an object file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.i: Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.i
+
+# target to preprocess a source file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i
+
+Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.s: Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.s
+
+# target to generate assembly for a file
+Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s
+.PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s
+
 Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.o: Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o
 .PHONY : Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.o
 
@@ -10569,6 +10593,30 @@ sdl_input.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/sdl_input.c.s
 .PHONY : sdl_input.c.s
 
+sqlite3/sqlite3.o: sqlite3/sqlite3.c.o
+.PHONY : sqlite3/sqlite3.o
+
+# target to build an object file
+sqlite3/sqlite3.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o
+.PHONY : sqlite3/sqlite3.c.o
+
+sqlite3/sqlite3.i: sqlite3/sqlite3.c.i
+.PHONY : sqlite3/sqlite3.i
+
+# target to preprocess a source file
+sqlite3/sqlite3.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/sqlite3/sqlite3.c.i
+.PHONY : sqlite3/sqlite3.c.i
+
+sqlite3/sqlite3.s: sqlite3/sqlite3.c.s
+.PHONY : sqlite3/sqlite3.s
+
+# target to generate assembly for a file
+sqlite3/sqlite3.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/sqlite3/sqlite3.c.s
+.PHONY : sqlite3/sqlite3.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -10581,6 +10629,9 @@ help:
 	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.o"
 	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.i"
 	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.s"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.o"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.i"
+	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.s"
 	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.o"
 	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.i"
 	@echo "... Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.s"
@@ -11883,6 +11934,9 @@ help:
 	@echo "... sdl_input.o"
 	@echo "... sdl_input.i"
 	@echo "... sdl_input.s"
+	@echo "... sqlite3/sqlite3.o"
+	@echo "... sqlite3/sqlite3.i"
+	@echo "... sqlite3/sqlite3.s"
 .PHONY : help
 
 

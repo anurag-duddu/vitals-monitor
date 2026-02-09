@@ -462,6 +462,8 @@ CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl/src/lv_api_map_v9_0.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/lvgl/src/lv_api_map_v9_1.h \
   /Users/anuragduddu/code-projects/vitals-monitor/simulator/../src/ui/themes/theme_vitals.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/src/core/vitals_provider.h \
+  /Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/wait.h \

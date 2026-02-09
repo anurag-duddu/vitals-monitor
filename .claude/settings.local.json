@@ -8,7 +8,14 @@
       "Bash(timeout:*)",
       "Bash(echo:*)",
       "Bash(gtimeout:*)",
-      "Bash(perl -e 'alarm 5; exec \"\"./simulator\"\"')"
+      "Bash(perl -e 'alarm 5; exec \"\"./simulator\"\"')",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(/tmp/iconconv/bin/pip install:*)",
+      "Bash(/tmp/iconconv/bin/python3:*)",
+      "Bash(find:*)",
+      "Bash(curl:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

@@ -1,0 +1,149 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ============================================================
+  # Simulator Build (macOS)
+  # ============================================================
+  simulator-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          brew install sdl2 cmake ninja
+
+      - name: Build simulator
+        run: |
+          cd simulator
+          mkdir -p build && cd build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DVITALS_PROVIDER=mock ..
+          ninja
+
+      - name: Upload simulator binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-macos
+          path: simulator/build/simulator
+
+  # ============================================================
+  # Simulator Build (Linux - for testing)
+  # ============================================================
+  simulator-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build libsdl2-dev
+
+      - name: Build simulator
+        run: |
+          cd simulator
+          mkdir -p build && cd build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DVITALS_PROVIDER=mock ..
+          ninja
+
+      - name: Upload simulator binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-linux
+          path: simulator/build/simulator
+
+  # ============================================================
+  # Unit Tests
+  # ============================================================
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build libsdl2-dev
+
+      - name: Build and run tests
+        run: |
+          # Create tests if they exist
+          if [ -d "tests/unit" ]; then
+            cd tests/unit
+            mkdir -p build && cd build
+            cmake -G Ninja ..
+            ninja
+            ctest --output-on-failure
+          else
+            echo "No unit tests found - skipping"
+          fi
+
+  # ============================================================
+  # Docker Build Environment Check
+  # ============================================================
+  docker-build-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Dockerfile exists
+        run: |
+          if [ -f "Dockerfile.buildroot" ]; then
+            echo "Dockerfile.buildroot found"
+            docker build -f Dockerfile.buildroot -t vitals-buildroot-check . --target builder || echo "Build check only"
+          else
+            echo "Dockerfile.buildroot not found - target build not configured yet"
+          fi
+
+  # ============================================================
+  # Code Quality Checks
+  # ============================================================
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install cppcheck
+        run: sudo apt-get install -y cppcheck
+
+      - name: Run cppcheck on src/
+        run: |
+          cppcheck --enable=warning,style,performance \
+                   --suppress=missingInclude \
+                   --error-exitcode=0 \
+                   --inline-suppr \
+                   src/
+        continue-on-error: true  # Don't fail build on warnings initially
+
+  # ============================================================
+  # Build Matrix Summary
+  # ============================================================
+  build-summary:
+    needs: [simulator-macos, simulator-linux, unit-tests, docker-build-check]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check build results
+        run: |
+          echo "=== Build Summary ==="
+          echo "Simulator (macOS): ${{ needs.simulator-macos.result }}"
+          echo "Simulator (Linux): ${{ needs.simulator-linux.result }}"
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Docker Check: ${{ needs.docker-build-check.result }}"

@@ -25,7 +25,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
-#include "mock_data.h"
+#include "vitals_provider.h"
 #include <stdio.h>
 
 /* ── Module state ──────────────────────────────────────────── */

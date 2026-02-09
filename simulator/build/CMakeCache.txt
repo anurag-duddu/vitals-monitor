@@ -204,6 +204,9 @@ COCOA_LIBRARY:FILEPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacO
 //The directory containing a CMake configuration file for SDL2.
 SDL2_DIR:PATH=/opt/homebrew/lib/cmake/SDL2
 
+//Vitals data provider: mock, ipc, direct
+VITALS_PROVIDER:STRING=mock
+
 //Value Computed by CMake
 vitals_monitor_simulator_BINARY_DIR:STATIC=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build
 
@@ -347,4 +350,6 @@ CMAKE_TAPI-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//STRINGS property for variable: VITALS_PROVIDER
+VITALS_PROVIDER-STRINGS:INTERNAL=mock;ipc;direct
 

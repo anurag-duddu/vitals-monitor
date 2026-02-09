@@ -21,7 +21,7 @@
  *=========================*/
 
 /* Size of the memory available for LVGL's internal management purposes */
-#define LV_MEM_SIZE (192 * 1024U)  /* 192KB - increased for waveform charts */
+#define LV_MEM_SIZE (256 * 1024U)  /* 256KB - increased for trend charts + overlays */
 
 /* Set an address for the memory pool instead of allocating it as a normal array */
 #define LV_MEM_ADR 0     /* 0: unused */

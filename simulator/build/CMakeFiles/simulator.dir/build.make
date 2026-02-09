@@ -6134,10 +6134,38 @@ CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/t
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.s
 
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_434) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_435) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.i
+
+CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.s
+
 CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o: CMakeFiles/simulator.dir/flags.make
 CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c
 CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_434) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_436) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c
 
 CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.i: cmake_force
@@ -6148,19 +6176,19 @@ CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.s
 
-CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: CMakeFiles/simulator.dir/flags.make
-CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c
-CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_435) "Building C object CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o -MF CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o.d -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c
+CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o: /Users/anuragduddu/code-projects/vitals-monitor/simulator/sqlite3/sqlite3.c
+CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_437) "Building C object CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o"
+	/usr/bin/cc $(C_DEFINES) -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_SHARED_CACHE -DSQLITE_THREADSAFE=0 $(C_INCLUDES) $(C_FLAGS) -w -MD -MT CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o -MF CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o.d -o CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o -c /Users/anuragduddu/code-projects/vitals-monitor/simulator/sqlite3/sqlite3.c
 
-CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c > CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.i
+CMakeFiles/simulator.dir/sqlite3/sqlite3.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/simulator.dir/sqlite3/sqlite3.c.i"
+	/usr/bin/cc $(C_DEFINES) -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_SHARED_CACHE -DSQLITE_THREADSAFE=0 $(C_INCLUDES) $(C_FLAGS) -w -E /Users/anuragduddu/code-projects/vitals-monitor/simulator/sqlite3/sqlite3.c > CMakeFiles/simulator.dir/sqlite3/sqlite3.c.i
 
-CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c -o CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.s
+CMakeFiles/simulator.dir/sqlite3/sqlite3.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/simulator.dir/sqlite3/sqlite3.c.s"
+	/usr/bin/cc $(C_DEFINES) -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_SHARED_CACHE -DSQLITE_THREADSAFE=0 $(C_INCLUDES) $(C_FLAGS) -w -S /Users/anuragduddu/code-projects/vitals-monitor/simulator/sqlite3/sqlite3.c -o CMakeFiles/simulator.dir/sqlite3/sqlite3.c.s
 
 # Object files for target simulator
 simulator_OBJECTS = \
@@ -6597,8 +6625,10 @@ simulator_OBJECTS = \
 "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o" \
 "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o" \
 "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o" \
+"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o" \
 "CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o" \
-"CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o"
+"CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o"
 
 # External object files for target simulator
 simulator_EXTERNAL_OBJECTS =
@@ -7036,12 +7066,14 @@ simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monit
 simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_nav_bar.c.o
 simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/widgets/widget_waveform.c.o
 simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/ui/themes/theme_vitals.c.o
-simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o
 simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/waveform_gen.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/trend_db.c.o
+simulator: CMakeFiles/simulator.dir/Users/anuragduddu/code-projects/vitals-monitor/src/core/mock_data.c.o
+simulator: CMakeFiles/simulator.dir/sqlite3/sqlite3.c.o
 simulator: CMakeFiles/simulator.dir/build.make
 simulator: /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib
 simulator: CMakeFiles/simulator.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_436) "Linking C executable simulator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/anuragduddu/code-projects/vitals-monitor/simulator/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_438) "Linking C executable simulator"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/simulator.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

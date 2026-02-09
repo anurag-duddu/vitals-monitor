@@ -23,7 +23,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
-#include "mock_data.h"
+#include "vitals_provider.h"
 #include <stdio.h>
 
 /* ── Module state ──────────────────────────────────────────── */
@@ -106,7 +106,7 @@ lv_obj_t * screen_alarms_create(void) {
     build_alarm_limits_table(right_panel);
 
     /* Refresh timer to check for new alarms */
-    const alarm_log_t *alog = mock_data_get_alarm_log();
+    const vitals_alarm_log_t *alog = vitals_provider_get_alarm_log();
     last_log_count = alog->count;
     refresh_timer = lv_timer_create(refresh_timer_cb, 2000, NULL);
 
@@ -147,7 +147,7 @@ static lv_color_t severity_color(vm_alarm_severity_t s) {
     return theme_vitals_alarm_color(s);
 }
 
-static void add_log_entry_to_list(const alarm_log_entry_t *entry) {
+static void add_log_entry_to_list(const vitals_alarm_entry_t *entry) {
     if (!log_list) return;
 
     lv_obj_t *row = lv_obj_create(log_list);
@@ -195,7 +195,7 @@ static void build_alarm_log_list(lv_obj_t *parent) {
     lv_obj_set_flex_flow(log_list, LV_FLEX_FLOW_COLUMN);
     lv_obj_add_flag(log_list, LV_OBJ_FLAG_SCROLLABLE);
 
-    const alarm_log_t *alog = mock_data_get_alarm_log();
+    const vitals_alarm_log_t *alog = vitals_provider_get_alarm_log();
 
     if (alog->count == 0) {
         lv_obj_t *empty = lv_label_create(log_list);
@@ -206,9 +206,9 @@ static void build_alarm_log_list(lv_obj_t *parent) {
     }
 
     /* Show entries newest-first */
-    int total = alog->count < ALARM_LOG_MAX ? alog->count : ALARM_LOG_MAX;
+    int total = alog->count < VITALS_ALARM_LOG_MAX ? alog->count : VITALS_ALARM_LOG_MAX;
     for (int i = total - 1; i >= 0; i--) {
-        int idx = (alog->write_idx - 1 - (total - 1 - i) + ALARM_LOG_MAX) % ALARM_LOG_MAX;
+        int idx = (alog->write_idx - 1 - (total - 1 - i) + VITALS_ALARM_LOG_MAX) % VITALS_ALARM_LOG_MAX;
         add_log_entry_to_list(&alog->entries[idx]);
     }
 }
@@ -312,13 +312,13 @@ static void build_alarm_limits_table(lv_obj_t *parent) {
 
 static void refresh_timer_cb(lv_timer_t *timer) {
     (void)timer;
-    const alarm_log_t *alog = mock_data_get_alarm_log();
+    const vitals_alarm_log_t *alog = vitals_provider_get_alarm_log();
     if (alog->count > last_log_count && log_list) {
         /* New alarm entries — add them to the list */
         int new_count = alog->count - last_log_count;
-        if (new_count > ALARM_LOG_MAX) new_count = ALARM_LOG_MAX;
+        if (new_count > VITALS_ALARM_LOG_MAX) new_count = VITALS_ALARM_LOG_MAX;
         for (int i = 0; i < new_count; i++) {
-            int idx = (alog->write_idx - new_count + i + ALARM_LOG_MAX) % ALARM_LOG_MAX;
+            int idx = (alog->write_idx - new_count + i + VITALS_ALARM_LOG_MAX) % VITALS_ALARM_LOG_MAX;
             add_log_entry_to_list(&alog->entries[idx]);
         }
         last_log_count = alog->count;

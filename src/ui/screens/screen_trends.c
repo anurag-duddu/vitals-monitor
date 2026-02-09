@@ -24,7 +24,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
-#include "mock_data.h"
+#include "vitals_provider.h"
 #include <stdio.h>
 
 /* ── Module state ──────────────────────────────────────────── */
@@ -82,7 +82,7 @@ lv_obj_t * screen_trends_create(void) {
     rr_chart   = create_trend_chart(content, "RR (/min)",  VM_COLOR_RR,    5,  35, &rr_series);
 
     /* Populate with existing history data */
-    const vitals_history_t *hist = mock_data_get_history();
+    const vitals_history_t *hist = vitals_provider_get_history(0);
     populate_chart_from_history(hr_chart,   hr_series,   hist->hr,   hist->count, hist->write_idx);
     populate_chart_from_history(spo2_chart, spo2_series, hist->spo2, hist->count, hist->write_idx);
     populate_chart_from_history(rr_chart,   rr_series,   hist->rr,   hist->count, hist->write_idx);
@@ -150,7 +150,7 @@ static lv_obj_t * create_trend_chart(lv_obj_t *parent, const char *title,
     lv_obj_set_flex_grow(chart, 1);
     lv_obj_set_height(chart, lv_pct(100));
     lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
-    lv_chart_set_point_count(chart, MOCK_DATA_HISTORY_LEN);
+    lv_chart_set_point_count(chart, VITALS_HISTORY_LEN);
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, y_min, y_max);
     lv_chart_set_div_line_count(chart, 3, 0);
     lv_chart_set_update_mode(chart, LV_CHART_UPDATE_MODE_SHIFT);
@@ -173,7 +173,7 @@ static lv_obj_t * create_trend_chart(lv_obj_t *parent, const char *title,
 
 static void populate_chart_from_history(lv_obj_t *chart, lv_chart_series_t *series,
                                          const int *ring_buf, int count, int write_idx) {
-    int len = MOCK_DATA_HISTORY_LEN;
+    int len = VITALS_HISTORY_LEN;
     int available = count < len ? count : len;
 
     /* Start from oldest data point */
@@ -189,7 +189,7 @@ static void refresh_timer_cb(lv_timer_t *timer) {
     (void)timer;
     if (!hr_chart || !spo2_chart || !rr_chart) return;
 
-    const vitals_data_t *data = mock_data_get_current();
+    const vitals_data_t *data = vitals_provider_get_current(0);
 
     /* Append latest value to each chart (shift mode auto-scrolls) */
     lv_chart_set_next_value(hr_chart,   hr_series,   data->hr);
