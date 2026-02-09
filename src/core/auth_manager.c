@@ -14,7 +14,6 @@
 #include "sqlite3.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
 
 /* ── PIN hashing ─────────────────────────────────────────── */
 
@@ -140,6 +139,9 @@ static sqlite3_stmt *stmt_count_users  = NULL;
 /* Static session (single active session) */
 static auth_session_t session;
 
+/* Touch flag: set by auth_manager_touch(), consumed by check_timeout() */
+static bool touch_pending = false;
+
 /* ── Schema ──────────────────────────────────────────────── */
 
 static const char *SCHEMA_SQL =
@@ -188,6 +190,37 @@ static void finalize_stmt(sqlite3_stmt **s) {
         sqlite3_finalize(*s);
         *s = NULL;
     }
+}
+
+/* ── Helper: read a user row from a stepped statement ────── */
+
+static void read_user_row(sqlite3_stmt *stmt, auth_user_t *user) {
+    memset(user, 0, sizeof(auth_user_t));
+
+    user->id = sqlite3_column_int(stmt, 0);
+
+    const char *name_str = (const char *)sqlite3_column_text(stmt, 1);
+    if (name_str) {
+        strncpy(user->name, name_str, AUTH_NAME_MAX - 1);
+        user->name[AUTH_NAME_MAX - 1] = '\0';
+    }
+
+    const char *uname_str = (const char *)sqlite3_column_text(stmt, 2);
+    if (uname_str) {
+        strncpy(user->username, uname_str, AUTH_NAME_MAX - 1);
+        user->username[AUTH_NAME_MAX - 1] = '\0';
+    }
+
+    user->role = (auth_role_t)sqlite3_column_int(stmt, 3);
+
+    const char *hash_str = (const char *)sqlite3_column_text(stmt, 4);
+    if (hash_str) {
+        strncpy(user->pin_hash, hash_str, sizeof(user->pin_hash) - 1);
+        user->pin_hash[sizeof(user->pin_hash) - 1] = '\0';
+    }
+
+    user->active = (bool)sqlite3_column_int(stmt, 5);
+    user->last_login_ts = (uint32_t)sqlite3_column_int(stmt, 6);
 }
 
 /* ── Seed default users ──────────────────────────────────── */
@@ -290,6 +323,7 @@ bool auth_manager_init(const char *db_path) {
     /* Initialize session */
     memset(&session, 0, sizeof(session));
     session.timeout_s = AUTH_SESSION_TIMEOUT_DEFAULT_S;
+    touch_pending = false;
 
     /* Seed default users if table is empty */
     seed_default_users();
@@ -328,7 +362,7 @@ bool auth_manager_login(const char *username, const char *pin) {
     char pin_hex[65];
     hash_pin(pin, pin_hex, sizeof(pin_hex));
 
-    /* Look up user */
+    /* Look up user by username (active only) */
     sqlite3_reset(stmt_login);
     sqlite3_bind_text(stmt_login, 1, username, -1, SQLITE_TRANSIENT);
 
@@ -337,34 +371,9 @@ bool auth_manager_login(const char *username, const char *pin) {
         return false;
     }
 
-    /* Read user record */
+    /* Read user record from query result */
     auth_user_t user;
-    memset(&user, 0, sizeof(user));
-
-    user.id = sqlite3_column_int(stmt_login, 0);
-
-    const char *name_str = (const char *)sqlite3_column_text(stmt_login, 1);
-    if (name_str) {
-        strncpy(user.name, name_str, AUTH_NAME_MAX - 1);
-        user.name[AUTH_NAME_MAX - 1] = '\0';
-    }
-
-    const char *uname_str = (const char *)sqlite3_column_text(stmt_login, 2);
-    if (uname_str) {
-        strncpy(user.username, uname_str, AUTH_NAME_MAX - 1);
-        user.username[AUTH_NAME_MAX - 1] = '\0';
-    }
-
-    user.role = (auth_role_t)sqlite3_column_int(stmt_login, 3);
-
-    const char *hash_str = (const char *)sqlite3_column_text(stmt_login, 4);
-    if (hash_str) {
-        strncpy(user.pin_hash, hash_str, sizeof(user.pin_hash) - 1);
-        user.pin_hash[sizeof(user.pin_hash) - 1] = '\0';
-    }
-
-    user.active = (bool)sqlite3_column_int(stmt_login, 5);
-    user.last_login_ts = (uint32_t)sqlite3_column_int(stmt_login, 6);
+    read_user_row(stmt_login, &user);
 
     /* Verify PIN hash */
     if (strcmp(pin_hex, user.pin_hash) != 0) {
@@ -375,8 +384,9 @@ bool auth_manager_login(const char *username, const char *pin) {
     /* Login successful — establish session */
     session.logged_in = true;
     session.user = user;
-    session.login_time_s = 0;       /* Will be set by touch() */
+    session.login_time_s = 0;        /* Initialized on first check_timeout call */
     session.last_activity_s = 0;
+    touch_pending = true;            /* Treat login as activity */
 
     /* Update last_login_ts in database */
     sqlite3_reset(stmt_update_login);
@@ -399,6 +409,7 @@ void auth_manager_logout(void) {
     memset(&session.user, 0, sizeof(session.user));
     session.login_time_s = 0;
     session.last_activity_s = 0;
+    touch_pending = false;
 }
 
 bool auth_manager_is_logged_in(void) {
@@ -413,9 +424,7 @@ const auth_session_t *auth_manager_get_session(void) {
 
 void auth_manager_touch(void) {
     if (!session.logged_in) return;
-    /* Caller must provide the time via check_timeout; touch just marks
-     * that activity occurred. We store a flag by setting last_activity_s
-     * to the most recent known time (will be updated by check_timeout). */
+    touch_pending = true;
 }
 
 bool auth_manager_check_timeout(uint32_t current_time_s) {
@@ -425,7 +434,14 @@ bool auth_manager_check_timeout(uint32_t current_time_s) {
     if (session.login_time_s == 0) {
         session.login_time_s = current_time_s;
         session.last_activity_s = current_time_s;
+        touch_pending = false;
         return false;
+    }
+
+    /* Consume pending touch — update last_activity to current time */
+    if (touch_pending) {
+        session.last_activity_s = current_time_s;
+        touch_pending = false;
     }
 
     /* Check if timed out */
@@ -444,30 +460,6 @@ void auth_manager_set_timeout(uint32_t timeout_s) {
     session.timeout_s = timeout_s;
     printf("[auth_manager] Timeout set to %u s\n", timeout_s);
 }
-
-/* ── Touch implementation (updates activity timestamp) ──── */
-
-/* Re-implement touch properly: record the current time.
- * Since we don't have a clock in the module, the caller should call
- * auth_manager_touch_with_time(). We provide a simple touch that
- * works with check_timeout's time base. */
-
-/* NOTE: auth_manager_touch() is called by the UI on user interaction.
- * Since we need a timestamp, we use a pattern where touch() stores a
- * "touched" flag that check_timeout() will use to update last_activity_s. */
-
-static bool touch_pending = false;
-
-/* Override the earlier stub: */
-/* The real implementation uses the pending-touch pattern. */
-
-/* We need to re-structure. Let's make touch() accept the current time
- * implicitly by recording that touch happened, and check_timeout()
- * refreshes last_activity_s when it sees the flag. */
-
-/* Actually the simplest approach: auth_manager_touch() just sets a flag,
- * and auth_manager_check_timeout() updates last_activity_s to current_time
- * if the flag is set. This avoids the caller needing to pass time twice. */
 
 /* ── Permission checks ───────────────────────────────────── */
 
@@ -586,33 +578,7 @@ int auth_manager_list_users(auth_user_t *out, int max_count) {
 
     int i = 0;
     while (sqlite3_step(stmt_list_users) == SQLITE_ROW && i < max_count) {
-        memset(&out[i], 0, sizeof(auth_user_t));
-
-        out[i].id = sqlite3_column_int(stmt_list_users, 0);
-
-        const char *name_str = (const char *)sqlite3_column_text(stmt_list_users, 1);
-        if (name_str) {
-            strncpy(out[i].name, name_str, AUTH_NAME_MAX - 1);
-            out[i].name[AUTH_NAME_MAX - 1] = '\0';
-        }
-
-        const char *uname_str = (const char *)sqlite3_column_text(stmt_list_users, 2);
-        if (uname_str) {
-            strncpy(out[i].username, uname_str, AUTH_NAME_MAX - 1);
-            out[i].username[AUTH_NAME_MAX - 1] = '\0';
-        }
-
-        out[i].role = (auth_role_t)sqlite3_column_int(stmt_list_users, 3);
-
-        const char *hash_str = (const char *)sqlite3_column_text(stmt_list_users, 4);
-        if (hash_str) {
-            strncpy(out[i].pin_hash, hash_str, sizeof(out[i].pin_hash) - 1);
-            out[i].pin_hash[sizeof(out[i].pin_hash) - 1] = '\0';
-        }
-
-        out[i].active = (bool)sqlite3_column_int(stmt_list_users, 5);
-        out[i].last_login_ts = (uint32_t)sqlite3_column_int(stmt_list_users, 6);
-
+        read_user_row(stmt_list_users, &out[i]);
         i++;
     }
 

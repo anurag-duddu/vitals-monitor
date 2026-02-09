@@ -1,0 +1,17 @@
+config BR2_PACKAGE_ALARM_SERVICE
+	bool "alarm-service"
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_NANOMSG
+	select BR2_PACKAGE_CJSON
+	help
+	  Vitals Monitor Alarm Engine Service.
+
+	  Monitors vital sign parameters received from the sensor
+	  service and evaluates alarm conditions against configurable
+	  thresholds. Publishes alarm events over nanomsg IPC for
+	  UI display and audible/visual annunciation.
+
+	  Implements IEC 60601-1-8 alarm priority levels and
+	  silencing/acknowledgement logic.
+
+	  https://github.com/vitals-monitor/vitals-monitor

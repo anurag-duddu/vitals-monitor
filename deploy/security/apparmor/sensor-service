@@ -1,0 +1,81 @@
+# AppArmor profile for sensor-service (data acquisition daemon)
+#
+# CDSCO Class B Medical Device — Vitals Monitor
+# IEC 62443 / IEC 80001-1 defense-in-depth: application-level MAC
+#
+# The sensor service reads physiological data from I2C/SPI peripherals
+# (MAX30102 SpO2, ADS1292R ECG, TMP117 temperature) and publishes
+# processed samples over nanomsg IPC.  It must NOT have network access,
+# database write access, or display device access.
+#
+# Regulatory note (IEC 62304 / CDSCO Class B):
+#   Every access rule below is justified by a specific functional
+#   requirement.  Changes MUST be reviewed against the software
+#   architecture document (SAD) and re-validated before deployment.
+
+#include <tunables/global>
+
+profile sensor-service /opt/vitals-monitor/bin/sensor-service {
+  #include <abstractions/base>
+
+  # ---------------------------------------------------------------
+  # Binary — execute itself
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/bin/sensor-service   mr,
+
+  # ---------------------------------------------------------------
+  # Shared libraries
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/lib/**               mr,
+  /lib/**                                  mr,
+  /usr/lib/**                              mr,
+
+  # ---------------------------------------------------------------
+  # Sensor bus devices — I2C and SPI for physiological sensor ICs
+  #   I2C:  MAX30102 (SpO2), TMP117 (temperature)
+  #   SPI:  ADS1292R (ECG front-end)
+  # ---------------------------------------------------------------
+  /dev/i2c-*                               r,
+  /dev/spidev*                             r,
+
+  # ---------------------------------------------------------------
+  # IPC sockets — nanomsg publisher (read/write)
+  # The sensor service is the primary data producer; it creates and
+  # writes to IPC sockets consumed by alarm-service and vitals-ui.
+  # ---------------------------------------------------------------
+  /tmp/vitals-monitor/*.ipc                rw,
+  /tmp/vitals-monitor/                     rw,
+
+  # ---------------------------------------------------------------
+  # Temporary files — calibration scratch, lock files
+  # ---------------------------------------------------------------
+  /tmp/**                                  rw,
+
+  # ---------------------------------------------------------------
+  # Proc — read-only process info (libc requirements)
+  # ---------------------------------------------------------------
+  @{PROC}/@{pid}/status                   r,
+  @{PROC}/@{pid}/maps                     r,
+
+  # ---------------------------------------------------------------
+  # DENY rules — explicit least-privilege boundaries
+  # ---------------------------------------------------------------
+
+  # No network access — sensor data stays on-device; external sync
+  # is handled exclusively by network-service.
+  deny network,
+
+  # No filesystem writes outside /tmp/ — prevents data corruption
+  # of the database or configuration.  The trend DB is written only
+  # by alarm-service (which validates data before storage).
+  deny /opt/vitals-monitor/data/** w,
+  deny /home/**                    w,
+  deny /etc/**                     w,
+
+  # No display device access
+  deny /dev/fb*                    rwx,
+  deny /dev/input/**               rwx,
+
+  # No kernel tunable writes
+  deny /proc/sys/** w,
+}

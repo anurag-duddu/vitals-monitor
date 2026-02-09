@@ -1,0 +1,16 @@
+config BR2_PACKAGE_SENSOR_SERVICE
+	bool "sensor-service"
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_NANOMSG
+	select BR2_PACKAGE_CJSON
+	help
+	  Vitals Monitor Sensor Acquisition Service.
+
+	  Reads physiological data from hardware sensor interfaces
+	  (SPI/I2C/UART ADCs for ECG, SpO2, NIBP, temperature)
+	  and publishes real-time vitals data over nanomsg IPC.
+
+	  Stores raw and aggregated data in an SQLite trend database
+	  for historical review.
+
+	  https://github.com/vitals-monitor/vitals-monitor

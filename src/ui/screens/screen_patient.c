@@ -3,22 +3,24 @@
  * @brief Patient info screen — demographics and admission data
  *
  * Layout (800x480):
- *   ┌──────────────────────────────────────────────────────────────┐
- *   │ ALARM BAR (32px)                                            │
- *   ├─────────────────────────────┬────────────────────────────────┤
- *   │  Patient Demographics       │  Current Vitals Summary       │
- *   │  Name: John Smith           │  HR:    72 bpm                │
- *   │  MRN:  MRN-2024-001234     │  SpO2:  97 %                  │
- *   │  DOB:  1958-03-15           │  NIBP:  120/80 mmHg           │
- *   │  Gender: Male               │  Temp:  36.8 C                │
- *   │  Room: ICU Bed 4            │  RR:    16 /min               │
- *   │  Attending: Dr. Patel       │                               │
- *   │  Admitted: 2024-01-15       │  Allergies:                   │
- *   │  Weight: 82 kg              │  Penicillin, Sulfa            │
- *   │  Height: 178 cm             │                               │
- *   ├─────────────────────────────┴────────────────────────────────┤
- *   │ NAV BAR (48px)                                              │
- *   └──────────────────────────────────────────────────────────────┘
+ *   +-----------------------------------------------------------------+
+ *   | ALARM BAR (32px)                                                |
+ *   +-------------------------------+---------------------------------+
+ *   |  Patient Demographics         |  Current Vitals Summary         |
+ *   |  Name: <from DB>              |  HR:    72 bpm                  |
+ *   |  MRN:  <from DB>              |  SpO2:  97 %                   |
+ *   |  DOB:  <from DB>              |  NIBP:  120/80 mmHg            |
+ *   |  Gender: <from DB>            |  Temp:  36.8 C                  |
+ *   |  Blood Type: <from DB>        |  RR:    16 /min                 |
+ *   |  Ward: <from DB>              |                                 |
+ *   |  Bed:  <from DB>              |  Clinical Notes                 |
+ *   |  Attending: <from DB>         |  Allergies: <from DB>           |
+ *   |  Weight: <from DB>            |  Diagnosis: <from DB>           |
+ *   |  Height: <from DB>            |  Notes:     <from DB>           |
+ *   |  [Discharge]                  |                                 |
+ *   +-------------------------------+---------------------------------+
+ *   | NAV BAR (48px)                                                  |
+ *   +-----------------------------------------------------------------+
  */
 
 #include "screen_patient.h"
@@ -27,20 +29,22 @@
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
 #include "vitals_provider.h"
+#include "patient_data.h"
 #include <stdio.h>
 
-/* ── Module state ──────────────────────────────────────────── */
+/* -- Module state --------------------------------------------------- */
 
 static widget_alarm_banner_t *alarm_banner;
 static widget_nav_bar_t      *nav_bar;
 
-/* ── Forward declarations ──────────────────────────────────── */
+/* -- Forward declarations ------------------------------------------- */
 
 static void add_info_row(lv_obj_t *parent, const char *label, const char *value,
                           lv_color_t value_color);
 static lv_obj_t * create_section(lv_obj_t *parent, const char *title, int width_pct);
+static void discharge_cb(lv_event_t *e);
 
-/* ── Public API ────────────────────────────────────────────── */
+/* -- Public API ----------------------------------------------------- */
 
 lv_obj_t * screen_patient_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
@@ -48,10 +52,13 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
-    /* ── Alarm banner (top) ──────────────────────────────── */
+    /* Fetch active patient for slot 0 */
+    const patient_t *pt = patient_data_get_active(0);
+
+    /* -- Alarm banner (top) ----------------------------------------- */
     alarm_banner = widget_alarm_banner_create(scr);
 
-    /* ── Content area ────────────────────────────────────── */
+    /* -- Content area ----------------------------------------------- */
     lv_obj_t *content = lv_obj_create(scr);
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
@@ -62,21 +69,59 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_set_style_pad_gap(content, VM_PAD_NORMAL, 0);
     lv_obj_set_flex_flow(content, LV_FLEX_FLOW_ROW);
 
-    /* ── Left panel: Demographics ────────────────────────── */
+    /* -- Left panel: Demographics ----------------------------------- */
     lv_obj_t *demo_panel = create_section(content, "Patient Demographics", 50);
 
-    add_info_row(demo_panel, "Name",      "John Smith",        VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "MRN",       "MRN-2024-001234",   VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "DOB",       "1958-03-15  (67y)", VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "Gender",    "Male",              VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "Blood Type","O+",                VM_COLOR_ALARM_HIGH);
-    add_info_row(demo_panel, "Room",      "ICU Bed 4",         VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "Attending", "Dr. Priya Patel",   VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "Admitted",  "2024-01-15",        VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "Weight",    "82 kg",             VM_COLOR_TEXT_PRIMARY);
-    add_info_row(demo_panel, "Height",    "178 cm",            VM_COLOR_TEXT_PRIMARY);
+    if (pt) {
+        add_info_row(demo_panel, "Name",       pt->name,       VM_COLOR_TEXT_PRIMARY);
+        add_info_row(demo_panel, "MRN",        pt->mrn,        VM_COLOR_TEXT_PRIMARY);
+        add_info_row(demo_panel, "DOB",        pt->dob,        VM_COLOR_TEXT_PRIMARY);
 
-    /* ── Right panel: Current vitals summary + clinical ──── */
+        const char *gender_str = "Unknown";
+        if (pt->gender == PATIENT_GENDER_MALE)        gender_str = "Male";
+        else if (pt->gender == PATIENT_GENDER_FEMALE)  gender_str = "Female";
+        else if (pt->gender == PATIENT_GENDER_OTHER)   gender_str = "Other";
+        add_info_row(demo_panel, "Gender",     gender_str,     VM_COLOR_TEXT_PRIMARY);
+
+        add_info_row(demo_panel, "Blood Type", pt->blood_type, VM_COLOR_ALARM_HIGH);
+        add_info_row(demo_panel, "Ward",       pt->ward,       VM_COLOR_TEXT_PRIMARY);
+        add_info_row(demo_panel, "Bed",        pt->bed,        VM_COLOR_TEXT_PRIMARY);
+        add_info_row(demo_panel, "Attending",  pt->attending,  VM_COLOR_TEXT_PRIMARY);
+
+        char wt_buf[16], ht_buf[16];
+        if (pt->weight_kg > 0.0f)
+            snprintf(wt_buf, sizeof(wt_buf), "%.0f kg", (double)pt->weight_kg);
+        else
+            snprintf(wt_buf, sizeof(wt_buf), "--");
+        if (pt->height_cm > 0.0f)
+            snprintf(ht_buf, sizeof(ht_buf), "%.0f cm", (double)pt->height_cm);
+        else
+            snprintf(ht_buf, sizeof(ht_buf), "--");
+        add_info_row(demo_panel, "Weight",     wt_buf,         VM_COLOR_TEXT_PRIMARY);
+        add_info_row(demo_panel, "Height",     ht_buf,         VM_COLOR_TEXT_PRIMARY);
+
+        /* Discharge button */
+        lv_obj_t *discharge_btn = lv_button_create(demo_panel);
+        lv_obj_set_size(discharge_btn, VM_SCALE_W(120), VM_SCALE_H(36));
+        lv_obj_set_style_bg_color(discharge_btn, VM_COLOR_ALARM_MEDIUM, 0);
+        lv_obj_set_style_bg_opa(discharge_btn, LV_OPA_COVER, 0);
+        lv_obj_set_style_radius(discharge_btn, 4, 0);
+        lv_obj_add_event_cb(discharge_btn, discharge_cb, LV_EVENT_CLICKED, NULL);
+
+        lv_obj_t *btn_lbl = lv_label_create(discharge_btn);
+        lv_label_set_text(btn_lbl, "Discharge");
+        lv_obj_set_style_text_font(btn_lbl, VM_FONT_CAPTION, 0);
+        lv_obj_set_style_text_color(btn_lbl, VM_COLOR_BG, 0);
+        lv_obj_center(btn_lbl);
+    } else {
+        /* No patient associated with this slot */
+        lv_obj_t *empty_lbl = lv_label_create(demo_panel);
+        lv_label_set_text(empty_lbl, "No Patient Associated");
+        lv_obj_set_style_text_font(empty_lbl, VM_FONT_BODY, 0);
+        lv_obj_set_style_text_color(empty_lbl, VM_COLOR_TEXT_DISABLED, 0);
+    }
+
+    /* -- Right column: Vitals summary + Clinical notes -------------- */
     lv_obj_t *right_col = lv_obj_create(content);
     lv_obj_remove_flag(right_col, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_grow(right_col, 1);
@@ -138,15 +183,26 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_set_style_text_font(nt, VM_FONT_BODY, 0);
     lv_obj_set_style_text_color(nt, VM_COLOR_TEXT_PRIMARY, 0);
 
-    add_info_row(notes_panel, "Allergies",  "Penicillin, Sulfa",     VM_COLOR_ALARM_HIGH);
-    add_info_row(notes_panel, "Diagnosis",  "Post-op cardiac",       VM_COLOR_TEXT_PRIMARY);
-    add_info_row(notes_panel, "DNR Status", "Full Code",             VM_COLOR_ALARM_NONE);
-    add_info_row(notes_panel, "IV Access",  "Right arm, 18G",       VM_COLOR_TEXT_PRIMARY);
+    if (pt) {
+        add_info_row(notes_panel, "Allergies",
+                     pt->allergies[0] ? pt->allergies : "None",
+                     pt->allergies[0] ? VM_COLOR_ALARM_HIGH : VM_COLOR_TEXT_DISABLED);
+        add_info_row(notes_panel, "Diagnosis",
+                     pt->diagnosis[0] ? pt->diagnosis : "\xe2\x80\x94",
+                     VM_COLOR_TEXT_PRIMARY);
+        add_info_row(notes_panel, "Notes",
+                     pt->notes[0] ? pt->notes : "\xe2\x80\x94",
+                     VM_COLOR_TEXT_PRIMARY);
+    } else {
+        add_info_row(notes_panel, "Allergies",  "\xe2\x80\x94", VM_COLOR_TEXT_DISABLED);
+        add_info_row(notes_panel, "Diagnosis",  "\xe2\x80\x94", VM_COLOR_TEXT_DISABLED);
+        add_info_row(notes_panel, "Notes",      "\xe2\x80\x94", VM_COLOR_TEXT_DISABLED);
+    }
 
-    /* ── Nav bar (bottom) ────────────────────────────────── */
+    /* -- Nav bar (bottom) ------------------------------------------- */
     nav_bar = widget_nav_bar_create(scr);
     widget_nav_bar_set_active(nav_bar, SCREEN_ID_PATIENT);
-    widget_nav_bar_set_patient(nav_bar, "Smith, John");
+    widget_nav_bar_set_patient(nav_bar, pt ? pt->name : "No Patient");
 
     printf("[patient] Screen created\n");
     return scr;
@@ -160,7 +216,18 @@ void screen_patient_destroy(void) {
     printf("[patient] Screen destroyed\n");
 }
 
-/* ── Private helpers ───────────────────────────────────────── */
+/* -- Private helpers ------------------------------------------------ */
+
+static void discharge_cb(lv_event_t *e) {
+    (void)e;
+    const patient_t *pt = patient_data_get_active(0);
+    if (pt) {
+        printf("[patient] Discharging patient id=%d (%s)\n", (int)pt->id, pt->name);
+        patient_data_discharge(pt->id);
+        /* Refresh the screen to reflect the change */
+        screen_manager_push(SCREEN_ID_PATIENT);
+    }
+}
 
 static lv_obj_t * create_section(lv_obj_t *parent, const char *title, int width_pct) {
     lv_obj_t *panel = lv_obj_create(parent);

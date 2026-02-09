@@ -1,0 +1,16 @@
+config BR2_PACKAGE_WATCHDOG_MONITOR
+	bool "watchdog-monitor"
+	select BR2_PACKAGE_NANOMSG
+	help
+	  Vitals Monitor Hardware Watchdog Service.
+
+	  Manages the STM32MP1 IWDG hardware watchdog timer.
+	  Monitors health of all vitals-monitor services via
+	  nanomsg heartbeat IPC. If any critical service fails
+	  to report within its deadline, the watchdog is allowed
+	  to expire, triggering a system reset.
+
+	  Runs at the highest priority as the last line of
+	  defense for system reliability.
+
+	  https://github.com/vitals-monitor/vitals-monitor

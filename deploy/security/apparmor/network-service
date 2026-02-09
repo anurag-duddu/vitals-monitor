@@ -1,0 +1,95 @@
+# AppArmor profile for network-service (HL7/FHIR connectivity daemon)
+#
+# CDSCO Class B Medical Device — Vitals Monitor
+# IEC 62443 / IEC 80001-1 defense-in-depth: application-level MAC
+#
+# The network service is the ONLY component with outbound network access.
+# It reads vitals and alarm data from the SQLite database and transmits
+# them to hospital information systems via HL7 FHIR over TLS.  It must
+# NOT have access to hardware devices (sensors, framebuffer, watchdog),
+# and network access is restricted to outbound TCP connections.
+#
+# Regulatory note (IEC 62304 / CDSCO Class B):
+#   Every access rule below is justified by a specific functional
+#   requirement.  Changes MUST be reviewed against the software
+#   architecture document (SAD) and re-validated before deployment.
+
+#include <tunables/global>
+
+profile network-service /opt/vitals-monitor/bin/network-service {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  # ---------------------------------------------------------------
+  # Binary — execute itself
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/bin/network-service  mr,
+
+  # ---------------------------------------------------------------
+  # Shared libraries — includes TLS (mbedTLS or OpenSSL)
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/lib/**               mr,
+  /lib/**                                  mr,
+  /usr/lib/**                              mr,
+
+  # ---------------------------------------------------------------
+  # SQLite trend database — read/write for data sync state tracking
+  # Reads vitals history for transmission; writes sync timestamps.
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/data/*.db            rw,
+  /opt/vitals-monitor/data/*.db-wal        rw,
+  /opt/vitals-monitor/data/*.db-shm        rw,
+  /opt/vitals-monitor/data/*.db-journal    rw,
+
+  # ---------------------------------------------------------------
+  # TLS certificates and configuration
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/etc/tls/**           r,
+  /opt/vitals-monitor/etc/*.conf           r,
+  /etc/ssl/certs/**                        r,
+  /etc/ca-certificates/**                  r,
+
+  # ---------------------------------------------------------------
+  # Network — outbound TCP only (HL7 FHIR, NTP, OTA update server)
+  # Listening sockets are explicitly denied to prevent the device
+  # from being used as an unauthorized network service.
+  # ---------------------------------------------------------------
+  network tcp connect,
+
+  # DNS resolution (UDP to port 53)
+  network udp,
+
+  # ---------------------------------------------------------------
+  # IPC sockets — nanomsg (optional: real-time forwarding path)
+  # ---------------------------------------------------------------
+  /tmp/vitals-monitor/*.ipc                r,
+
+  # ---------------------------------------------------------------
+  # Proc — read-only process info (libc requirements)
+  # ---------------------------------------------------------------
+  @{PROC}/@{pid}/status                   r,
+  @{PROC}/@{pid}/maps                     r,
+
+  # ---------------------------------------------------------------
+  # DENY rules — explicit least-privilege boundaries
+  # ---------------------------------------------------------------
+
+  # No device access whatsoever — all hardware interaction belongs
+  # to sensor-service, vitals-ui, or watchdog-monitor.
+  deny /dev/fb*                            rwx,
+  deny /dev/input/**                       rwx,
+  deny /dev/i2c-*                          rwx,
+  deny /dev/spidev*                        rwx,
+  deny /dev/watchdog                       rwx,
+  deny /dev/sd*                            rwx,
+  deny /dev/mmcblk*                        rwx,
+
+  # No GPIO access
+  deny /sys/class/gpio/**                  rwx,
+
+  # No kernel tunable writes
+  deny /proc/sys/** w,
+
+  # No listening sockets — device must not expose services
+  deny network tcp bind,
+}

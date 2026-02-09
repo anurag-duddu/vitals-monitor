@@ -1,0 +1,157 @@
+# =============================================================================
+# Vitals Monitor - STM32MP157F-DK2 Buildroot defconfig
+# Target: Cortex-A7, 512MB DDR3L, 800x480 LCD
+# =============================================================================
+
+# -- Architecture --
+BR2_arm=y
+BR2_cortex_a7=y
+BR2_ARM_FPU_NEON_VFPV4=y
+BR2_ARM_INSTRUCTIONS_THUMB2=y
+
+# -- Toolchain --
+BR2_TOOLCHAIN_EXTERNAL=y
+BR2_TOOLCHAIN_EXTERNAL_LINARO_ARM=y
+BR2_TOOLCHAIN_EXTERNAL_HEADERS_6_1=y
+BR2_TOOLCHAIN_EXTERNAL_CXX=y
+
+# -- Kernel --
+BR2_LINUX_KERNEL=y
+BR2_LINUX_KERNEL_CUSTOM_VERSION=y
+BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE="6.1.82"
+BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG=y
+BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="$(BR2_EXTERNAL_VITALS_MONITOR_PATH)/board/vitals-monitor/linux.config"
+BR2_LINUX_KERNEL_DTS_SUPPORT=y
+BR2_LINUX_KERNEL_INTREE_DTS_NAME="stm32mp157f-dk2"
+BR2_LINUX_KERNEL_DTB_OVERLAY_SUPPORT=y
+BR2_LINUX_KERNEL_INSTALL_TARGET=y
+
+# -- Bootloader: TF-A (FSBL) --
+BR2_TARGET_ARM_TRUSTED_FIRMWARE=y
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_CUSTOM_VERSION=y
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_CUSTOM_VERSION_VALUE="v2.9"
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_PLATFORM="stm32mp1"
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_FIP=y
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_BL32_SP_MIN=y
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_ADDITIONAL_VARIABLES="STM32MP_SDMMC=1 DTB_FILE_NAME=stm32mp157f-dk2.dtb AARCH32_SP=sp_min"
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_IMAGES="*.stm32"
+BR2_TARGET_ARM_TRUSTED_FIRMWARE_NEEDS_DTC=y
+
+# -- Bootloader: U-Boot (SSBL) --
+BR2_TARGET_UBOOT=y
+BR2_TARGET_UBOOT_BUILD_SYSTEM_KCONFIG=y
+BR2_TARGET_UBOOT_CUSTOM_VERSION=y
+BR2_TARGET_UBOOT_CUSTOM_VERSION_VALUE="2023.07.02"
+BR2_TARGET_UBOOT_BOARD_DEFCONFIG="stm32mp15_basic"
+BR2_TARGET_UBOOT_NEEDS_DTC=y
+BR2_TARGET_UBOOT_NEEDS_OPENSSL=y
+BR2_TARGET_UBOOT_FORMAT_STM32=y
+BR2_TARGET_UBOOT_SPL=y
+
+# -- Init system --
+BR2_INIT_SYSTEMD=y
+BR2_PACKAGE_SYSTEMD_JOURNAL_GATEWAY=y
+BR2_PACKAGE_SYSTEMD_LOGIND=y
+
+# -- Filesystem --
+BR2_TARGET_ROOTFS_EXT2=y
+BR2_TARGET_ROOTFS_EXT2_4=y
+BR2_TARGET_ROOTFS_EXT2_SIZE="256M"
+BR2_TARGET_ROOTFS_SQUASHFS=y
+BR2_TARGET_ROOTFS_SQUASHFS4_LZ4=y
+
+# -- Image generation --
+BR2_ROOTFS_POST_BUILD_SCRIPT="$(BR2_EXTERNAL_VITALS_MONITOR_PATH)/board/vitals-monitor/post-build.sh"
+BR2_ROOTFS_POST_FAKEROOT_SCRIPT=""
+BR2_ROOTFS_POST_IMAGE_SCRIPT="$(BR2_EXTERNAL_VITALS_MONITOR_PATH)/board/vitals-monitor/post-image.sh"
+BR2_ROOTFS_POST_SCRIPT_ARGS=""
+BR2_ROOTFS_OVERLAY="$(BR2_EXTERNAL_VITALS_MONITOR_PATH)/board/vitals-monitor/overlay"
+
+# -- Host tools --
+BR2_PACKAGE_HOST_GENIMAGE=y
+BR2_PACKAGE_HOST_DOSFSTOOLS=y
+BR2_PACKAGE_HOST_MTOOLS=y
+
+# =============================================================================
+# Libraries
+# =============================================================================
+
+# -- SQLite --
+BR2_PACKAGE_SQLITE=y
+BR2_PACKAGE_SQLITE_STAT4=y
+BR2_PACKAGE_SQLITE_ENABLE_COLUMN_METADATA=y
+
+# -- Nanomsg --
+BR2_PACKAGE_NANOMSG=y
+
+# -- TLS --
+BR2_PACKAGE_MBEDTLS=y
+BR2_PACKAGE_MBEDTLS_COMPRESSION=y
+
+# -- JSON --
+BR2_PACKAGE_CJSON=y
+
+# -- Display / Graphics --
+BR2_PACKAGE_LIBDRM=y
+BR2_PACKAGE_LIBDRM_INSTALL_TESTS=n
+BR2_PACKAGE_LVGL=y
+BR2_PACKAGE_LV_DRIVERS=y
+
+# -- Input --
+BR2_PACKAGE_LIBINPUT=y
+BR2_PACKAGE_LIBEVDEV=y
+BR2_PACKAGE_TSLIB=y
+
+# =============================================================================
+# Networking
+# =============================================================================
+BR2_PACKAGE_WPA_SUPPLICANT=y
+BR2_PACKAGE_WPA_SUPPLICANT_AP_SUPPORT=y
+BR2_PACKAGE_WPA_SUPPLICANT_AUTOSCAN=y
+BR2_PACKAGE_WPA_SUPPLICANT_WPA3=y
+BR2_PACKAGE_WPA_SUPPLICANT_WPA_CLIENT=y
+BR2_PACKAGE_DHCPCD=y
+BR2_PACKAGE_OPENSSH=y
+BR2_PACKAGE_DROPBEAR=n
+
+# -- DNS / NTP --
+BR2_PACKAGE_NTP=y
+BR2_PACKAGE_NTP_NTPD=y
+
+# =============================================================================
+# OTA Updates - SWUpdate
+# =============================================================================
+BR2_PACKAGE_SWUPDATE=y
+BR2_PACKAGE_SWUPDATE_CONFIG="$(BR2_EXTERNAL_VITALS_MONITOR_PATH)/board/vitals-monitor/swupdate.config"
+BR2_PACKAGE_SWUPDATE_INSTALL_WEBSITE=n
+
+# =============================================================================
+# System configuration
+# =============================================================================
+BR2_TARGET_GENERIC_HOSTNAME="vitals-monitor"
+BR2_TARGET_GENERIC_ISSUE="Vitals Monitor System"
+BR2_TARGET_GENERIC_ROOT_PASSWD="$$6$$vitals$$placeholder"
+BR2_SYSTEM_DHCP=""
+BR2_TARGET_TZ_INFO=y
+BR2_TARGET_LOCALTIME="UTC"
+
+# -- /dev management --
+BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_EUDEV=y
+
+# =============================================================================
+# Debugging (disable for production)
+# =============================================================================
+BR2_PACKAGE_STRACE=y
+BR2_PACKAGE_GDB=y
+BR2_PACKAGE_GDB_SERVER=y
+BR2_ENABLE_DEBUG=y
+BR2_STRIP_strip=y
+
+# =============================================================================
+# Vitals Monitor custom packages
+# =============================================================================
+BR2_PACKAGE_VITALS_UI=y
+BR2_PACKAGE_SENSOR_SERVICE=y
+BR2_PACKAGE_ALARM_SERVICE=y
+BR2_PACKAGE_NETWORK_SERVICE=y
+BR2_PACKAGE_WATCHDOG_MONITOR=y

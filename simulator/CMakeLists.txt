@@ -51,6 +51,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/icons
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/common/ipc
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/drivers
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/services
     ${CMAKE_CURRENT_SOURCE_DIR}/sqlite3
 )
 
@@ -78,6 +79,8 @@ set(UI_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_alarms.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_patient.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_settings.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_login.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/screens/screen_audit_log.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_numeric_display.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_alarm_banner.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_nav_bar.c
@@ -94,6 +97,24 @@ set(SQLITE_SOURCES
 set(CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/waveform_gen.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/trend_db.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/network_manager.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/fhir_client.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/sync_queue.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/alarm_engine.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/patient_data.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/settings_store.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/auth_manager.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/audit_log.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/abdm_client.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/common/ipc/ipc_transport.c
+)
+
+# Service source files (from src/services/)
+set(SERVICE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/services/service_manager.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/services/sensor_service.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/services/alarm_service.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/services/network_service.c
 )
 
 # Select vitals provider implementation based on build configuration
@@ -128,6 +149,7 @@ add_executable(simulator
     ${APP_SOURCES}
     ${UI_SOURCES}
     ${CORE_SOURCES}
+    ${SERVICE_SOURCES}
     ${SQLITE_SOURCES}
 )
 

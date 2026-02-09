@@ -20,6 +20,7 @@ struct widget_numeric_display {
     bool     in_use;
     lv_obj_t *container;
     lv_obj_t *top_row;
+    lv_obj_t *icon_obj;
     lv_obj_t *label_obj;
     lv_obj_t *value_obj;
     lv_obj_t *unit_obj;
@@ -50,7 +51,8 @@ widget_numeric_display_t * widget_numeric_display_create(
     const char *label_text,
     const char *unit_text,
     lv_color_t color,
-    numeric_display_size_t size)
+    numeric_display_size_t size,
+    const lv_image_dsc_t *icon)
 {
     widget_numeric_display_t *w = pool_alloc();
     if (!w) return NULL;
@@ -109,7 +111,7 @@ widget_numeric_display_t * widget_numeric_display_create(
     lv_obj_set_flex_align(w->container, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
-    /* ── Top row: label (left) + unit (right) ──────────── */
+    /* ── Top row: [icon] label (left) + unit (right) ──── */
     w->top_row = lv_obj_create(w->container);
     lv_obj_remove_flag(w->top_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(w->top_row, lv_pct(100));
@@ -117,12 +119,33 @@ widget_numeric_display_t * widget_numeric_display_create(
     lv_obj_set_style_bg_opa(w->top_row, LV_OPA_TRANSP, 0);
     lv_obj_set_style_border_width(w->top_row, 0, 0);
     lv_obj_set_style_pad_all(w->top_row, 0, 0);
+    lv_obj_set_style_pad_gap(w->top_row, VM_PAD_TINY, 0);
     lv_obj_set_flex_flow(w->top_row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(w->top_row, LV_FLEX_ALIGN_SPACE_BETWEEN,
-                          LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER);
+                          LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
-    /* Label (left side) */
-    w->label_obj = lv_label_create(w->top_row);
+    /* Left group: icon + label (grouped so SPACE_BETWEEN pushes unit right) */
+    lv_obj_t *left_group = lv_obj_create(w->top_row);
+    lv_obj_remove_flag(left_group, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_size(left_group, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_style_bg_opa(left_group, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_width(left_group, 0, 0);
+    lv_obj_set_style_pad_all(left_group, 0, 0);
+    lv_obj_set_style_pad_gap(left_group, VM_PAD_TINY, 0);
+    lv_obj_set_flex_flow(left_group, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(left_group, LV_FLEX_ALIGN_START,
+                          LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    /* Icon (optional, 16x16 Phosphor A8) */
+    if (icon) {
+        w->icon_obj = lv_image_create(left_group);
+        lv_image_set_src(w->icon_obj, icon);
+        lv_obj_set_style_image_recolor(w->icon_obj, color, 0);
+        lv_obj_set_style_image_recolor_opa(w->icon_obj, LV_OPA_COVER, 0);
+    }
+
+    /* Label */
+    w->label_obj = lv_label_create(left_group);
     lv_label_set_text(w->label_obj, label_text);
     lv_obj_set_style_text_font(w->label_obj, label_font, 0);
     lv_obj_set_style_text_color(w->label_obj, color, 0);
@@ -175,6 +198,7 @@ void widget_numeric_display_free(widget_numeric_display_t *w) {
     w->in_use = false;
     w->container = NULL;
     w->top_row = NULL;
+    w->icon_obj = NULL;
     w->label_obj = NULL;
     w->value_obj = NULL;
     w->unit_obj = NULL;

@@ -1,0 +1,82 @@
+# AppArmor profile for vitals-ui (LVGL framebuffer display service)
+#
+# CDSCO Class B Medical Device — Vitals Monitor
+# IEC 62443 / IEC 80001-1 defense-in-depth: application-level MAC
+#
+# This profile confines the user interface process so that a compromise
+# of the UI binary cannot escalate to network access, arbitrary filesystem
+# writes, or kernel tunable modification.  The UI needs only:
+#   - its own binary (read/execute)
+#   - the SQLite trend database (read/write for live queries)
+#   - the Linux framebuffer (read for display)
+#   - touchscreen input devices (read/write for HID events)
+#   - nanomsg IPC sockets (read, written by other services)
+#
+# Regulatory note (IEC 62304 / CDSCO Class B):
+#   Every access rule below is justified by a specific functional
+#   requirement.  Changes MUST be reviewed against the software
+#   architecture document (SAD) and re-validated before deployment.
+
+#include <tunables/global>
+
+profile vitals-ui /opt/vitals-monitor/bin/vitals-ui {
+  #include <abstractions/base>
+
+  # ---------------------------------------------------------------
+  # Binary — execute itself
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/bin/vitals-ui    mr,
+
+  # ---------------------------------------------------------------
+  # Shared libraries — LVGL, SQLite, libc, etc.
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/lib/**           mr,
+  /lib/**                              mr,
+  /usr/lib/**                          mr,
+
+  # ---------------------------------------------------------------
+  # SQLite trend database — read/write for live vital-sign queries
+  # SQLite WAL journal files live alongside the .db file
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/data/*.db        rw,
+  /opt/vitals-monitor/data/*.db-wal    rw,
+  /opt/vitals-monitor/data/*.db-shm    rw,
+  /opt/vitals-monitor/data/*.db-journal rw,
+
+  # ---------------------------------------------------------------
+  # Framebuffer — read-only for LVGL fbdev driver
+  # ---------------------------------------------------------------
+  /dev/fb0                             r,
+
+  # ---------------------------------------------------------------
+  # Touchscreen / input — read/write for evdev HID events
+  # ---------------------------------------------------------------
+  /dev/input/event*                    rw,
+
+  # ---------------------------------------------------------------
+  # IPC sockets — nanomsg IPC transport (read-only; UI is consumer)
+  # ---------------------------------------------------------------
+  /tmp/vitals-monitor/*.ipc            r,
+
+  # ---------------------------------------------------------------
+  # Proc / sys — read-only process info (needed by libc, LVGL perf)
+  # ---------------------------------------------------------------
+  @{PROC}/@{pid}/status               r,
+  @{PROC}/@{pid}/maps                 r,
+
+  # ---------------------------------------------------------------
+  # DENY rules — explicit least-privilege boundaries
+  # ---------------------------------------------------------------
+
+  # No network access — UI is local-only; all external comms go
+  # through network-service.
+  deny network,
+
+  # No writes to kernel tunables — prevents privilege escalation
+  # through sysctl manipulation.
+  deny /proc/sys/** w,
+
+  # No raw disk or device access beyond framebuffer/input
+  deny /dev/sd*     rwx,
+  deny /dev/mmcblk* rwx,
+}

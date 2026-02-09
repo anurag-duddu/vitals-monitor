@@ -11,6 +11,7 @@
 
 #include "lvgl.h"
 #include "theme_vitals.h"
+#include "phosphor_icons.h"
 
 /* Size variants for different vital parameter importance */
 typedef enum {
@@ -30,6 +31,7 @@ typedef struct widget_numeric_display widget_numeric_display_t;
  * @param unit_text    Unit string (e.g., "bpm")
  * @param color        Parameter color (e.g., VM_COLOR_HR)
  * @param size         Size variant
+ * @param icon         Phosphor icon descriptor (NULL for no icon)
  * @return Handle, or NULL if pool exhausted
  */
 widget_numeric_display_t * widget_numeric_display_create(
@@ -37,7 +39,8 @@ widget_numeric_display_t * widget_numeric_display_create(
     const char *label_text,
     const char *unit_text,
     lv_color_t color,
-    numeric_display_size_t size
+    numeric_display_size_t size,
+    const lv_image_dsc_t *icon
 );
 
 /** Update the displayed value string (e.g., "72", "120/80"). */

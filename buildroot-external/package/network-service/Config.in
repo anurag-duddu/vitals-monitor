@@ -1,0 +1,16 @@
+config BR2_PACKAGE_NETWORK_SERVICE
+	bool "network-service"
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_NANOMSG
+	select BR2_PACKAGE_MBEDTLS
+	select BR2_PACKAGE_CJSON
+	help
+	  Vitals Monitor Network & Data Sync Service.
+
+	  Manages Wi-Fi connectivity, HL7 FHIR data export to
+	  hospital EMR systems, and firmware update checks.
+	  Communicates with other services via nanomsg IPC and
+	  syncs patient data from the local SQLite database to
+	  the configured FHIR endpoint over TLS.
+
+	  https://github.com/vitals-monitor/vitals-monitor

@@ -1,0 +1,81 @@
+# AppArmor profile for alarm-service (alarm evaluation and notification daemon)
+#
+# CDSCO Class B Medical Device — Vitals Monitor
+# IEC 62443 / IEC 80001-1 defense-in-depth: application-level MAC
+#
+# The alarm service subscribes to sensor data via nanomsg IPC, evaluates
+# alarm thresholds per IEC 60601-1-8, persists alarm events to the SQLite
+# trend database, and drives GPIO-attached buzzer/LED indicators.
+# It must NOT have network access or display device access.
+#
+# Regulatory note (IEC 62304 / CDSCO Class B):
+#   Every access rule below is justified by a specific functional
+#   requirement.  Changes MUST be reviewed against the software
+#   architecture document (SAD) and re-validated before deployment.
+
+#include <tunables/global>
+
+profile alarm-service /opt/vitals-monitor/bin/alarm-service {
+  #include <abstractions/base>
+
+  # ---------------------------------------------------------------
+  # Binary — execute itself
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/bin/alarm-service    mr,
+
+  # ---------------------------------------------------------------
+  # Shared libraries
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/lib/**               mr,
+  /lib/**                                  mr,
+  /usr/lib/**                              mr,
+
+  # ---------------------------------------------------------------
+  # SQLite trend database — read/write for alarm event logging
+  # and historical threshold configuration
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/data/*.db            rw,
+  /opt/vitals-monitor/data/*.db-wal        rw,
+  /opt/vitals-monitor/data/*.db-shm        rw,
+  /opt/vitals-monitor/data/*.db-journal    rw,
+
+  # ---------------------------------------------------------------
+  # IPC sockets — nanomsg subscriber (reads sensor data) and
+  # publisher (broadcasts alarm state changes to vitals-ui)
+  # ---------------------------------------------------------------
+  /tmp/vitals-monitor/*.ipc                rw,
+  /tmp/vitals-monitor/                     rw,
+
+  # ---------------------------------------------------------------
+  # GPIO — buzzer and LED alarm indicators
+  # (accessed via sysfs GPIO interface)
+  # ---------------------------------------------------------------
+  /sys/class/gpio/**                       rw,
+  /sys/devices/platform/**/gpio/**         rw,
+
+  # ---------------------------------------------------------------
+  # Proc — read-only process info (libc requirements)
+  # ---------------------------------------------------------------
+  @{PROC}/@{pid}/status                   r,
+  @{PROC}/@{pid}/maps                     r,
+
+  # ---------------------------------------------------------------
+  # DENY rules — explicit least-privilege boundaries
+  # ---------------------------------------------------------------
+
+  # No network access — alarm notifications are local-only (IPC to
+  # UI, GPIO to buzzer/LED).  Remote alarm forwarding is handled
+  # by network-service if configured.
+  deny network,
+
+  # No display or input device access
+  deny /dev/fb*                            rwx,
+  deny /dev/input/**                       rwx,
+
+  # No raw bus access (I2C/SPI belong to sensor-service)
+  deny /dev/i2c-*                          rwx,
+  deny /dev/spidev*                        rwx,
+
+  # No kernel tunable writes
+  deny /proc/sys/** w,
+}

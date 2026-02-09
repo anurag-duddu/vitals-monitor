@@ -1,0 +1,22 @@
+config BR2_PACKAGE_VITALS_UI
+	bool "vitals-ui"
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_NANOMSG
+	select BR2_PACKAGE_LVGL
+	select BR2_PACKAGE_LV_DRIVERS
+	select BR2_PACKAGE_LIBDRM
+	select BR2_PACKAGE_LIBINPUT
+	select BR2_PACKAGE_TSLIB
+	select BR2_PACKAGE_CJSON
+	help
+	  Vitals Monitor UI application.
+
+	  Provides the bedside patient monitor user interface
+	  using LVGL rendered via Linux DRM. Displays real-time
+	  waveforms (ECG, SpO2), numeric vitals, alarm banners,
+	  trend charts, and patient information screens.
+
+	  Receives sensor data and alarm events via nanomsg IPC
+	  from sensor-service and alarm-service.
+
+	  https://github.com/vitals-monitor/vitals-monitor

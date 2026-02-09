@@ -1,0 +1,41 @@
+[Unit]
+Description=Vitals Monitor - Sensor Data Acquisition Service
+Documentation=https://github.com/vitals-monitor/docs/sensor-service
+After=local-fs.target
+Wants=local-fs.target
+
+[Service]
+Type=notify
+ExecStart=/opt/vitals-monitor/bin/sensor-service
+WorkingDirectory=/opt/vitals-monitor
+User=vitals
+Group=vitals
+
+# Watchdog: service must call sd_notify("WATCHDOG=1") within this interval
+WatchdogSec=30
+
+# Restart policy
+Restart=always
+RestartSec=3
+
+# Resource limits
+LimitNOFILE=1024
+MemoryMax=64M
+
+# Security hardening
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/vitals-monitor/data /tmp/vitals-monitor
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+# Grant access to sensor hardware (I2C, SPI, UART)
+SupplementaryGroups=i2c spi dialout gpio
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sensor-service
+
+[Install]
+WantedBy=multi-user.target

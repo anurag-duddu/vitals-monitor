@@ -36,9 +36,12 @@ static const uint8_t icon_heartbeat_map[] = {
 
 static const lv_image_dsc_t icon_heartbeat_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_heartbeat_map,
@@ -66,9 +69,12 @@ static const uint8_t icon_chart_line_map[] = {
 
 static const lv_image_dsc_t icon_chart_line_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_chart_line_map,
@@ -96,9 +102,12 @@ static const uint8_t icon_bell_map[] = {
 
 static const lv_image_dsc_t icon_bell_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_bell_map,
@@ -126,9 +135,12 @@ static const uint8_t icon_user_map[] = {
 
 static const lv_image_dsc_t icon_user_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_user_map,
@@ -156,9 +168,12 @@ static const uint8_t icon_gear_map[] = {
 
 static const lv_image_dsc_t icon_gear_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_gear_map,
@@ -186,9 +201,12 @@ static const uint8_t icon_warning_map[] = {
 
 static const lv_image_dsc_t icon_warning_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_warning_map,
@@ -216,9 +234,12 @@ static const uint8_t icon_drop_map[] = {
 
 static const lv_image_dsc_t icon_drop_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_drop_map,
@@ -246,9 +267,12 @@ static const uint8_t icon_gauge_map[] = {
 
 static const lv_image_dsc_t icon_gauge_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_gauge_map,
@@ -276,9 +300,12 @@ static const uint8_t icon_thermometer_map[] = {
 
 static const lv_image_dsc_t icon_thermometer_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_thermometer_map,
@@ -306,9 +333,12 @@ static const uint8_t icon_wind_map[] = {
 
 static const lv_image_dsc_t icon_wind_dsc = {
     .header = {
+        .magic = LV_IMAGE_HEADER_MAGIC,
         .cf = LV_COLOR_FORMAT_A8,
+        .flags = 0,
         .w = 16,
         .h = 16,
+        .stride = 16,
     },
     .data_size = 256,
     .data = icon_wind_map,

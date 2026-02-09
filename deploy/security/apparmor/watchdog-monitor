@@ -1,0 +1,111 @@
+# AppArmor profile for watchdog-monitor (system health and hardware watchdog daemon)
+#
+# CDSCO Class B Medical Device — Vitals Monitor
+# IEC 62443 / IEC 80001-1 defense-in-depth: application-level MAC
+#
+# The watchdog monitor is the system's last line of defense.  It:
+#   1. Kicks the hardware watchdog (/dev/watchdog) to prevent reset
+#   2. Monitors child service health via systemd D-Bus
+#   3. Sends SIGTERM/SIGKILL to hung services when needed
+#   4. Logs system health metrics (CPU temp, memory, disk)
+#
+# This service runs as root (required for /dev/watchdog and signal
+# delivery to other UIDs), so its AppArmor profile is especially
+# important for limiting blast radius.
+#
+# Regulatory note (IEC 62304 / CDSCO Class B):
+#   The hardware watchdog is a safety-critical component per
+#   IEC 62304 Class B.  This profile ensures the watchdog process
+#   cannot be subverted to gain network access or modify the rootfs.
+#   Changes MUST be reviewed against the software architecture
+#   document (SAD) and re-validated before deployment.
+
+#include <tunables/global>
+
+profile watchdog-monitor /opt/vitals-monitor/bin/watchdog-monitor {
+  #include <abstractions/base>
+
+  # ---------------------------------------------------------------
+  # Binary — execute itself
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/bin/watchdog-monitor mr,
+
+  # ---------------------------------------------------------------
+  # Shared libraries
+  # ---------------------------------------------------------------
+  /opt/vitals-monitor/lib/**               mr,
+  /lib/**                                  mr,
+  /usr/lib/**                              mr,
+
+  # ---------------------------------------------------------------
+  # Hardware watchdog — read/write to kick the watchdog timer
+  # If this process stops writing within WatchdogSec, the hardware
+  # watchdog resets the entire SoC (fail-safe for medical device).
+  # ---------------------------------------------------------------
+  /dev/watchdog                            rw,
+  /dev/watchdog0                           rw,
+
+  # ---------------------------------------------------------------
+  # Signal delivery — restart hung vitals-monitor services
+  # The watchdog monitor can send signals to any process owned by
+  # the 'vitals' user to recover from software faults.
+  # ---------------------------------------------------------------
+  signal send set=(term kill cont) peer=sensor-service,
+  signal send set=(term kill cont) peer=alarm-service,
+  signal send set=(term kill cont) peer=vitals-ui,
+  signal send set=(term kill cont) peer=network-service,
+
+  # ---------------------------------------------------------------
+  # systemctl — restart services via systemd manager
+  # ---------------------------------------------------------------
+  /usr/bin/systemctl                       mrix,
+  /bin/systemctl                           mrix,
+
+  # ---------------------------------------------------------------
+  # D-Bus — communicate with systemd for service management
+  # ---------------------------------------------------------------
+  #include <abstractions/dbus-strict>
+  dbus send bus=system peer=(name=org.freedesktop.systemd1),
+  dbus receive bus=system peer=(name=org.freedesktop.systemd1),
+
+  # ---------------------------------------------------------------
+  # System health monitoring — read-only access to thermal zones,
+  # memory info, and disk usage
+  # ---------------------------------------------------------------
+  /sys/class/thermal/thermal_zone*/temp    r,
+  /sys/class/thermal/thermal_zone*/type    r,
+  @{PROC}/meminfo                          r,
+  @{PROC}/loadavg                          r,
+  @{PROC}/uptime                           r,
+  @{PROC}/@{pid}/status                    r,
+  @{PROC}/@{pid}/maps                      r,
+
+  # ---------------------------------------------------------------
+  # IPC directory — create the shared IPC socket directory at boot
+  # (see ExecStartPre in watchdog.service)
+  # ---------------------------------------------------------------
+  /tmp/vitals-monitor/                     rw,
+  /bin/mkdir                               mrix,
+  /bin/chown                               mrix,
+
+  # ---------------------------------------------------------------
+  # DENY rules — explicit least-privilege boundaries
+  # ---------------------------------------------------------------
+
+  # No network access — watchdog is purely local.
+  deny network,
+
+  # No sensor bus access
+  deny /dev/i2c-*                          rwx,
+  deny /dev/spidev*                        rwx,
+
+  # No display access
+  deny /dev/fb*                            rwx,
+  deny /dev/input/**                       rwx,
+
+  # No database access — watchdog does not read/write patient data
+  deny /opt/vitals-monitor/data/**         rwx,
+
+  # No kernel tunable writes
+  deny /proc/sys/** w,
+}

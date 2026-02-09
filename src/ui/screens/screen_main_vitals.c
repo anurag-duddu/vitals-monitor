@@ -22,6 +22,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "widget_waveform.h"
+#include "phosphor_icons.h"
 #include <stdio.h>
 
 /* ── Module state (valid while screen is active) ───────────── */
@@ -109,15 +110,18 @@ lv_obj_t * screen_main_vitals_create(void) {
 
     /* HR — large */
     hr_display = widget_numeric_display_create(
-        vitals_panel, "HR", "bpm", VM_COLOR_HR, NUMERIC_SIZE_LARGE);
+        vitals_panel, "HR", "bpm", VM_COLOR_HR, NUMERIC_SIZE_LARGE,
+        &icon_heartbeat_dsc);
 
     /* SpO2 — large */
     spo2_display = widget_numeric_display_create(
-        vitals_panel, "SpO2", "%", VM_COLOR_SPO2, NUMERIC_SIZE_LARGE);
+        vitals_panel, "SpO2", "%", VM_COLOR_SPO2, NUMERIC_SIZE_LARGE,
+        &icon_drop_dsc);
 
     /* NIBP — medium */
     nibp_display = widget_numeric_display_create(
-        vitals_panel, "NIBP", "mmHg", VM_COLOR_NIBP, NUMERIC_SIZE_MEDIUM);
+        vitals_panel, "NIBP", "mmHg", VM_COLOR_NIBP, NUMERIC_SIZE_MEDIUM,
+        &icon_gauge_dsc);
 
     /* Bottom row: Temp + RR side by side */
     lv_obj_t *bottom_row = lv_obj_create(vitals_panel);
@@ -132,11 +136,13 @@ lv_obj_t * screen_main_vitals_create(void) {
 
     /* Temp — small */
     temp_display = widget_numeric_display_create(
-        bottom_row, "Temp", "\xc2\xb0""C", VM_COLOR_TEMP, NUMERIC_SIZE_SMALL);
+        bottom_row, "Temp", "\xc2\xb0""C", VM_COLOR_TEMP, NUMERIC_SIZE_SMALL,
+        &icon_thermometer_dsc);
 
     /* RR — small */
     rr_display = widget_numeric_display_create(
-        bottom_row, "RR", "/min", VM_COLOR_RR, NUMERIC_SIZE_SMALL);
+        bottom_row, "RR", "/min", VM_COLOR_RR, NUMERIC_SIZE_SMALL,
+        &icon_wind_dsc);
 
     /* ── 3. Navigation bar (bottom, 48px) ─────────────────── */
     nav_bar = widget_nav_bar_create(scr);

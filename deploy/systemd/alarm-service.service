@@ -1,0 +1,41 @@
+[Unit]
+Description=Vitals Monitor - Alarm Evaluation and Notification Service
+Documentation=https://github.com/vitals-monitor/docs/alarm-service
+After=sensor-service.service
+Wants=sensor-service.service
+
+[Service]
+Type=notify
+ExecStart=/opt/vitals-monitor/bin/alarm-service
+WorkingDirectory=/opt/vitals-monitor
+User=vitals
+Group=vitals
+
+# Watchdog: service must call sd_notify("WATCHDOG=1") within this interval
+WatchdogSec=30
+
+# Restart policy
+Restart=always
+RestartSec=3
+
+# Resource limits
+LimitNOFILE=1024
+MemoryMax=32M
+
+# Security hardening
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/vitals-monitor/data /tmp/vitals-monitor
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+# Grant access to buzzer/LED GPIO for audible/visual alarms
+SupplementaryGroups=gpio
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=alarm-service
+
+[Install]
+WantedBy=multi-user.target

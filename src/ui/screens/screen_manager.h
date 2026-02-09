@@ -23,6 +23,8 @@ typedef enum {
     SCREEN_ID_ALARMS,
     SCREEN_ID_PATIENT,
     SCREEN_ID_SETTINGS,
+    SCREEN_ID_LOGIN,
+    SCREEN_ID_AUDIT_LOG,
     SCREEN_ID_COUNT
 } screen_id_t;
 

@@ -1,0 +1,9 @@
+menu "Vitals Monitor packages"
+
+source "$BR2_EXTERNAL_VITALS_MONITOR_PATH/package/vitals-ui/Config.in"
+source "$BR2_EXTERNAL_VITALS_MONITOR_PATH/package/sensor-service/Config.in"
+source "$BR2_EXTERNAL_VITALS_MONITOR_PATH/package/alarm-service/Config.in"
+source "$BR2_EXTERNAL_VITALS_MONITOR_PATH/package/network-service/Config.in"
+source "$BR2_EXTERNAL_VITALS_MONITOR_PATH/package/watchdog-monitor/Config.in"
+
+endmenu

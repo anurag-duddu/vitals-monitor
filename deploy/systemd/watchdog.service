@@ -1,0 +1,48 @@
+[Unit]
+Description=Vitals Monitor - System Watchdog and Health Monitor
+Documentation=https://github.com/vitals-monitor/docs/watchdog
+After=local-fs.target
+Before=sensor-service.service alarm-service.service vitals-ui.service network-service.service
+
+[Service]
+Type=notify
+ExecStart=/opt/vitals-monitor/bin/watchdog-monitor
+WorkingDirectory=/opt/vitals-monitor
+User=root
+Group=root
+
+# The watchdog service itself is monitored by the hardware watchdog
+WatchdogSec=15
+
+# Restart policy: watchdog must always be running
+Restart=always
+RestartSec=1
+
+# Resource limits
+LimitNOFILE=1024
+MemoryMax=16M
+
+# The watchdog service needs elevated privileges to:
+#   - Access /dev/watchdog (hardware watchdog)
+#   - Restart other services via systemctl
+#   - Read system health metrics (CPU temp, memory, disk)
+ProtectHome=yes
+PrivateTmp=yes
+
+# Hardware watchdog device access
+DeviceAllow=/dev/watchdog rw
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=vitals-watchdog
+
+# ExecStartPre: ensure IPC socket directory exists
+ExecStartPre=/bin/mkdir -p /tmp/vitals-monitor
+ExecStartPre=/bin/chown vitals:vitals /tmp/vitals-monitor
+
+# ExecStopPost: on unexpected exit, attempt to restart critical services
+ExecStopPost=/bin/systemctl restart sensor-service.service alarm-service.service vitals-ui.service
+
+[Install]
+WantedBy=multi-user.target
