@@ -178,12 +178,17 @@ static void nav_btn_event_cb(lv_event_t *e) {
 
     if (target == current) return;  /* Already on this screen */
 
+    /* UI-2.3: Disable current screen clickability to prevent double-clicks
+     * during the screen transition animation */
+    lv_obj_t *cur_scr = lv_screen_active();
+    if (cur_scr) lv_obj_remove_flag(cur_scr, LV_OBJ_FLAG_CLICKABLE);
+
     if (target == SCREEN_ID_MAIN_VITALS) {
         screen_manager_go_home();
     } else {
-        /* Go home first then push target, so back goes to home */
-        screen_manager_go_home();
-        screen_manager_push(target);
+        /* PERF-1.2: Single operation sets stack to [home, target]
+         * without creating intermediate home screen */
+        screen_manager_go_home_then_push(target);
     }
 }
 

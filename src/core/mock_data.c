@@ -249,6 +249,8 @@ const vitals_alarm_log_t * mock_data_get_alarm_log(void) {
 
 void mock_data_log_alarm(vitals_alarm_severity_t severity, const char *message,
                           const char *time_str) {
+    if (!message || !time_str) return;
+
     int idx = alarm_log.write_idx;
     alarm_log.entries[idx].severity = severity;
     strncpy(alarm_log.entries[idx].message, message,

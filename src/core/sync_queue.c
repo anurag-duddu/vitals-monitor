@@ -37,6 +37,10 @@ static sqlite3_stmt *stmt_purge_sent     = NULL;
 static sqlite3_stmt *stmt_retry_failed   = NULL;
 static sqlite3_stmt *stmt_count_total    = NULL;
 
+/* Large buffer for sync processing — file-scope to avoid stack overflow.
+ * Each sync_queue_item_t is ~4KB (SYNC_PAYLOAD_MAX), so 16 items = ~64KB. */
+static sync_queue_item_t process_items[16];
+
 /* ── Schema ──────────────────────────────────────────────── */
 
 static const char *SCHEMA_SQL =
@@ -101,6 +105,11 @@ bool sync_queue_init(const char *db_path) {
         db = NULL;
         return false;
     }
+
+    /* Reset any items stuck in SENDING state (from previous crash/restart) */
+    sqlite3_exec(db, "UPDATE sync_queue SET status = 0 WHERE status = 1;",
+                 NULL, NULL, NULL);
+    /* status 0 = SYNC_STATUS_PENDING, status 1 = SYNC_STATUS_SENDING */
 
     /* Prepare all statements */
     bool ok = true;
@@ -272,14 +281,13 @@ int sync_queue_process(int max_items) {
     sqlite3_reset(stmt_get_pending);
     sqlite3_bind_int(stmt_get_pending, 1, max_items);
 
-    /* Collect items into a local buffer first (to avoid holding the
+    /* Collect items into file-scope buffer first (to avoid holding the
      * SELECT cursor open while we UPDATE) */
-    sync_queue_item_t items[16];
     int count = 0;
     int max_fetch = max_items > 16 ? 16 : max_items;
 
     while (sqlite3_step(stmt_get_pending) == SQLITE_ROW && count < max_fetch) {
-        sync_queue_item_t *item = &items[count];
+        sync_queue_item_t *item = &process_items[count];
 
         item->id           = sqlite3_column_int(stmt_get_pending, 0);
         item->type         = (sync_item_type_t)sqlite3_column_int(stmt_get_pending, 1);
@@ -308,7 +316,7 @@ int sync_queue_process(int max_items) {
     /* Process each item */
     int sent_count = 0;
     for (int i = 0; i < count; i++) {
-        sync_queue_item_t *item = &items[i];
+        sync_queue_item_t *item = &process_items[i];
 
         /* Mark as SENDING */
         update_item_status(item->id, SYNC_STATUS_SENDING, item->retry_count);

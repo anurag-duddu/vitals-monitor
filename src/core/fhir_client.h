@@ -19,6 +19,12 @@
  *   BP Diastolic:  8462-4
  *
  * Thread safety: All calls are single-threaded (LVGL main loop).
+ *
+ * Security hardening (SEC-MEM-01/02, SEC-INPUT-03, SEC-MISC-01):
+ *   - Bounds checks before all manual buffer writes
+ *   - JSON string escaping per RFC 8259 for all user-supplied data
+ *   - URL validation on FHIR endpoint (requires https:// in production)
+ *   - Patient data redacted in all log output (names, IDs, vitals)
  */
 
 #ifndef FHIR_CLIENT_H
@@ -80,6 +86,8 @@ void fhir_client_deinit(void);
 
 /**
  * Set the FHIR server base URL.
+ * URL is validated: must use https:// (or http://localhost / http://127.0.0.1
+ * for development). Invalid URLs are rejected with an error log.
  * @param base_url  e.g. "https://fhir.hospital.in/r4"
  */
 void fhir_client_set_endpoint(const char *base_url);

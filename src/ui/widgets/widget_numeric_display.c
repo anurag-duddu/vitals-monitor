@@ -40,7 +40,7 @@ static widget_numeric_display_t * pool_alloc(void) {
             return &pool[i];
         }
     }
-    printf("[widget_numeric] Pool exhausted!\n");
+    fprintf(stderr, "[widget_numeric] CRITICAL: Pool exhausted!\n");
     return NULL;
 }
 

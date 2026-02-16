@@ -47,6 +47,8 @@ static lv_obj_t    *pin_label;
 static lv_obj_t    *status_label;
 static lv_obj_t    *dropdown;
 static lv_timer_t  *error_timer;
+static bool         login_active = false;    /* UI-7.1: guard for timer callback safety */
+static int          failed_attempts = 0;     /* UI-7.2: progressive delay counter */
 
 /* ── Forward declarations ─────────────────────────────────── */
 
@@ -63,6 +65,9 @@ static lv_obj_t * create_numpad_btn(lv_obj_t *parent, const char *text,
 /* ── Public API ───────────────────────────────────────────── */
 
 lv_obj_t * screen_login_create(void) {
+    login_active = true;       /* UI-7.1: mark screen as active */
+    failed_attempts = 0;       /* UI-7.2: reset progressive delay counter */
+
     lv_obj_t *scr = lv_obj_create(NULL);
     lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
     lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
@@ -196,6 +201,7 @@ lv_obj_t * screen_login_create(void) {
 }
 
 void screen_login_destroy(void) {
+    login_active = false;      /* UI-7.1: mark screen as inactive */
     if(error_timer) {
         lv_timer_delete(error_timer);
         error_timer = NULL;
@@ -299,6 +305,8 @@ static void on_clear_click(lv_event_t *e) {
 /** Timer callback: clears error message and resets PIN display. */
 static void error_timer_cb(lv_timer_t *timer) {
     (void)timer;
+    /* UI-7.1: guard against callback firing after screen destruction */
+    if (!login_active) return;
     reset_pin();
     build_pin_display();
     lv_obj_set_style_text_color(status_label, VM_COLOR_TEXT_SECONDARY, 0);
@@ -319,19 +327,30 @@ static void on_ok_click(lv_event_t *e) {
     /* Attempt authentication */
     if(auth_manager_login(username, pin_buf)) {
         /* Success */
+        failed_attempts = 0;   /* UI-7.2: reset on successful login */
         lv_obj_set_style_text_color(status_label, VM_COLOR_ALARM_NONE, 0);
         lv_label_set_text(status_label, "Login successful!");
-        screen_manager_push(SCREEN_ID_MAIN_VITALS);
+        /* UI-1.2: go_home() lands on main vitals at stack root,
+         * instead of pushing on top of the login screen */
+        screen_manager_go_home();
     } else {
-        /* Failure — show error for ERROR_DISPLAY_MS, then reset */
+        /* Failure — show error then reset */
+        failed_attempts++;     /* UI-7.2: track consecutive failures */
         lv_obj_set_style_text_color(status_label, VM_COLOR_ALARM_HIGH, 0);
         lv_label_set_text(status_label, "Invalid PIN");
+
+        /* UI-7.2: progressive delay after 3+ failed attempts */
+        uint32_t delay_ms = ERROR_DISPLAY_MS;
+        if (failed_attempts >= 3) {
+            delay_ms = ERROR_DISPLAY_MS * (1 + (failed_attempts - 3) / 2);
+            if (delay_ms > 10000) delay_ms = 10000;
+        }
 
         /* Cancel any existing error timer before starting a new one */
         if(error_timer) {
             lv_timer_delete(error_timer);
         }
-        error_timer = lv_timer_create(error_timer_cb, ERROR_DISPLAY_MS, NULL);
+        error_timer = lv_timer_create(error_timer_cb, delay_ms, NULL);
         lv_timer_set_repeat_count(error_timer, 1);
     }
 }

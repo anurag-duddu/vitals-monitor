@@ -11,7 +11,7 @@
  *     LVGL timer-based mock pipeline.
  *   - TARGET: Reads real sensors through sensor_hal, packages data into
  *     IPC messages (ipc_messages.h), and publishes via nanomsg PUB socket
- *     on IPC_SOCKET_VITALS and IPC_SOCKET_WAVEFORMS.
+ *     on IPC_SOCKET_SENSOR.
  *
  * Service lifecycle callbacks are designed for use with service_manager.
  */

@@ -43,8 +43,8 @@ profile sensor-service /opt/vitals-monitor/bin/sensor-service {
   # The sensor service is the primary data producer; it creates and
   # writes to IPC sockets consumed by alarm-service and vitals-ui.
   # ---------------------------------------------------------------
-  /tmp/vitals-monitor/*.ipc                rw,
-  /tmp/vitals-monitor/                     rw,
+  /run/vitals-monitor/*.ipc                rw,
+  /run/vitals-monitor/                     rw,
 
   # ---------------------------------------------------------------
   # Temporary files — calibration scratch, lock files

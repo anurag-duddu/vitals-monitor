@@ -49,6 +49,12 @@
 static bool running = true;
 static lv_timer_t *purge_timer = NULL;
 
+/* UI-4.1: Alarm ACK callback — acknowledges all active alarms */
+static void alarm_ack_callback(void) {
+    alarm_engine_acknowledge_all();
+    printf("[simulator] All active alarms acknowledged\n");
+}
+
 /* ── Waveform generators ──────────────────────────────────── */
 
 static waveform_gen_t ecg_gen;
@@ -118,9 +124,10 @@ static void on_vitals_update(const vitals_data_t *data, void *user_data) {
 
     const alarm_engine_state_t *alarm_state = alarm_engine_get_state();
 
-    /* Get current time string */
+    /* Get current time string (PERF-8.1: use localtime_r for thread safety) */
     time_t now = time(NULL);
-    struct tm *tm_info = localtime(&now);
+    struct tm tm_storage;
+    struct tm *tm_info = localtime_r(&now, &tm_storage);
     char time_buf[8];
     snprintf(time_buf, sizeof(time_buf), "%02d:%02d", tm_info->tm_hour, tm_info->tm_min);
 
@@ -136,10 +143,17 @@ static void on_vitals_update(const vitals_data_t *data, void *user_data) {
     }
     prev_highest = alarm_state->highest_active;
 
-    /* Update alarm banner */
+    /* Update alarm banner with count indicator (UI-4.3) */
     if (alarm_state->highest_active != ALARM_SEV_NONE && alarm_state->highest_message) {
         screen_main_vitals_set_alarm((vm_alarm_severity_t)alarm_state->highest_active,
                                       alarm_state->highest_message);
+        int active_count = alarm_engine_get_active_count();
+        screen_main_vitals_set_alarm_count(active_count);
+    } else if (alarm_state->highest_any != ALARM_SEV_NONE && alarm_state->highest_message) {
+        screen_main_vitals_set_alarm((vm_alarm_severity_t)alarm_state->highest_any,
+                                      alarm_state->highest_message);
+        int active_count = alarm_engine_get_active_count();
+        screen_main_vitals_set_alarm_count(active_count);
     } else {
         screen_main_vitals_set_alarm(VM_ALARM_NONE, NULL);
     }
@@ -217,6 +231,9 @@ int main(int argc, char **argv) {
     /* Navigate to main vitals screen */
     screen_manager_push(SCREEN_ID_MAIN_VITALS);
 
+    /* UI-4.1: Register alarm ACK callback */
+    screen_main_vitals_set_ack_callback(alarm_ack_callback);
+
     /* Auto-return to main vitals after 2 minutes of inactivity */
     screen_manager_set_auto_return(120000);
 
@@ -257,8 +274,10 @@ int main(int argc, char **argv) {
     printf("Window size: %dx%d (matching target hardware)\n\n",
            VM_SCREEN_WIDTH, VM_SCREEN_HEIGHT);
 
-    /* Main event loop */
+    /* Main event loop (PERF-2.1: account for processing time in sleep) */
     while (running) {
+        uint32_t frame_start = SDL_GetTicks();
+
         /* Process SDL events */
         if (!sdl_input_process_events()) {
             running = false;
@@ -268,8 +287,16 @@ int main(int argc, char **argv) {
         /* Handle LVGL tasks */
         uint32_t time_till_next = lv_timer_handler();
 
-        /* Sleep for a short time */
-        usleep(time_till_next * 1000);
+        /* Calculate how long processing took and sleep only remaining time */
+        uint32_t elapsed = SDL_GetTicks() - frame_start;
+        if (time_till_next > elapsed) {
+            uint32_t sleep_ms = time_till_next - elapsed;
+            if (sleep_ms < 1) sleep_ms = 1;   /* Minimum 1ms to yield CPU */
+            if (sleep_ms > 33) sleep_ms = 33;  /* Cap at ~30 FPS */
+            usleep(sleep_ms * 1000);
+        } else {
+            usleep(1000);  /* Yield at least 1ms to avoid busy-loop */
+        }
     }
 
     /* Cleanup */

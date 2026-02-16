@@ -9,6 +9,7 @@
  *   - alarm_engine + trend_db (alarm persistence)
  *   - auth_manager + audit_log (authentication audit trail)
  *   - patient_data + trend_db (patient vitals association)
+ *   - failure scenarios (robustness, boundary, security)
  */
 
 #include "test_framework.h"
@@ -22,6 +23,7 @@ int tf_fail  = 0;
 extern void test_alarm_db_integration(void);
 extern void test_auth_audit_integration(void);
 extern void test_patient_trends_integration(void);
+extern void test_failure_scenarios(void);
 
 int main(void) {
     printf("========================================\n");
@@ -31,6 +33,7 @@ int main(void) {
     RUN_SUITE(test_alarm_db_integration);
     RUN_SUITE(test_auth_audit_integration);
     RUN_SUITE(test_patient_trends_integration);
+    RUN_SUITE(test_failure_scenarios);
 
     TEST_SUMMARY();
 

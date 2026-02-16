@@ -35,3 +35,15 @@ tests/integration/integration_test_runner
 
 # Claude local settings
 .claude/settings.local.json
+
+# Security-sensitive files (BUILD-5.5)
+*.pem
+*.key
+*.crt
+.env
+.env.*
+credentials.*
+secrets.*
+*.keystore
+*.p12
+*.pfx

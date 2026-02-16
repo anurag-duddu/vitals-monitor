@@ -62,7 +62,7 @@ profile network-service /opt/vitals-monitor/bin/network-service {
   # ---------------------------------------------------------------
   # IPC sockets — nanomsg (optional: real-time forwarding path)
   # ---------------------------------------------------------------
-  /tmp/vitals-monitor/*.ipc                r,
+  /run/vitals-monitor/*.ipc                r,
 
   # ---------------------------------------------------------------
   # Proc — read-only process info (libc requirements)

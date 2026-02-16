@@ -26,8 +26,18 @@ void screen_main_vitals_update_nibp(int sys, int dia, int map);
 void screen_main_vitals_update_temp(float value);
 void screen_main_vitals_update_rr(int value);
 
+/** Reset cached display values (PERF-1.4). Called on destroy to force
+ *  fresh updates when the screen is re-created. */
+void screen_main_vitals_reset_cache(void);
+
 /** Update alarm state and banner message. */
 void screen_main_vitals_set_alarm(vm_alarm_severity_t severity, const char *message);
+
+/** Update alarm count indicator (UI-4.3: shows "(1/3)" when multiple alarms). */
+void screen_main_vitals_set_alarm_count(int count);
+
+/** Register callback for alarm ACK button press (UI-4.1). */
+void screen_main_vitals_set_ack_callback(void (*cb)(void));
 
 /** Update the clock display. */
 void screen_main_vitals_update_time(const char *time_str);

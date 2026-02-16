@@ -121,7 +121,7 @@ bool ipc_transport_is_initialized(void);
 /**
  * Create a publisher bound to the given endpoint.
  * @param pub       Publisher struct to initialize (caller-allocated).
- * @param endpoint  nanomsg endpoint URL (e.g. IPC_SOCKET_VITALS).
+ * @param endpoint  nanomsg endpoint URL (e.g. IPC_SOCKET_SENSOR).
  * @return IPC_OK on success, negative error code on failure.
  */
 ipc_error_t ipc_pub_create(ipc_publisher_t *pub, const char *endpoint);
@@ -146,7 +146,7 @@ void ipc_pub_close(ipc_publisher_t *pub);
 /**
  * Create a subscriber connected to the given endpoint.
  * @param sub        Subscriber struct to initialize (caller-allocated).
- * @param endpoint   nanomsg endpoint URL (e.g. IPC_SOCKET_VITALS).
+ * @param endpoint   nanomsg endpoint URL (e.g. IPC_SOCKET_SENSOR).
  * @param timeout_ms Receive timeout in milliseconds (0 = non-blocking).
  * @param callback   Optional message callback (NULL for polling mode).
  * @param user_data  Opaque pointer passed to callback.

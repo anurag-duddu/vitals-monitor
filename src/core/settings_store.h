@@ -14,6 +14,7 @@
 #define SETTINGS_STORE_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 /* ── Settings categories ─────────────────────────────────── */
 
@@ -78,6 +79,13 @@ bool        settings_get_bool(const char *key, bool default_val);
  * call settings_get_string again before using the previous result.
  */
 const char *settings_get_string(const char *key, const char *default_val);
+
+/**
+ * Safer variant that copies the string value into a caller-provided buffer,
+ * avoiding the single-static-buffer limitation of settings_get_string().
+ * Returns true if the key was found, false otherwise.
+ */
+bool settings_store_get_string_buf(const char *key, char *buf, size_t buf_size);
 
 /* ── Typed setters (insert or update) ────────────────────── */
 

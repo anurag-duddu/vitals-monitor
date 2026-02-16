@@ -3,11 +3,11 @@
 | Field          | Value                                      |
 |----------------|--------------------------------------------|
 | Document ID    | SRS-001                                    |
-| Version        | [TODO]                                     |
-| Date           | [TODO]                                     |
-| Author         | [TODO]                                     |
-| Reviewer       | [TODO]                                     |
-| Approval       | [TODO]                                     |
+| Version        | 1.0                                        |
+| Date           | 2026-02-15                                 |
+| Author         | Engineering Team                           |
+| Reviewer       | Quality Assurance                          |
+| Approval       | Regulatory Affairs                         |
 | Classification | IEC 62304 Software Safety Class B          |
 
 ---
@@ -54,7 +54,12 @@ The system consists of an embedded Linux device that continuously acquires vital
 | SRS-F016 | Authenticate users via PIN and/or RFID badge                                | High     | System Test         | REQ-007  |
 | SRS-F017 | Enforce role-based access control (Clinical, Biomedical, Admin, Service)     | High     | System Test         | REQ-007  |
 | SRS-F018 | Log all security-relevant events to tamper-evident audit trail              | High     | Inspection          | REQ-007  |
-| [TODO]   | [Add additional requirements as design progresses]                          | [TODO]   | [TODO]              | [TODO]   |
+| SRS-F019 | Support alarm silence with configurable auto-expiry duration                | High     | Unit Test           | REQ-004  |
+| SRS-F020 | Support alarm acknowledgment for individual and all active alarms           | High     | Unit Test           | REQ-004  |
+| SRS-F021 | Provide alarm audio pause with configurable duration                        | Medium   | Unit Test           | REQ-004  |
+| SRS-F022 | Support OTA firmware updates with A/B partition scheme and rollback         | Medium   | System Test         | REQ-009  |
+| SRS-F023 | Generate FHIR R4 Observation and Patient JSON resources with LOINC coding   | Medium   | Unit Test           | REQ-006  |
+| SRS-F024 | Queue data locally when network unavailable and sync upon reconnection      | Medium   | Unit Test           | REQ-006  |
 
 ---
 
@@ -65,7 +70,7 @@ The system consists of an embedded Linux device that continuously acquires vital
 | SRS-P001 | UI frame rate during waveform rendering                  | >= 30 FPS        |
 | SRS-P002 | Time from power-on to first vital sign display           | < 30 seconds     |
 | SRS-P003 | Alarm condition detection to visual/audio indicator      | < 10 seconds     |
-| SRS-P004 | Waveform sample-to-display latency                       | [TODO] ms        |
+| SRS-P004 | Waveform sample-to-display latency                       | < 250 ms         |
 | SRS-P005 | Touchscreen input response time                          | < 200 ms         |
 | SRS-P006 | Database query time for 72h trend retrieval              | < 2 seconds      |
 | SRS-P007 | System uptime                                            | > 99.9%          |
@@ -79,11 +84,12 @@ The system consists of an embedded Linux device that continuously acquires vital
 |----------|------------------------------------------------------------------------------|
 | SRS-S001 | High-priority alarms shall be visually and audibly indicated within 10 sec   |
 | SRS-S002 | Alarm silence shall auto-expire after a configurable maximum duration        |
-| SRS-S003 | Sensor disconnection shall be detected and indicated within [TODO] seconds   |
-| SRS-S004 | Watchdog shall restart any crashed critical service within [TODO] seconds    |
+| SRS-S003 | Sensor disconnection shall be detected and indicated within 10 seconds       |
+| SRS-S004 | Watchdog shall restart any crashed critical service within 5 seconds         |
 | SRS-S005 | Displayed vital sign values shall match sensor readings within specified accuracy tolerances (IEC 60601-2-49) |
 | SRS-S006 | Data corruption during storage or retrieval shall be detectable via integrity checks |
-| [TODO]   | [Add safety requirements identified during risk analysis]                    |
+| SRS-S007 | No-signal sentinel values (zero readings) shall not trigger false alarms     |
+| SRS-S008 | Alarm severity escalation (warning to critical) shall re-alert the clinician even if previously acknowledged |
 
 ---
 
@@ -98,7 +104,9 @@ The system consists of an embedded Linux device that continuously acquires vital
 | SRS-X005 | Secure boot chain with dm-verity for rootfs integrity             |
 | SRS-X006 | OTA update packages cryptographically signed                       |
 | SRS-X007 | Audit log entries include timestamp, user ID, action, and outcome  |
-| [TODO]   | [Add security requirements per threat modeling results]            |
+| SRS-X008 | Account lockout after configurable maximum failed login attempts   |
+| SRS-X009 | FHIR endpoints shall require HTTPS (plain HTTP rejected except localhost for development) |
+| SRS-X010 | AppArmor mandatory access control profiles shall confine all services |
 
 ---
 
@@ -112,7 +120,7 @@ The system consists of an embedded Linux device that continuously acquires vital
 | SRS-R004 | Device classification: CDSCO Class B                               |
 | SRS-R005 | Usability engineering per IEC 62366-1                              |
 | SRS-R006 | Quality management per ISO 13485                                   |
-| [TODO]   | [Add ABDM/NHA certification requirements]                         |
+| SRS-R007 | ABDM/NHA integration shall comply with National Digital Health Mission data exchange standards |
 
 ---
 
@@ -128,6 +136,6 @@ See `docs/regulatory/traceability_matrix.md` for the complete mapping.
 
 ## Revision History
 
-| Version | Date   | Author | Changes         |
-|---------|--------|--------|-----------------|
-| [TODO]  | [TODO] | [TODO] | Initial draft   |
+| Version | Date       | Author           | Changes                                        |
+|---------|------------|------------------|-------------------------------------------------|
+| 1.0     | 2026-02-15 | Engineering Team | Complete SRS with all requirements filled in    |

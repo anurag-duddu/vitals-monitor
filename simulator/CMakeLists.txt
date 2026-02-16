@@ -1,12 +1,56 @@
 cmake_minimum_required(VERSION 3.10)
 project(vitals_monitor_simulator C)
 
+# ============================================================
+# Build type support (default to Release for optimized builds)
+# ============================================================
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type (Debug, Release, RelWithDebInfo, MinSizeRel)" FORCE)
+    message(STATUS "No build type specified, defaulting to Release")
+endif()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
 # Set C standard
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-# Add compile flags
-add_compile_options(-Wall -Wextra -O2)
+# ============================================================
+# Compiler warnings
+# ============================================================
+# Base warnings for all code (including LVGL); LVGL sources get -w override below
+add_compile_options(-Wall -Wextra)
+# Extra warnings (applied globally but LVGL/SQLite sources override with -w)
+# NOTE: -Wconversion may trigger on LVGL header macros in project code;
+# suppress per-file with set_source_files_properties if needed.
+add_compile_options(-Wshadow -Wconversion -Wdouble-promotion -Wformat=2 -Wundef -Wformat-security)
+
+# ============================================================
+# Security hardening flags
+# ============================================================
+add_compile_options(-fstack-protector-strong -fPIE)
+
+# _FORTIFY_SOURCE requires optimization (-O1 or higher); only enable for
+# Release and RelWithDebInfo builds to avoid compiler warnings/errors in Debug.
+if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    add_definitions(-D_FORTIFY_SOURCE=2)
+endif()
+
+# Linker hardening (Linux-only; macOS linker does not support -z flags)
+if(NOT APPLE)
+    add_link_options(-pie -Wl,-z,relro,-z,now)
+else()
+    # On macOS, PIE is the default for executables; -pie is implicit.
+endif()
+
+# ============================================================
+# AddressSanitizer option (for development/debugging)
+# ============================================================
+option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
+if(ENABLE_ASAN)
+    message(STATUS "AddressSanitizer ENABLED")
+    add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address)
+endif()
 
 # ============================================================
 # Build Configuration
@@ -56,9 +100,17 @@ include_directories(
 )
 
 # Collect LVGL source files
+# WARNING: GLOB_RECURSE does not automatically re-run CMake when files are
+# added or removed. Re-run cmake manually after updating the LVGL submodule.
+# See CMake policy CMP0009 and cmake.org/cmake/help/latest/command/file.html
 file(GLOB_RECURSE LVGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/lvgl/src/*.c
 )
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/lvgl/src)
+
+# Suppress all warnings on LVGL sources (third-party code)
+set_source_files_properties(${LVGL_SOURCES} PROPERTIES COMPILE_OPTIONS "-w")
 
 # SDL wrapper source files
 set(SDL_WRAPPER_SOURCES

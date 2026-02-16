@@ -23,6 +23,8 @@ static const sensor_hal_t *hal_registry[SENSOR_COUNT] = {0};
  * ============================================================ */
 
 void sensor_hal_register(sensor_type_t type, const sensor_hal_t *hal) {
+    if (!hal) return;
+
     if (type < SENSOR_COUNT) {
         hal_registry[type] = hal;
         printf("[sensor_hal] Registered: %s\n", hal->name);

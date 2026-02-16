@@ -164,7 +164,7 @@ lv_obj_t * screen_settings_create(void) {
         volume_slider = lv_slider_create(row);
         lv_obj_set_flex_grow(volume_slider, 1);
         lv_obj_set_height(volume_slider, 10);
-        lv_slider_set_range(volume_slider, 0, 100);
+        lv_slider_set_range(volume_slider, 20, 100);  /* UI-8.1: min 20 — never allow zero alarm volume */
         lv_slider_set_value(volume_slider, volume, LV_ANIM_OFF);
         lv_obj_set_style_bg_color(volume_slider, VM_COLOR_BG_PANEL_BORDER, LV_PART_MAIN);
         lv_obj_set_style_bg_color(volume_slider, VM_COLOR_ALARM_MEDIUM, LV_PART_INDICATOR);
@@ -390,6 +390,7 @@ static void switch_cb(lv_event_t *e) {
 static void reset_defaults_cb(lv_event_t *e) {
     (void)e;
     settings_reset_to_defaults();
-    /* Re-push settings screen to refresh all controls with new defaults */
+    /* UI-1.1: go_home first to clear the nav stack, then push fresh settings */
+    screen_manager_go_home();
     screen_manager_push(SCREEN_ID_SETTINGS);
 }

@@ -43,8 +43,8 @@ profile alarm-service /opt/vitals-monitor/bin/alarm-service {
   # IPC sockets — nanomsg subscriber (reads sensor data) and
   # publisher (broadcasts alarm state changes to vitals-ui)
   # ---------------------------------------------------------------
-  /tmp/vitals-monitor/*.ipc                rw,
-  /tmp/vitals-monitor/                     rw,
+  /run/vitals-monitor/*.ipc                rw,
+  /run/vitals-monitor/                     rw,
 
   # ---------------------------------------------------------------
   # GPIO — buzzer and LED alarm indicators

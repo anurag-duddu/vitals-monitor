@@ -3,9 +3,9 @@
  * @brief Top alarm bar widget implementation
  *
  * Layout:
- *   ┌──────────────────────────────────────────────────────────────┐
- *   │ ▲ HIGH: HR > 120 bpm (132)        [ACK]           14:32    │
- *   └──────────────────────────────────────────────────────────────┘
+ *   +--------------------------------------------------------------+
+ *   | ^ HIGH: HR > 120 bpm (132)  (1/3) [ACK]           14:32     |
+ *   +--------------------------------------------------------------+
  *
  * Flash rates (IEC 60601-1-8):
  *   High:   ~2 Hz   (250ms toggle period)
@@ -25,20 +25,28 @@ struct widget_alarm_banner {
     lv_obj_t *container;
     lv_obj_t *icon_lbl;       /* Alarm icon/indicator */
     lv_obj_t *message_lbl;    /* Alarm message text */
+    lv_obj_t *count_lbl;      /* "(1/3)" alarm count indicator (UI-4.3) */
+    lv_obj_t *ack_btn;        /* ACK button (UI-4.1) */
     lv_obj_t *time_lbl;       /* Clock (right-aligned) */
     vm_alarm_severity_t severity;
     lv_timer_t *flash_timer;
     bool flash_state;         /* Toggle for flashing */
+    void (*ack_cb)(void);     /* Acknowledge callback (UI-4.1) */
+    int alarm_count;          /* Total active alarms (UI-4.3) */
+    int alarm_index;          /* Current display index, 1-based (UI-4.3) */
+    vm_alarm_severity_t prev_severity;  /* Cached for PERF-1.5 */
+    bool prev_flash_state;              /* Cached for PERF-1.5 */
 };
 
 static widget_alarm_banner_t banner_pool[MAX_ALARM_BANNERS];
 
-/* ── Forward declarations ──────────────────────────────────── */
+/* -- Forward declarations ----------------------------------------- */
 
 static void flash_timer_cb(lv_timer_t *timer);
 static void update_visual(widget_alarm_banner_t *w);
+static void ack_btn_event_cb(lv_event_t *e);
 
-/* ── Pool ──────────────────────────────────────────────────── */
+/* -- Pool --------------------------------------------------------- */
 
 static widget_alarm_banner_t * pool_alloc(void) {
     for (int i = 0; i < MAX_ALARM_BANNERS; i++) {
@@ -51,7 +59,7 @@ static widget_alarm_banner_t * pool_alloc(void) {
     return NULL;
 }
 
-/* ── Public API ────────────────────────────────────────────── */
+/* -- Public API --------------------------------------------------- */
 
 widget_alarm_banner_t * widget_alarm_banner_create(lv_obj_t *parent) {
     widget_alarm_banner_t *w = pool_alloc();
@@ -59,8 +67,14 @@ widget_alarm_banner_t * widget_alarm_banner_create(lv_obj_t *parent) {
 
     w->severity = VM_ALARM_NONE;
     w->flash_state = false;
+    w->ack_cb = NULL;
+    w->alarm_count = 0;
+    w->alarm_index = 0;
+    /* Initialize cached state to force first update_visual to apply styles */
+    w->prev_severity = (vm_alarm_severity_t)(-1);
+    w->prev_flash_state = false;
 
-    /* Container — full width, fixed height at top */
+    /* Container -- full width, fixed height at top */
     w->container = lv_obj_create(parent);
     lv_obj_remove_flag(w->container, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(w->container, VM_SCREEN_WIDTH, VM_ALARM_BAR_HEIGHT);
@@ -81,14 +95,37 @@ widget_alarm_banner_t * widget_alarm_banner_create(lv_obj_t *parent) {
     lv_obj_set_style_text_font(w->icon_lbl, VM_FONT_BODY, 0);
     lv_obj_set_style_text_color(w->icon_lbl, VM_COLOR_ALARM_NONE, 0);
 
-    /* Message label — grows to fill space */
+    /* Message label -- grows to fill space */
     w->message_lbl = lv_label_create(w->container);
     lv_label_set_text(w->message_lbl, "  No Alarms");
     lv_obj_set_style_text_font(w->message_lbl, VM_FONT_CAPTION, 0);
     lv_obj_set_style_text_color(w->message_lbl, VM_COLOR_ALARM_NONE, 0);
     lv_obj_set_flex_grow(w->message_lbl, 1);
 
-    /* Time label — right-aligned */
+    /* Alarm count indicator label "(1/3)" -- hidden by default (UI-4.3) */
+    w->count_lbl = lv_label_create(w->container);
+    lv_label_set_text(w->count_lbl, "");
+    lv_obj_set_style_text_font(w->count_lbl, VM_FONT_CAPTION, 0);
+    lv_obj_set_style_text_color(w->count_lbl, VM_COLOR_TEXT_SECONDARY, 0);
+    lv_obj_add_flag(w->count_lbl, LV_OBJ_FLAG_HIDDEN);
+
+    /* ACK button -- hidden by default, shown for HIGH/MEDIUM (UI-4.1) */
+    w->ack_btn = lv_button_create(w->container);
+    lv_obj_set_size(w->ack_btn, VM_SCALE_W(40), VM_SCALE_H(22));
+    lv_obj_set_style_radius(w->ack_btn, VM_SCALE_H(4), 0);
+    lv_obj_set_style_bg_color(w->ack_btn, lv_color_hex(0x444444), 0);
+    lv_obj_set_style_bg_opa(w->ack_btn, LV_OPA_COVER, 0);
+    lv_obj_set_style_pad_all(w->ack_btn, 0, 0);
+    lv_obj_add_flag(w->ack_btn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_event_cb(w->ack_btn, ack_btn_event_cb, LV_EVENT_CLICKED, w);
+
+    lv_obj_t *ack_lbl = lv_label_create(w->ack_btn);
+    lv_label_set_text(ack_lbl, "ACK");
+    lv_obj_set_style_text_font(ack_lbl, VM_FONT_SMALL, 0);
+    lv_obj_set_style_text_color(ack_lbl, VM_COLOR_TEXT_PRIMARY, 0);
+    lv_obj_center(ack_lbl);
+
+    /* Time label -- right-aligned */
     w->time_lbl = lv_label_create(w->container);
     lv_label_set_text(w->time_lbl, "--:--");
     lv_obj_set_style_text_font(w->time_lbl, VM_FONT_CAPTION, 0);
@@ -126,8 +163,9 @@ void widget_alarm_banner_set(widget_alarm_banner_t *w,
         lv_label_set_text(w->message_lbl, buf);
     }
 
-    /* Manage flash timer */
+    /* Manage flash timer (UI-4.2: pause before delete for safety) */
     if (w->flash_timer) {
+        lv_timer_pause(w->flash_timer);
         lv_timer_delete(w->flash_timer);
         w->flash_timer = NULL;
     }
@@ -140,6 +178,13 @@ void widget_alarm_banner_set(widget_alarm_banner_t *w,
         w->flash_timer = lv_timer_create(flash_timer_cb, 1000, w);
     }
 
+    /* UI-4.1: Show ACK button for HIGH/MEDIUM, hide for LOW/NONE */
+    if (severity == VM_ALARM_HIGH || severity == VM_ALARM_MEDIUM) {
+        lv_obj_remove_flag(w->ack_btn, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_add_flag(w->ack_btn, LV_OBJ_FLAG_HIDDEN);
+    }
+
     update_visual(w);
 }
 
@@ -149,13 +194,21 @@ void widget_alarm_banner_clear(widget_alarm_banner_t *w) {
     w->severity = VM_ALARM_NONE;
     w->flash_state = false;
 
+    /* UI-4.2: Pause before delete for safety */
     if (w->flash_timer) {
+        lv_timer_pause(w->flash_timer);
         lv_timer_delete(w->flash_timer);
         w->flash_timer = NULL;
     }
 
     lv_label_set_text(w->icon_lbl, LV_SYMBOL_OK);
     lv_label_set_text(w->message_lbl, "  No Alarms");
+
+    /* Hide ACK button and count label on clear */
+    lv_obj_add_flag(w->ack_btn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(w->count_lbl, LV_OBJ_FLAG_HIDDEN);
+    w->alarm_count = 0;
+    w->alarm_index = 0;
 
     update_visual(w);
 }
@@ -173,6 +226,7 @@ lv_obj_t * widget_alarm_banner_get_obj(widget_alarm_banner_t *w) {
 void widget_alarm_banner_free(widget_alarm_banner_t *w) {
     if (!w) return;
     if (w->flash_timer) {
+        lv_timer_pause(w->flash_timer);
         lv_timer_delete(w->flash_timer);
         w->flash_timer = NULL;
     }
@@ -180,7 +234,41 @@ void widget_alarm_banner_free(widget_alarm_banner_t *w) {
     w->container = NULL;
 }
 
-/* ── Private helpers ───────────────────────────────────────── */
+void widget_alarm_banner_set_ack_cb(widget_alarm_banner_t *w, void (*cb)(void)) {
+    if (!w || !w->in_use) return;
+    w->ack_cb = cb;
+}
+
+void widget_alarm_banner_set_count(widget_alarm_banner_t *w, int count, int current_index) {
+    if (!w || !w->in_use) return;
+
+    w->alarm_count = count;
+    w->alarm_index = current_index;
+
+    if (count > 1) {
+        char buf[16];
+        snprintf(buf, sizeof(buf), "(%d/%d)", current_index, count);
+        lv_label_set_text(w->count_lbl, buf);
+        lv_obj_remove_flag(w->count_lbl, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_add_flag(w->count_lbl, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+/* -- Private helpers ---------------------------------------------- */
+
+static void ack_btn_event_cb(lv_event_t *e) {
+    widget_alarm_banner_t *w = (widget_alarm_banner_t *)lv_event_get_user_data(e);
+    if (!w || !w->in_use) return;
+
+    /* Hide ACK button after acknowledgement */
+    lv_obj_add_flag(w->ack_btn, LV_OBJ_FLAG_HIDDEN);
+
+    /* Invoke user callback if registered */
+    if (w->ack_cb) {
+        w->ack_cb();
+    }
+}
 
 static void flash_timer_cb(lv_timer_t *timer) {
     widget_alarm_banner_t *w = (widget_alarm_banner_t *)lv_timer_get_user_data(timer);
@@ -191,6 +279,11 @@ static void flash_timer_cb(lv_timer_t *timer) {
 }
 
 static void update_visual(widget_alarm_banner_t *w) {
+    /* PERF-1.5: Only apply styles when state actually changes */
+    if (w->severity == w->prev_severity && w->flash_state == w->prev_flash_state) {
+        return;
+    }
+
     lv_color_t bg_color;
     lv_color_t text_color;
 
@@ -217,4 +310,8 @@ static void update_visual(widget_alarm_banner_t *w) {
     lv_obj_set_style_bg_opa(w->container, LV_OPA_COVER, 0);
     lv_obj_set_style_text_color(w->icon_lbl, text_color, 0);
     lv_obj_set_style_text_color(w->message_lbl, text_color, 0);
+
+    /* Cache the current state */
+    w->prev_severity = w->severity;
+    w->prev_flash_state = w->flash_state;
 }

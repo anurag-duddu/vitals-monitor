@@ -3,8 +3,9 @@
  * @brief SQLite-backed trend storage implementation
  *
  * All database access is single-threaded (LVGL main loop).
- * Uses pre-compiled prepared statements for performance.
- * Static result buffers avoid heap allocation in query paths.
+ * Insert, purge, and simple query paths use pre-compiled prepared statements.
+ * trend_db_query_param uses per-call prepare/finalize due to dynamic GROUP BY.
+ * Result buffers are caller-owned; no heap allocation in query paths.
  */
 
 #include "trend_db.h"
@@ -27,8 +28,6 @@ static sqlite3_stmt *stmt_insert_raw    = NULL;
 static sqlite3_stmt *stmt_insert_1min   = NULL;
 static sqlite3_stmt *stmt_insert_nibp   = NULL;
 static sqlite3_stmt *stmt_insert_alarm  = NULL;
-static sqlite3_stmt *stmt_query_raw     = NULL;
-static sqlite3_stmt *stmt_query_1min    = NULL;
 static sqlite3_stmt *stmt_query_nibp    = NULL;
 static sqlite3_stmt *stmt_query_alarm   = NULL;
 static sqlite3_stmt *stmt_purge_raw     = NULL;
@@ -137,8 +136,9 @@ bool trend_db_init(const char *db_path) {
         "AVG(temp_x10), MIN(temp_x10), MAX(temp_x10) "
         "FROM vitals_raw WHERE timestamp_s > ?1 AND timestamp_s <= ?2");
 
-    /* Query statements use dynamic SQL via sqlite3_exec, not prepared.
-     * But for the common raw/1min queries we prepare templates. */
+    /* NIBP and alarm queries use pre-compiled prepared statements.
+     * trend_db_query_param uses dynamic SQL (per-call prepare/finalize)
+     * because the GROUP BY interval varies with each query range. */
     ok = ok && prepare(&stmt_query_nibp,
         "SELECT timestamp_s, sys, dia, map_val FROM nibp_measurements "
         "WHERE timestamp_s >= ?1 AND timestamp_s <= ?2 "
@@ -181,8 +181,6 @@ void trend_db_close(void) {
     finalize_stmt(&stmt_insert_nibp);
     finalize_stmt(&stmt_insert_alarm);
     finalize_stmt(&stmt_agg_select);
-    finalize_stmt(&stmt_query_raw);
-    finalize_stmt(&stmt_query_1min);
     finalize_stmt(&stmt_query_nibp);
     finalize_stmt(&stmt_query_alarm);
     finalize_stmt(&stmt_purge_raw);
@@ -328,7 +326,7 @@ int trend_db_query_param(trend_param_t param, uint32_t start_ts,
             min_col = "temp_min_x10";
             max_col = "temp_max_x10";
         } else {
-            static char abuf[32], nbuf[32], xbuf[32];
+            char abuf[32], nbuf[32], xbuf[32];
             snprintf(abuf, sizeof(abuf), "%s_avg", col);
             snprintf(nbuf, sizeof(nbuf), "%s_min", col);
             snprintf(xbuf, sizeof(xbuf), "%s_max", col);
@@ -426,6 +424,8 @@ void trend_db_purge_old(uint32_t current_ts) {
     uint32_t raw_cutoff = (current_ts > RAW_RETAIN_S) ? current_ts - RAW_RETAIN_S : 0;
     uint32_t agg_cutoff = (current_ts > AGG_RETAIN_S) ? current_ts - AGG_RETAIN_S : 0;
 
+    sqlite3_exec(db, "BEGIN;", NULL, NULL, NULL);
+
     sqlite3_reset(stmt_purge_raw);
     sqlite3_bind_int(stmt_purge_raw, 1, (int)raw_cutoff);
     sqlite3_step(stmt_purge_raw);
@@ -441,4 +441,6 @@ void trend_db_purge_old(uint32_t current_ts) {
     sqlite3_reset(stmt_purge_alarm);
     sqlite3_bind_int(stmt_purge_alarm, 1, (int)agg_cutoff);
     sqlite3_step(stmt_purge_alarm);
+
+    sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
 }

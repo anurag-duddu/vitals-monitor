@@ -10,8 +10,8 @@
  *
  * TARGET (documented, not yet implemented):
  *   - Uses sensor_hal to initialise and poll real sensors
- *   - Publishes ipc_msg_vitals_t on IPC_SOCKET_VITALS at 1 Hz
- *   - Publishes ipc_msg_waveform_t on IPC_SOCKET_WAVEFORMS at ~10-20 Hz
+ *   - Publishes ipc_msg_vitals_t on IPC_SOCKET_SENSOR at 1 Hz
+ *   - Publishes ipc_msg_waveform_t on IPC_SOCKET_SENSOR at ~10-20 Hz
  *   - Publishes ipc_msg_sensor_status_t on sensor connect/disconnect
  */
 
@@ -121,7 +121,7 @@ void sensor_service_deinit(void)
  * 1. sensor_service_init():
  *    - Call sensor_hal_init_all() to initialise all registered sensors
  *    - Create nanomsg PUB sockets for vitals, waveforms, and sensor status
- *    - Bind to IPC_SOCKET_VITALS and IPC_SOCKET_WAVEFORMS
+ *    - Bind to IPC_SOCKET_SENSOR
  *
  * 2. sensor_service_start():
  *    - Start the ECG acquisition via sensor_ops_ecg_t.start_acquisition()

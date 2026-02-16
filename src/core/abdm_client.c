@@ -124,7 +124,16 @@ bool abdm_client_authenticate(const char *client_id, const char *client_secret) 
         return false;
     }
 
-    printf(TAG "Authenticating with client_id=%s (mock)\n", client_id);
+    /* Redact client_id: show first 4 and last 4 chars only */
+    {
+        size_t cid_len = strlen(client_id);
+        if (cid_len > 8) {
+            printf(TAG "Authenticating with client_id=%.4s...%s (mock)\n",
+                   client_id, client_id + cid_len - 4);
+        } else {
+            printf(TAG "Authenticating with client_id=**** (mock)\n");
+        }
+    }
 
     status.state = ABDM_STATE_AUTHENTICATING;
     status.requests_sent++;

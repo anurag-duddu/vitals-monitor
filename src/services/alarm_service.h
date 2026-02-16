@@ -9,9 +9,9 @@
  *   - SIMULATOR (SIMULATOR_BUILD=1): Runs in-process.  On each tick, reads
  *     the current vitals from vitals_provider and calls alarm_engine_evaluate()
  *     directly.  The UI reads alarm state via alarm_engine_get_state().
- *   - TARGET: Runs as a separate process.  Subscribes to IPC_SOCKET_VITALS
+ *   - TARGET: Runs as a separate process.  Subscribes to IPC_SOCKET_SENSOR
  *     via nanomsg SUB socket, evaluates alarms, and publishes alarm events
- *     on IPC_SOCKET_ALARMS.  Also drives the buzzer/LED hardware.
+ *     on IPC_SOCKET_ALARM.  Also drives the buzzer/LED hardware.
  *
  * Service lifecycle callbacks are designed for use with service_manager.
  */

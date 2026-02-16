@@ -31,145 +31,22 @@ mkdir -p "${TARGET_DIR}/opt/vitals-monitor/data/audit"
 mkdir -p "${TARGET_DIR}/opt/vitals-monitor/data/updates"
 
 # =============================================================================
-# Install systemd service units
+# Install systemd service units (BUILD-2.5)
+#
+# Canonical hardened unit files live in deploy/systemd/.  We install them
+# here rather than generating inline copies, to eliminate duplication and
+# ensure the security directives (User=, ProtectSystem=, NoNewPrivileges=,
+# etc.) are always applied consistently.
 # =============================================================================
 SYSTEMD_UNIT_DIR="${TARGET_DIR}/usr/lib/systemd/system"
+DEPLOY_SYSTEMD_DIR="$(dirname "${BR2_EXTERNAL_VITALS_MONITOR_PATH}")/deploy/systemd"
 mkdir -p "${SYSTEMD_UNIT_DIR}"
 
-# --- vitals-ui.service ---
-cat > "${SYSTEMD_UNIT_DIR}/vitals-ui.service" << 'UNIT_EOF'
-[Unit]
-Description=Vitals Monitor UI (LVGL/DRM)
-After=multi-user.target sensor-service.service alarm-service.service
-Requires=sensor-service.service alarm-service.service
-StartLimitIntervalSec=60
-StartLimitBurst=5
-
-[Service]
-Type=simple
-ExecStart=/opt/vitals-monitor/bin/vitals-ui
-WorkingDirectory=/opt/vitals-monitor
-Environment=XDG_RUNTIME_DIR=/run/user/0
-Environment=VM_DATA_DIR=/opt/vitals-monitor/data
-Restart=on-failure
-RestartSec=3
-WatchdogSec=30
-MemoryMax=128M
-CPUWeight=200
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=vitals-ui
-
-[Install]
-WantedBy=multi-user.target
-UNIT_EOF
-
-# --- sensor-service.service ---
-cat > "${SYSTEMD_UNIT_DIR}/sensor-service.service" << 'UNIT_EOF'
-[Unit]
-Description=Vitals Monitor Sensor Acquisition Service
-After=local-fs.target
-StartLimitIntervalSec=60
-StartLimitBurst=5
-
-[Service]
-Type=notify
-ExecStart=/opt/vitals-monitor/bin/sensor-service
-WorkingDirectory=/opt/vitals-monitor
-Environment=VM_DATA_DIR=/opt/vitals-monitor/data
-Restart=on-failure
-RestartSec=2
-WatchdogSec=10
-MemoryMax=64M
-CPUWeight=300
-Nice=-10
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=sensor-service
-
-[Install]
-WantedBy=multi-user.target
-UNIT_EOF
-
-# --- alarm-service.service ---
-cat > "${SYSTEMD_UNIT_DIR}/alarm-service.service" << 'UNIT_EOF'
-[Unit]
-Description=Vitals Monitor Alarm Engine Service
-After=sensor-service.service
-Requires=sensor-service.service
-StartLimitIntervalSec=60
-StartLimitBurst=5
-
-[Service]
-Type=notify
-ExecStart=/opt/vitals-monitor/bin/alarm-service
-WorkingDirectory=/opt/vitals-monitor
-Environment=VM_DATA_DIR=/opt/vitals-monitor/data
-Restart=on-failure
-RestartSec=2
-WatchdogSec=10
-MemoryMax=32M
-CPUWeight=250
-Nice=-5
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=alarm-service
-
-[Install]
-WantedBy=multi-user.target
-UNIT_EOF
-
-# --- network-service.service ---
-cat > "${SYSTEMD_UNIT_DIR}/network-service.service" << 'UNIT_EOF'
-[Unit]
-Description=Vitals Monitor Network & Sync Service
-After=network-online.target sensor-service.service
-Wants=network-online.target
-Requires=sensor-service.service
-StartLimitIntervalSec=120
-StartLimitBurst=3
-
-[Service]
-Type=notify
-ExecStart=/opt/vitals-monitor/bin/network-service
-WorkingDirectory=/opt/vitals-monitor
-Environment=VM_DATA_DIR=/opt/vitals-monitor/data
-Restart=on-failure
-RestartSec=10
-WatchdogSec=60
-MemoryMax=64M
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=network-service
-
-[Install]
-WantedBy=multi-user.target
-UNIT_EOF
-
-# --- watchdog-monitor.service ---
-cat > "${SYSTEMD_UNIT_DIR}/watchdog-monitor.service" << 'UNIT_EOF'
-[Unit]
-Description=Vitals Monitor Hardware Watchdog Service
-DefaultDependencies=no
-After=local-fs.target
-Before=multi-user.target
-
-[Service]
-Type=simple
-ExecStart=/opt/vitals-monitor/bin/watchdog-monitor
-Restart=always
-RestartSec=1
-WatchdogSec=5
-MemoryMax=8M
-CPUWeight=400
-Nice=-20
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=watchdog-monitor
-
-[Install]
-WantedBy=sysinit.target
-UNIT_EOF
+install -m 644 "${DEPLOY_SYSTEMD_DIR}/vitals-ui.service"        "${SYSTEMD_UNIT_DIR}/vitals-ui.service"
+install -m 644 "${DEPLOY_SYSTEMD_DIR}/sensor-service.service"   "${SYSTEMD_UNIT_DIR}/sensor-service.service"
+install -m 644 "${DEPLOY_SYSTEMD_DIR}/alarm-service.service"    "${SYSTEMD_UNIT_DIR}/alarm-service.service"
+install -m 644 "${DEPLOY_SYSTEMD_DIR}/network-service.service"  "${SYSTEMD_UNIT_DIR}/network-service.service"
+install -m 644 "${DEPLOY_SYSTEMD_DIR}/watchdog.service"         "${SYSTEMD_UNIT_DIR}/watchdog-monitor.service"
 
 # =============================================================================
 # Enable services via symlinks
@@ -285,5 +162,72 @@ SYSCTL_EOF
 # Set hostname
 # =============================================================================
 echo "vitals-monitor" > "${TARGET_DIR}/etc/hostname"
+
+# =============================================================================
+# Install AppArmor profiles (BUILD-2.6)
+#
+# Profiles from deploy/security/apparmor/ enforce mandatory access control
+# on each vitals-monitor service.  They restrict filesystem, network, and
+# device access per IEC 62443 defense-in-depth requirements.
+# =============================================================================
+DEPLOY_APPARMOR_DIR="$(dirname "${BR2_EXTERNAL_VITALS_MONITOR_PATH}")/deploy/security/apparmor"
+APPARMOR_PROFILE_DIR="${TARGET_DIR}/etc/apparmor.d"
+mkdir -p "${APPARMOR_PROFILE_DIR}"
+
+install -m 644 "${DEPLOY_APPARMOR_DIR}/vitals-ui"          "${APPARMOR_PROFILE_DIR}/opt.vitals-monitor.bin.vitals-ui"
+install -m 644 "${DEPLOY_APPARMOR_DIR}/sensor-service"     "${APPARMOR_PROFILE_DIR}/opt.vitals-monitor.bin.sensor-service"
+install -m 644 "${DEPLOY_APPARMOR_DIR}/alarm-service"      "${APPARMOR_PROFILE_DIR}/opt.vitals-monitor.bin.alarm-service"
+install -m 644 "${DEPLOY_APPARMOR_DIR}/network-service"    "${APPARMOR_PROFILE_DIR}/opt.vitals-monitor.bin.network-service"
+install -m 644 "${DEPLOY_APPARMOR_DIR}/watchdog-monitor"   "${APPARMOR_PROFILE_DIR}/opt.vitals-monitor.bin.watchdog-monitor"
+
+# =============================================================================
+# Install iptables firewall rules (BUILD-2.7)
+#
+# Default-DROP INPUT policy.  Only established/related connections and
+# localhost traffic are allowed.  OUTPUT is permitted for FHIR/NTP/OTA.
+# =============================================================================
+mkdir -p "${TARGET_DIR}/etc/iptables"
+cat > "${TARGET_DIR}/etc/iptables/rules.v4" << 'FW_EOF'
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Allow loopback
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+
+# Allow established and related connections
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Drop invalid packets
+-A INPUT -m conntrack --ctstate INVALID -j DROP
+
+# Allow ICMP ping (rate-limited) for network diagnostics
+-A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s --limit-burst 4 -j ACCEPT
+
+COMMIT
+FW_EOF
+
+# Install systemd service to restore iptables rules at boot
+cat > "${SYSTEMD_UNIT_DIR}/iptables-restore.service" << 'IPTABLES_EOF'
+[Unit]
+Description=Restore iptables firewall rules
+DefaultDependencies=no
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/iptables-restore /etc/iptables/rules.v4
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+IPTABLES_EOF
+
+mkdir -p "${TARGET_DIR}/etc/systemd/system/multi-user.target.wants"
+ln -sf /usr/lib/systemd/system/iptables-restore.service \
+       "${TARGET_DIR}/etc/systemd/system/multi-user.target.wants/iptables-restore.service"
 
 echo ">>> Vitals Monitor post-build: complete"

@@ -84,7 +84,7 @@ profile watchdog-monitor /opt/vitals-monitor/bin/watchdog-monitor {
   # IPC directory — create the shared IPC socket directory at boot
   # (see ExecStartPre in watchdog.service)
   # ---------------------------------------------------------------
-  /tmp/vitals-monitor/                     rw,
+  /run/vitals-monitor/                     rw,
   /bin/mkdir                               mrix,
   /bin/chown                               mrix,
 

@@ -36,17 +36,22 @@ profile vitals-ui /opt/vitals-monitor/bin/vitals-ui {
 
   # ---------------------------------------------------------------
   # SQLite trend database — read/write for live vital-sign queries
-  # SQLite WAL journal files live alongside the .db file
+  # Restricted to the specific vitals_trends.db database only.
+  # SQLite WAL/journal files live alongside the .db file.
   # ---------------------------------------------------------------
-  /opt/vitals-monitor/data/*.db        rw,
-  /opt/vitals-monitor/data/*.db-wal    rw,
-  /opt/vitals-monitor/data/*.db-shm    rw,
-  /opt/vitals-monitor/data/*.db-journal rw,
+  /var/lib/vitals-monitor/vitals_trends.db         rwk,
+  /var/lib/vitals-monitor/vitals_trends.db-wal     rw,
+  /var/lib/vitals-monitor/vitals_trends.db-shm     rw,
+  /var/lib/vitals-monitor/vitals_trends.db-journal  rw,
 
   # ---------------------------------------------------------------
-  # Framebuffer — read-only for LVGL fbdev driver
+  # Display devices — framebuffer and DRM subsystem
+  # Buildroot targets use DRM/KMS (/dev/dri/*); legacy fbdev
+  # (/dev/fb0) is kept for backward compatibility with older kernels.
   # ---------------------------------------------------------------
   /dev/fb0                             r,
+  /dev/dri/card*                       rw,
+  /dev/dri/renderD*                    rw,
 
   # ---------------------------------------------------------------
   # Touchscreen / input — read/write for evdev HID events
@@ -56,7 +61,7 @@ profile vitals-ui /opt/vitals-monitor/bin/vitals-ui {
   # ---------------------------------------------------------------
   # IPC sockets — nanomsg IPC transport (read-only; UI is consumer)
   # ---------------------------------------------------------------
-  /tmp/vitals-monitor/*.ipc            r,
+  /run/vitals-monitor/*.ipc            r,
 
   # ---------------------------------------------------------------
   # Proc / sys — read-only process info (needed by libc, LVGL perf)

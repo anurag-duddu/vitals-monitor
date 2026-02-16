@@ -19,6 +19,9 @@ extern void test_patient_data(void);
 extern void test_settings_store(void);
 extern void test_auth_manager(void);
 extern void test_audit_log(void);
+extern void test_sync_queue(void);
+extern void test_fhir_client(void);
+extern void test_trend_db(void);
 
 int main(void) {
     printf("========================================\n");
@@ -30,6 +33,9 @@ int main(void) {
     RUN_SUITE(test_settings_store);
     RUN_SUITE(test_auth_manager);
     RUN_SUITE(test_audit_log);
+    RUN_SUITE(test_sync_queue);
+    RUN_SUITE(test_fhir_client);
+    RUN_SUITE(test_trend_db);
 
     TEST_SUMMARY();
 

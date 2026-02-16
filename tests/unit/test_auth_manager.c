@@ -304,11 +304,11 @@ static void test_add_user(void) {
 
     auth_manager_init(NULL);
 
-    bool ok = auth_manager_add_user("New Nurse", "nurse2", "1111", AUTH_ROLE_NURSE);
+    bool ok = auth_manager_add_user("New Nurse", "nurse2", "1234", AUTH_ROLE_NURSE);
     ASSERT_TRUE(ok);
 
     /* Should now be able to login */
-    ok = auth_manager_login("nurse2", "1111");
+    ok = auth_manager_login("nurse2", "1234");
     ASSERT_TRUE(ok);
     ASSERT_STR_EQ(auth_manager_get_session()->user.name, "New Nurse");
     ASSERT_EQ_INT(auth_manager_get_session()->user.role, AUTH_ROLE_NURSE);
@@ -451,7 +451,7 @@ static void test_change_pin_nonexistent(void) {
 
     auth_manager_init(NULL);
 
-    bool ok = auth_manager_change_pin(99999, "0000");
+    bool ok = auth_manager_change_pin(99999, "4321");
     ASSERT_FALSE(ok);
 
     auth_manager_close();

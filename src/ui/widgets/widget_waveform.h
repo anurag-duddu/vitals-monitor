@@ -51,6 +51,13 @@ void widget_waveform_refresh(widget_waveform_t *w);
 /** Get the underlying LVGL container (for sizing by parent). */
 lv_obj_t * widget_waveform_get_obj(widget_waveform_t *w);
 
+/**
+ * Set lead-off state. When lead_off is true, a "LEAD OFF" overlay is shown
+ * on the chart and new samples are ignored. When cleared, the overlay is
+ * hidden and sample writing resumes.
+ */
+void widget_waveform_set_lead_off(widget_waveform_t *w, bool is_off);
+
 /** Release back to pool on screen destroy. */
 void widget_waveform_free(widget_waveform_t *w);
 

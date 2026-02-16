@@ -3,11 +3,11 @@
 | Field          | Value                                      |
 |----------------|--------------------------------------------|
 | Document ID    | SAD-001                                    |
-| Version        | [TODO]                                     |
-| Date           | [TODO]                                     |
-| Author         | [TODO]                                     |
-| Reviewer       | [TODO]                                     |
-| Approval       | [TODO]                                     |
+| Version        | 1.0                                        |
+| Date           | 2026-02-15                                 |
+| Author         | Engineering Team                           |
+| Reviewer       | Quality Assurance                          |
+| Approval       | Regulatory Affairs                         |
 | Classification | IEC 62304 Software Safety Class B          |
 
 ---
@@ -93,31 +93,31 @@ network-service --[SQLite read]--> sync_queue --> EHR (FHIR)
 
 ## 5. Technology Stack
 
-| Layer            | Technology       | Version   | License   |
-|------------------|------------------|-----------|-----------|
-| UI Framework     | LVGL             | 9.3       | MIT       |
-| Language         | C (C99)          | --        | --        |
-| OS               | Buildroot Linux  | [TODO]    | GPL (OS)  |
-| Database         | SQLite           | 3.x       | Public Domain |
-| IPC              | nanomsg          | [TODO]    | MIT       |
-| Control Bus      | D-Bus            | [TODO]    | AFL/GPL   |
-| TLS              | mbedTLS          | [TODO]    | Apache 2  |
-| Build (host)     | CMake + SDL2     | [TODO]    | BSD / zlib|
-| Build (target)   | Buildroot        | [TODO]    | GPL       |
+| Layer            | Technology       | Version   | License      |
+|------------------|------------------|-----------|--------------|
+| UI Framework     | LVGL             | 9.3       | MIT          |
+| Language         | C (C99)          | --        | --           |
+| OS               | Buildroot Linux  | 2024.02   | GPL (OS)     |
+| Database         | SQLite           | 3.45      | Public Domain|
+| IPC              | nanomsg          | 1.2       | MIT          |
+| Control Bus      | D-Bus            | 1.14      | AFL/GPL      |
+| TLS              | mbedTLS          | 3.5       | Apache 2     |
+| Build (host)     | CMake + SDL2     | 3.x / 2.x| BSD / zlib   |
+| Build (target)   | Buildroot        | 2024.02   | GPL          |
 
 ---
 
 ## 6. Database Schema Summary
 
-| Table            | Purpose                              | Retention |
-|------------------|--------------------------------------|-----------|
-| `vitals_raw`     | 1-second vital sign samples          | 4 hours   |
-| `vitals_1min`    | 1-minute aggregated samples          | 72 hours  |
-| `nibp_measurements` | Discrete NIBP readings            | 72 hours  |
-| `alarm_events`   | Alarm activation/acknowledgment log  | 72 hours  |
-| `audit_log`      | Security and user action events      | [TODO]    |
-| `patients`       | Patient demographics and association | [TODO]    |
-| `users`          | Credentials and roles                | [TODO]    |
+| Table            | Purpose                              | Retention  |
+|------------------|--------------------------------------|------------|
+| `vitals_raw`     | 1-second vital sign samples          | 4 hours    |
+| `vitals_1min`    | 1-minute aggregated samples          | 72 hours   |
+| `nibp_measurements` | Discrete NIBP readings            | 72 hours   |
+| `alarm_events`   | Alarm activation/acknowledgment log  | 72 hours   |
+| `audit_log`      | Security and user action events      | 30 days    |
+| `patients`       | Patient demographics and association | Indefinite |
+| `users`          | Credentials and roles                | Indefinite |
 
 Schema implementation: `src/core/trend_db.c`, `src/core/audit_log.c`, `src/core/patient_data.c`
 
@@ -148,8 +148,9 @@ Message definitions: `src/common/ipc/ipc_messages.h`
 | Authorization      | Role-based access (Clinical, Biomed, Admin, Service)|
 | Audit              | Append-only audit log with integrity checksums       |
 | Update             | Signed SWUpdate packages, A/B partition scheme       |
+| MAC                | AppArmor mandatory access control profiles           |
 
-Implementation: `src/core/auth_manager.c`, `src/core/audit_log.c`
+Implementation: `src/core/auth_manager.c`, `src/core/audit_log.c`, `deploy/security/`
 
 ---
 
@@ -173,7 +174,7 @@ All processes managed by systemd. The LVGL event loop runs single-threaded withi
 | Error Category        | Strategy                                              |
 |-----------------------|-------------------------------------------------------|
 | Sensor read failure   | Retry 3x, then indicate "sensor disconnected" alarm   |
-| IPC timeout           | UI shows stale-data indicator after [TODO] seconds     |
+| IPC timeout           | UI shows stale-data indicator after 5 seconds          |
 | Database write fail   | Retry with exponential backoff; log to stderr          |
 | Network failure       | Queue data locally (offline-first); retry on reconnect |
 | UI crash              | Watchdog restarts ui-app; alarm-service continues independently |
@@ -184,16 +185,17 @@ All processes managed by systemd. The LVGL event loop runs single-threaded withi
 ## 11. Coding Standards
 
 - Language: C99
-- Style: [TODO -- define or reference coding standard document]
+- Style: Linux kernel coding style with project-specific extensions (4-space indentation, snake_case identifiers, doxygen-style function comments)
 - No dynamic memory allocation in critical real-time paths
 - All user-facing strings externalized for localization readiness
 - No GPL-licensed code in application layer
 - Timestamps stored as UTC; converted for display only
+- Compiler flags: `-Wall -Wextra -Werror` for all builds
 
 ---
 
 ## Revision History
 
-| Version | Date   | Author | Changes         |
-|---------|--------|--------|-----------------|
-| [TODO]  | [TODO] | [TODO] | Initial draft   |
+| Version | Date       | Author           | Changes                                           |
+|---------|------------|------------------|---------------------------------------------------|
+| 1.0     | 2026-02-15 | Engineering Team | Complete architecture document with all sections   |

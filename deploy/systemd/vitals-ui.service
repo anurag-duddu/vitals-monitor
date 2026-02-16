@@ -1,3 +1,7 @@
+# CANONICAL SOURCE: This is the authoritative systemd unit file for vitals-ui.
+# The inline copy in buildroot-external/board/vitals-monitor/post-build.sh is a
+# deployment-time variant and may diverge.  When reconciling differences, treat
+# THIS file as the source of truth and propagate changes to post-build.sh.
 [Unit]
 Description=Vitals Monitor - User Interface Application
 Documentation=https://github.com/vitals-monitor/docs/vitals-ui
@@ -25,7 +29,7 @@ MemoryMax=128M
 # Security hardening
 ProtectSystem=strict
 ProtectHome=yes
-ReadWritePaths=/opt/vitals-monitor/data /tmp/vitals-monitor
+ReadWritePaths=/opt/vitals-monitor/data /run/vitals-monitor
 PrivateTmp=yes
 NoNewPrivileges=yes
 

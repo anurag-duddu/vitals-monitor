@@ -24,6 +24,8 @@
 #include "widget_waveform.h"
 #include "phosphor_icons.h"
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 /* ── Module state (valid while screen is active) ───────────── */
 
@@ -37,6 +39,21 @@ static widget_nav_bar_t         *nav_bar;
 static widget_waveform_t        *ecg_waveform;
 static widget_waveform_t        *pleth_waveform;
 
+/* ── PERF-1.4: Cached previous values to avoid redundant display updates ── */
+#define CACHE_INVALID_INT (-999999)
+#define CACHE_INVALID_FLT (-999999.0f)
+
+static int   prev_hr   = CACHE_INVALID_INT;
+static int   prev_spo2 = CACHE_INVALID_INT;
+static int   prev_rr   = CACHE_INVALID_INT;
+static float prev_temp = CACHE_INVALID_FLT;
+static int   prev_nibp_sys = CACHE_INVALID_INT;
+static int   prev_nibp_dia = CACHE_INVALID_INT;
+static int   prev_nibp_map = CACHE_INVALID_INT;
+
+/* ── Forward declarations ──────────────────────────────────── */
+void screen_main_vitals_reset_cache(void);
+
 /* ── Public API ────────────────────────────────────────────── */
 
 lv_obj_t * screen_main_vitals_create(void) {
@@ -47,6 +64,9 @@ lv_obj_t * screen_main_vitals_create(void) {
 
     /* ── 1. Alarm banner (top, 32px) ──────────────────────── */
     alarm_banner = widget_alarm_banner_create(scr);
+    if (!alarm_banner) {
+        fprintf(stderr, "[main_vitals] CRITICAL: Alarm banner pool exhausted!\n");
+    }
 
     /* ── 2. Main content area (between alarm bar and nav bar) ─ */
     lv_obj_t *content = lv_obj_create(scr);
@@ -84,6 +104,9 @@ lv_obj_t * screen_main_vitals_create(void) {
     ecg_waveform = widget_waveform_create(
         ecg_container, "ECG  Lead II  25mm/s", VM_COLOR_HR,
         VM_WAVEFORM_POINT_COUNT, 0, 400);
+    if (!ecg_waveform) {
+        fprintf(stderr, "[main_vitals] CRITICAL: ECG waveform pool exhausted!\n");
+    }
 
     /* Pleth waveform (bottom, ~45% of waveform area) */
     lv_obj_t *pleth_container = lv_obj_create(wave_area);
@@ -97,6 +120,9 @@ lv_obj_t * screen_main_vitals_create(void) {
     pleth_waveform = widget_waveform_create(
         pleth_container, "Pleth", VM_COLOR_SPO2,
         VM_WAVEFORM_POINT_COUNT, 0, 400);
+    if (!pleth_waveform) {
+        fprintf(stderr, "[main_vitals] CRITICAL: Pleth waveform pool exhausted!\n");
+    }
 
     /* ── 2b. Vitals panel (right, ~40%) — column of numerics ── */
     lv_obj_t *vitals_panel = lv_obj_create(content);
@@ -175,27 +201,57 @@ void screen_main_vitals_destroy(void) {
     ecg_waveform = NULL;
     pleth_waveform = NULL;
 
+    /* PERF-1.4: Reset cached values so next create gets fresh display */
+    screen_main_vitals_reset_cache();
+
     printf("[main_vitals] Screen destroyed\n");
 }
 
 /* ── Value update functions ────────────────────────────────── */
+/* UI-5.1: Display "---" when value is 0/invalid (not being measured)
+ * UI-5.2: Clamp to physiological ranges; display "ERR" if out of range
+ * UI-5.3: isnan()/isinf() check for temperature
+ * PERF-1.4: Cache previous values, only update display when changed */
 
 void screen_main_vitals_update_hr(int value) {
     if (!hr_display) return;
+    if (value == prev_hr) return;           /* PERF-1.4: skip if unchanged */
+    prev_hr = value;
+
     char buf[16];
-    snprintf(buf, sizeof(buf), "%d", value);
+    if (value == 0) {                       /* UI-5.1: not measured */
+        snprintf(buf, sizeof(buf), "---");
+    } else if (value < 20 || value > 300) { /* UI-5.2: out of range */
+        snprintf(buf, sizeof(buf), "ERR");
+    } else {
+        snprintf(buf, sizeof(buf), "%d", value);
+    }
     widget_numeric_display_set_value(hr_display, buf);
 }
 
 void screen_main_vitals_update_spo2(int value) {
     if (!spo2_display) return;
+    if (value == prev_spo2) return;         /* PERF-1.4 */
+    prev_spo2 = value;
+
     char buf[16];
-    snprintf(buf, sizeof(buf), "%d", value);
+    if (value == 0) {                       /* UI-5.1 */
+        snprintf(buf, sizeof(buf), "---");
+    } else if (value < 1 || value > 100) {  /* UI-5.2 */
+        snprintf(buf, sizeof(buf), "ERR");
+    } else {
+        snprintf(buf, sizeof(buf), "%d", value);
+    }
     widget_numeric_display_set_value(spo2_display, buf);
 }
 
 void screen_main_vitals_update_nibp(int sys, int dia, int map) {
     if (!nibp_display) return;
+    if (sys == prev_nibp_sys && dia == prev_nibp_dia && map == prev_nibp_map) return; /* PERF-1.4 */
+    prev_nibp_sys = sys;
+    prev_nibp_dia = dia;
+    prev_nibp_map = map;
+
     char buf[32];
     snprintf(buf, sizeof(buf), "%d/%d (%d)", sys, dia, map);
     widget_numeric_display_set_value(nibp_display, buf);
@@ -203,15 +259,41 @@ void screen_main_vitals_update_nibp(int sys, int dia, int map) {
 
 void screen_main_vitals_update_temp(float value) {
     if (!temp_display) return;
+
+    /* UI-5.3: guard against NaN/Inf before any comparison */
+    if (isnan(value) || isinf(value)) {
+        prev_temp = CACHE_INVALID_FLT;
+        widget_numeric_display_set_value(temp_display, "---");
+        return;
+    }
+
+    if (value == prev_temp) return;         /* PERF-1.4 */
+    prev_temp = value;
+
     char buf[16];
-    snprintf(buf, sizeof(buf), "%.1f", (double)value);
+    if (value <= 0.0f) {                    /* UI-5.1: not measured */
+        snprintf(buf, sizeof(buf), "---");
+    } else if (value < 20.0f || value > 50.0f) { /* UI-5.2: out of range */
+        snprintf(buf, sizeof(buf), "ERR");
+    } else {
+        snprintf(buf, sizeof(buf), "%.1f", (double)value);
+    }
     widget_numeric_display_set_value(temp_display, buf);
 }
 
 void screen_main_vitals_update_rr(int value) {
     if (!rr_display) return;
+    if (value == prev_rr) return;           /* PERF-1.4 */
+    prev_rr = value;
+
     char buf[16];
-    snprintf(buf, sizeof(buf), "%d", value);
+    if (value == 0) {                       /* UI-5.1 */
+        snprintf(buf, sizeof(buf), "---");
+    } else if (value < 1 || value > 100) {  /* UI-5.2 */
+        snprintf(buf, sizeof(buf), "ERR");
+    } else {
+        snprintf(buf, sizeof(buf), "%d", value);
+    }
     widget_numeric_display_set_value(rr_display, buf);
 }
 
@@ -225,9 +307,31 @@ void screen_main_vitals_set_alarm(vm_alarm_severity_t severity, const char *mess
     }
 }
 
+void screen_main_vitals_set_alarm_count(int count) {
+    if (!alarm_banner) return;
+    widget_alarm_banner_set_count(alarm_banner, count, 1);
+}
+
+void screen_main_vitals_set_ack_callback(void (*cb)(void)) {
+    if (!alarm_banner) return;
+    widget_alarm_banner_set_ack_cb(alarm_banner, cb);
+}
+
 void screen_main_vitals_update_time(const char *time_str) {
     if (!alarm_banner) return;
     widget_alarm_banner_set_time(alarm_banner, time_str);
+}
+
+/* ── Cache reset (PERF-1.4) ────────────────────────────────── */
+
+void screen_main_vitals_reset_cache(void) {
+    prev_hr       = CACHE_INVALID_INT;
+    prev_spo2     = CACHE_INVALID_INT;
+    prev_rr       = CACHE_INVALID_INT;
+    prev_temp     = CACHE_INVALID_FLT;
+    prev_nibp_sys = CACHE_INVALID_INT;
+    prev_nibp_dia = CACHE_INVALID_INT;
+    prev_nibp_map = CACHE_INVALID_INT;
 }
 
 /* ── Waveform functions ────────────────────────────────────── */

@@ -224,7 +224,8 @@ static void discharge_cb(lv_event_t *e) {
     if (pt) {
         printf("[patient] Discharging patient id=%d (%s)\n", (int)pt->id, pt->name);
         patient_data_discharge(pt->id);
-        /* Refresh the screen to reflect the change */
+        /* UI-1.1: go_home first to clear the nav stack, then push fresh patient screen */
+        screen_manager_go_home();
         screen_manager_push(SCREEN_ID_PATIENT);
     }
 }

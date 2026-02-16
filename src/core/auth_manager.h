@@ -31,6 +31,10 @@ extern "C" {
 #define AUTH_SESSION_TIMEOUT_DEFAULT_S  300   /* 5 minutes */
 #define AUTH_PIN_HASH_LEN              17    /* 16 hex chars + NUL */
 
+/* NOTE: PIN hashing uses DJB2a in simulator builds only.
+ * Production firmware MUST use Argon2id via mbedTLS.
+ * See SEC-AUTH-01 compile guard in auth_manager.c. */
+
 /* ── Role enumeration ────────────────────────────────────── */
 
 typedef enum {

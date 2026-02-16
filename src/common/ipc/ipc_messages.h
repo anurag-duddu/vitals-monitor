@@ -9,9 +9,11 @@
  *
  * All messages are little-endian and packed (no padding).
  * Messages are sent via nanomsg pub/sub on:
- *   ipc:///tmp/vitals-monitor/vitals.ipc
- *   ipc:///tmp/vitals-monitor/waveforms.ipc
- *   ipc:///tmp/vitals-monitor/alarms.ipc
+ *   ipc://<IPC_SOCKET_DIR>/sensor.ipc   (vitals + waveforms)
+ *   ipc://<IPC_SOCKET_DIR>/alarm.ipc    (alarm events)
+ *   ipc://<IPC_SOCKET_DIR>/command.ipc  (control channel)
+ * where IPC_SOCKET_DIR = /tmp/vitals-monitor (simulator) or
+ *                        /run/vitals-monitor (target)
  *
  * MESSAGE FORMAT:
  *   [msg_type: uint8_t][payload_len: uint16_t][payload: N bytes]
@@ -22,6 +24,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>  /* offsetof — used by IPC_VALIDATE_WAVEFORM */
 
 #ifdef __cplusplus
 extern "C" {
@@ -122,6 +125,14 @@ typedef struct {
 
 } ipc_msg_waveform_t;
 
+/* SEC-MEM-03: Validate waveform sample_count against payload_len to prevent
+ * buffer over-read when processing received waveform messages.
+ * Usage: if (!IPC_VALIDATE_WAVEFORM(msg)) { reject; } */
+#define IPC_VALIDATE_WAVEFORM(msg) \
+    ((msg)->header.payload_len >= \
+        ((msg)->sample_count * sizeof(int16_t) + \
+         offsetof(ipc_msg_waveform_t, samples) - sizeof(ipc_msg_header_t)))
+
 /* ============================================================
  *  Alarm Message (IPC_MSG_ALARM)
  *
@@ -203,12 +214,24 @@ typedef struct {
 
 /* ============================================================
  *  IPC Socket Paths
+ *
+ *  SEC-IPC-03 / BUILD-2.4: Use /run/vitals-monitor/ on target
+ *  for proper tmpfiles.d lifecycle management. Simulator keeps
+ *  /tmp/ since /run/ may not exist on macOS / dev hosts.
  * ============================================================ */
 
-#define IPC_SOCKET_VITALS       "ipc:///tmp/vitals-monitor/vitals.ipc"
-#define IPC_SOCKET_WAVEFORMS    "ipc:///tmp/vitals-monitor/waveforms.ipc"
-#define IPC_SOCKET_ALARMS       "ipc:///tmp/vitals-monitor/alarms.ipc"
-#define IPC_SOCKET_CONTROL      "ipc:///tmp/vitals-monitor/control.ipc"
+#ifdef SIMULATOR_BUILD
+#define IPC_SOCKET_DIR "/tmp/vitals-monitor"
+#else
+#define IPC_SOCKET_DIR "/run/vitals-monitor"
+#endif
+
+/* BUILD-2.4: Canonical IPC socket names, unified with post-build.sh
+ * and vitals-monitor.conf.  Old names (vitals.ipc, waveforms.ipc,
+ * alarms.ipc, control.ipc) are retired. */
+#define IPC_SOCKET_SENSOR       "ipc://" IPC_SOCKET_DIR "/sensor.ipc"
+#define IPC_SOCKET_ALARM        "ipc://" IPC_SOCKET_DIR "/alarm.ipc"
+#define IPC_SOCKET_COMMAND      "ipc://" IPC_SOCKET_DIR "/command.ipc"
 
 /* ============================================================
  *  Utility Functions

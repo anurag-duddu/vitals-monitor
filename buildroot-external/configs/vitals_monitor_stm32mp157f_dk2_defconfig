@@ -111,12 +111,20 @@ BR2_PACKAGE_WPA_SUPPLICANT_AUTOSCAN=y
 BR2_PACKAGE_WPA_SUPPLICANT_WPA3=y
 BR2_PACKAGE_WPA_SUPPLICANT_WPA_CLIENT=y
 BR2_PACKAGE_DHCPCD=y
-BR2_PACKAGE_OPENSSH=y
+# SSH server removed for production (BUILD-2.2). Remote access is not
+# permitted on deployed medical devices. Use _dev_defconfig for development.
+# BR2_PACKAGE_OPENSSH=y
 BR2_PACKAGE_DROPBEAR=n
 
 # -- DNS / NTP --
 BR2_PACKAGE_NTP=y
 BR2_PACKAGE_NTP_NTPD=y
+
+# -- Firewall (BUILD-2.7) --
+BR2_PACKAGE_IPTABLES=y
+
+# -- Mandatory Access Control (BUILD-2.6) --
+BR2_PACKAGE_APPARMOR=y
 
 # =============================================================================
 # OTA Updates - SWUpdate
@@ -130,7 +138,9 @@ BR2_PACKAGE_SWUPDATE_INSTALL_WEBSITE=n
 # =============================================================================
 BR2_TARGET_GENERIC_HOSTNAME="vitals-monitor"
 BR2_TARGET_GENERIC_ISSUE="Vitals Monitor System"
-BR2_TARGET_GENERIC_ROOT_PASSWD="$$6$$vitals$$placeholder"
+# Root account locked for production (BUILD-2.3). All services run as
+# dedicated 'vitals' user. Use _dev_defconfig for development root access.
+BR2_TARGET_GENERIC_ROOT_PASSWD="!"
 BR2_SYSTEM_DHCP=""
 BR2_TARGET_TZ_INFO=y
 BR2_TARGET_LOCALTIME="UTC"
@@ -139,12 +149,13 @@ BR2_TARGET_LOCALTIME="UTC"
 BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_EUDEV=y
 
 # =============================================================================
-# Debugging (disable for production)
+# Debugging
 # =============================================================================
-BR2_PACKAGE_STRACE=y
-BR2_PACKAGE_GDB=y
-BR2_PACKAGE_GDB_SERVER=y
-BR2_ENABLE_DEBUG=y
+# Debug tools removed for production (BUILD-2.1). Use _dev_defconfig for development.
+# BR2_PACKAGE_STRACE=y
+# BR2_PACKAGE_GDB=y
+# BR2_PACKAGE_GDB_SERVER=y
+# BR2_ENABLE_DEBUG=y
 BR2_STRIP_strip=y
 
 # =============================================================================

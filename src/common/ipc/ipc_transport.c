@@ -332,6 +332,29 @@ ipc_error_t ipc_sub_recv(ipc_subscriber_t *sub, size_t *out_len) {
 
     sub->msgs_received++;
     sub->bytes_received += (uint32_t)bytes;
+
+    /* SEC-IPC-02: Validate message header before dispatch */
+    if ((size_t)bytes >= sizeof(ipc_msg_header_t)) {
+        const ipc_msg_header_t *hdr = (const ipc_msg_header_t *)sub->recv_buf;
+
+        /* Validate protocol version */
+        if (hdr->version != IPC_PROTOCOL_VERSION) {
+            printf(TAG "Received message with unknown protocol version: %u (expected %u)\n",
+                   hdr->version, IPC_PROTOCOL_VERSION);
+            if (out_len) *out_len = 0;
+            return IPC_ERR_RECV;
+        }
+
+        /* Validate payload_len does not exceed buffer bounds */
+        size_t max_payload = (size_t)bytes - sizeof(ipc_msg_header_t);
+        if (hdr->payload_len > max_payload) {
+            printf(TAG "Received message with invalid payload length: %u (max %zu)\n",
+                   hdr->payload_len, max_payload);
+            if (out_len) *out_len = 0;
+            return IPC_ERR_RECV;
+        }
+    }
+
     if (out_len) *out_len = (size_t)bytes;
 
     /* Dispatch to callback if registered */

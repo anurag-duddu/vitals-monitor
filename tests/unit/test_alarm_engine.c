@@ -504,7 +504,7 @@ static void test_disabled_param(void) {
     alarm_engine_deinit();
 }
 
-/* ── Test: zero value (invalid signal) is skipped ────────── */
+/* ── Test: no-signal sentinel value is skipped ───────────── */
 
 static void test_zero_value_skipped(void) {
     printf("  test_zero_value_skipped\n");
@@ -513,10 +513,10 @@ static void test_zero_value_skipped(void) {
     const alarm_engine_state_t *state = alarm_engine_get_state();
 
     vitals_data_t v = make_normal_vitals();
-    v.hr = 0;  /* No signal */
+    v.hr = ALARM_NO_SIGNAL_VALUE;  /* No signal sentinel */
     alarm_engine_evaluate(&v, 10);
 
-    /* HR=0 should not trigger alarm even though 0 < critical_low */
+    /* No-signal sentinel should not trigger alarm */
     ASSERT_EQ_INT(state->params[ALARM_PARAM_HR].state, ALARM_STATE_INACTIVE);
 
     alarm_engine_deinit();

@@ -99,6 +99,7 @@ bool settings_store_init(const char *db_path) {
     /* Performance pragmas */
     sqlite3_exec(db, "PRAGMA journal_mode=WAL;", NULL, NULL, NULL);
     sqlite3_exec(db, "PRAGMA synchronous=NORMAL;", NULL, NULL, NULL);
+    sqlite3_exec(db, "PRAGMA busy_timeout=5000;", NULL, NULL, NULL);
 
     /* Create table */
     char *err_msg = NULL;
@@ -225,6 +226,17 @@ const char *settings_get_string(const char *key, const char *default_val) {
     return string_buf;
 }
 
+bool settings_store_get_string_buf(const char *key, char *buf, size_t buf_size) {
+    if (!db || !key || !buf || buf_size == 0) return false;
+
+    const char *val = settings_get_string(key, NULL);
+    if (!val) return false;
+
+    strncpy(buf, val, buf_size - 1);
+    buf[buf_size - 1] = '\0';
+    return true;
+}
+
 /* ── Typed setters ───────────────────────────────────────── */
 
 bool settings_set_int(const char *key, int value) {
@@ -253,6 +265,8 @@ bool settings_set_string(const char *key, const char *value) {
 void settings_load_defaults(void) {
     if (!db) return;
 
+    sqlite3_exec(db, "BEGIN;", NULL, NULL, NULL);
+
     for (int i = 0; i < (int)DEFAULTS_COUNT; i++) {
         /* Only insert if key does not already exist */
         if (!settings_exists(defaults[i].key)) {
@@ -261,6 +275,8 @@ void settings_load_defaults(void) {
                    defaults[i].key, defaults[i].value);
         }
     }
+
+    sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
 }
 
 bool settings_reset_to_defaults(void) {

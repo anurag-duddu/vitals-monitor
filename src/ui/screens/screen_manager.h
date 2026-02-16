@@ -51,11 +51,25 @@ void screen_manager_register(const screen_reg_t *reg);
 /** Navigate to a screen by ID (pushes onto stack). */
 void screen_manager_push(screen_id_t id);
 
+/**
+ * Replace the current screen atomically (pop + push without intermediate).
+ * Destroys the current screen, replaces top of stack, and loads the new screen.
+ * Avoids the visual flash of go_home() + push() pattern.
+ */
+void screen_manager_replace_current(screen_id_t id);
+
 /** Go back to the previous screen (pops stack). No-op if at root. */
 void screen_manager_pop(void);
 
 /** Go directly to main vitals screen (clears stack). */
 void screen_manager_go_home(void);
+
+/**
+ * Go home then push target in one operation (PERF-1.2).
+ * Sets stack to [home, target] but only loads target screen,
+ * avoiding the intermediate home screen creation.
+ */
+void screen_manager_go_home_then_push(screen_id_t target);
 
 /** Get the currently active screen ID. */
 screen_id_t screen_manager_get_active(void);

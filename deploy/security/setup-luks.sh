@@ -167,9 +167,23 @@ fi
 [ -n "$HW_ID" ] || die "Hardware unique ID is empty."
 info "  Hardware ID read successfully (${#HW_ID} hex chars)"
 
-# Derive a passphrase by hashing the hardware ID with a device-specific salt.
-# This adds entropy and ensures the raw hardware ID is never used directly.
-PASSPHRASE=$(echo -n "vitals-monitor:luks:${HW_ID}:${LUKS_LABEL}" | sha256sum | awk '{print $1}')
+# Derive a passphrase by hashing the hardware ID with a per-device random salt.
+# PRODUCTION NOTE: In production, the salt MUST be generated per-device during
+# factory provisioning and stored persistently (e.g., in a TPM-sealed NV index
+# or a dedicated OTP region).  The salt below is generated at first-run and
+# saved to a root-only file so that subsequent boots can reproduce the key.
+SALT_FILE="/etc/vitals-monitor/.luks-salt"
+if [ -f "$SALT_FILE" ]; then
+    SALT=$(cat "$SALT_FILE")
+else
+    # Generate a 32-byte random salt from /dev/urandom
+    SALT=$(dd if=/dev/urandom bs=32 count=1 2>/dev/null | xxd -p | tr -d ' \n')
+    mkdir -p "$(dirname "$SALT_FILE")"
+    # Store salt with restrictive permissions (root read-only)
+    install -m 0400 /dev/null "$SALT_FILE"
+    echo -n "$SALT" > "$SALT_FILE"
+fi
+PASSPHRASE=$(echo -n "${SALT}:${HW_ID}:${LUKS_LABEL}" | sha256sum | awk '{print $1}')
 info "  Key derivation material prepared"
 
 # ---------------------------------------------------------------------------
@@ -290,10 +304,17 @@ info "Unmounting and closing LUKS container..."
 umount "$MOUNT_POINT"
 cryptsetup luksClose "$DM_NAME"
 
-# Clear the passphrase from memory (best-effort; bash variables are
-# not securely erasable, but we zero the variable to limit exposure)
-PASSPHRASE=""
-HW_ID=""
+# Clear sensitive variables from the shell environment.
+# Note: bash variables cannot be securely erased from process memory, but
+# unsetting them prevents accidental leakage via subshells, 'set' output,
+# or /proc/*/environ.  Overwrite before unsetting for defense-in-depth.
+PASSPHRASE="$(head -c 64 /dev/urandom | xxd -p | tr -d ' \n')"
+HW_ID="$(head -c 64 /dev/urandom | xxd -p | tr -d ' \n')"
+SALT="$(head -c 64 /dev/urandom | xxd -p | tr -d ' \n')"
+unset PASSPHRASE
+unset HW_ID
+unset SALT
+unset SALT_FILE
 
 # ---------------------------------------------------------------------------
 # Summary and boot integration instructions

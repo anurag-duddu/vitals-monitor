@@ -22,6 +22,8 @@
 #ifndef ALARM_ENGINE_H
 #define ALARM_ENGINE_H
 
+#define ALARM_NO_SIGNAL_VALUE  (-9999)  /* Sentinel: no valid signal for this parameter */
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "vitals_provider.h"    /* vitals_data_t (no LVGL dependency) */
@@ -172,6 +174,9 @@ void alarm_engine_pause_audio(uint32_t duration_s);
 
 /** Check if alarm audio is currently paused. */
 bool alarm_engine_is_audio_paused(void);
+
+/** Get count of alarms in ACTIVE (unacknowledged) state. */
+int alarm_engine_get_active_count(void);
 
 #ifdef __cplusplus
 }

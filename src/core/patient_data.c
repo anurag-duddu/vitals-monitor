@@ -219,6 +219,7 @@ bool patient_data_init(const char *db_path) {
     /* Performance pragmas */
     sqlite3_exec(db, "PRAGMA journal_mode=WAL;", NULL, NULL, NULL);
     sqlite3_exec(db, "PRAGMA synchronous=NORMAL;", NULL, NULL, NULL);
+    sqlite3_exec(db, "PRAGMA busy_timeout=5000;", NULL, NULL, NULL);
 
     /* Create table */
     char *err_msg = NULL;
@@ -292,6 +293,10 @@ bool patient_data_init(const char *db_path) {
         patient_data_close();
         return false;
     }
+
+    /* Create index for active patient lookups */
+    sqlite3_exec(db, "CREATE INDEX IF NOT EXISTS idx_patients_active_slot ON patients(active, monitor_slot);",
+                 NULL, NULL, NULL);
 
     /* Seed default patient if table is empty */
     seed_default_patient();
@@ -470,6 +475,9 @@ bool patient_data_associate(int32_t patient_id, uint8_t slot) {
     if (!db || !stmt_set_slot || !stmt_clear_slot || patient_id <= 0 || slot > 1)
         return false;
 
+    /* Begin transaction — both operations must succeed atomically */
+    sqlite3_exec(db, "BEGIN;", NULL, NULL, NULL);
+
     /* Clear any existing patient from this slot */
     sqlite3_reset(stmt_clear_slot);
     sqlite3_bind_int(stmt_clear_slot, 1, (int)slot);
@@ -484,8 +492,11 @@ bool patient_data_associate(int32_t patient_id, uint8_t slot) {
     if (rc != SQLITE_DONE) {
         fprintf(stderr, "[patient_data] Associate failed (id=%d, slot=%d): %s\n",
                 patient_id, slot, sqlite3_errmsg(db));
+        sqlite3_exec(db, "ROLLBACK;", NULL, NULL, NULL);
         return false;
     }
+
+    sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
 
     /* Refresh cache */
     reload_active_cache();

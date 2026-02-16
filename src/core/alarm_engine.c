@@ -153,7 +153,14 @@ void alarm_engine_deinit(void) {
 /* ── Evaluation ──────────────────────────────────────────── */
 
 void alarm_engine_evaluate(const vitals_data_t *data, uint32_t current_time_s) {
-    if (!initialized || !data) return;
+    if (!initialized) {
+        fprintf(stderr, "[alarm_engine] CRITICAL: evaluate() called before init — ALARM SYSTEM INOPERATIVE\n");
+        return;
+    }
+    if (!data) {
+        fprintf(stderr, "[alarm_engine] WARNING: evaluate() called with NULL data\n");
+        return;
+    }
 
     current_time = current_time_s;
 
@@ -271,6 +278,16 @@ bool alarm_engine_is_audio_paused(void) {
     return engine_state.audio_paused;
 }
 
+int alarm_engine_get_active_count(void) {
+    int count = 0;
+    for (int i = 0; i < ALARM_PARAM_COUNT; i++) {
+        if (engine_state.params[i].state != ALARM_STATE_INACTIVE) {
+            count++;
+        }
+    }
+    return count;
+}
+
 /* ── Private: evaluate a single parameter ────────────────── */
 
 static void evaluate_param(alarm_param_t param, int value, uint32_t time_s) {
@@ -287,8 +304,8 @@ static void evaluate_param(alarm_param_t param, int value, uint32_t time_s) {
         return;
     }
 
-    /* Skip invalid values (0 = no signal / not yet measured) */
-    if (value == 0) return;
+    /* Skip invalid/no-signal values */
+    if (value == ALARM_NO_SIGNAL_VALUE) return;
 
     /* Check current value against thresholds */
     alarm_severity_t new_sev = check_thresholds(param, value);
@@ -387,6 +404,15 @@ static void evaluate_param(alarm_param_t param, int value, uint32_t time_s) {
             s->severity = new_sev;
             build_message(param, new_sev, value, high_side);
         }
+        break;
+
+    default:
+        /* Unknown state — reset to INACTIVE with error log */
+        fprintf(stderr, "[alarm_engine] CRITICAL: %s in unknown state %d, resetting to INACTIVE\n",
+                param_names[param], (int)s->state);
+        s->state = ALARM_STATE_INACTIVE;
+        s->severity = ALARM_SEV_NONE;
+        s->message[0] = '\0';
         break;
     }
 }

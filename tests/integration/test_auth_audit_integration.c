@@ -145,8 +145,8 @@ static void test_session_timeout_audit_entry(void) {
     ASSERT_TRUE(logged_in);
     ASSERT_TRUE(auth_manager_is_logged_in());
 
-    /* Set a very short timeout for testing */
-    auth_manager_set_timeout(1);
+    /* Set minimum allowed timeout for testing */
+    auth_manager_set_timeout(60);
 
     /* First check_timeout call initializes timestamps (login sets
        touch_pending=true, so it consumes the touch and returns false). */
@@ -155,7 +155,7 @@ static void test_session_timeout_audit_entry(void) {
     ASSERT_TRUE(auth_manager_is_logged_in());
 
     /* Second call with time far in the future triggers timeout */
-    bool timed_out = auth_manager_check_timeout(now + 10);
+    bool timed_out = auth_manager_check_timeout(now + 120);
     ASSERT_TRUE(timed_out);
     ASSERT_FALSE(auth_manager_is_logged_in());
 

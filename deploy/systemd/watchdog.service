@@ -1,3 +1,7 @@
+# CANONICAL SOURCE: This is the authoritative systemd unit file for watchdog-monitor.
+# The inline copy in buildroot-external/board/vitals-monitor/post-build.sh is a
+# deployment-time variant and may diverge.  When reconciling differences, treat
+# THIS file as the source of truth and propagate changes to post-build.sh.
 [Unit]
 Description=Vitals Monitor - System Watchdog and Health Monitor
 Documentation=https://github.com/vitals-monitor/docs/watchdog
@@ -38,8 +42,8 @@ StandardError=journal
 SyslogIdentifier=vitals-watchdog
 
 # ExecStartPre: ensure IPC socket directory exists
-ExecStartPre=/bin/mkdir -p /tmp/vitals-monitor
-ExecStartPre=/bin/chown vitals:vitals /tmp/vitals-monitor
+ExecStartPre=/bin/mkdir -p /run/vitals-monitor
+ExecStartPre=/bin/chown vitals:vitals /run/vitals-monitor
 
 # ExecStopPost: on unexpected exit, attempt to restart critical services
 ExecStopPost=/bin/systemctl restart sensor-service.service alarm-service.service vitals-ui.service

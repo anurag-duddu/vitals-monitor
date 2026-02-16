@@ -8,10 +8,10 @@
  *   directly via alarm_engine_get_state() (shared address space).
  *
  * TARGET (documented, not yet implemented):
- *   - Subscribes to IPC_SOCKET_VITALS via nanomsg SUB socket
+ *   - Subscribes to IPC_SOCKET_SENSOR via nanomsg SUB socket
  *   - Deserialises ipc_msg_vitals_t and converts to vitals_data_t
  *   - Evaluates via alarm_engine_evaluate()
- *   - Publishes ipc_msg_alarm_t on IPC_SOCKET_ALARMS
+ *   - Publishes ipc_msg_alarm_t on IPC_SOCKET_ALARM
  *   - Drives buzzer GPIO / LED hardware for audible/visual alarms
  *   - Logs alarm events to trend_db
  */
@@ -121,9 +121,9 @@ void alarm_service_deinit(void)
  *
  * 1. alarm_service_init():
  *    - Call alarm_engine_init()
- *    - Create nanomsg SUB socket, connect to IPC_SOCKET_VITALS
+ *    - Create nanomsg SUB socket, connect to IPC_SOCKET_SENSOR
  *    - Subscribe to IPC_MSG_VITALS topic
- *    - Create nanomsg PUB socket, bind to IPC_SOCKET_ALARMS
+ *    - Create nanomsg PUB socket, bind to IPC_SOCKET_ALARM
  *    - Initialise buzzer/LED GPIO
  *
  * 2. alarm_service_start():

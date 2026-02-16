@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/** Maximum number of auto-restarts before giving up on a service. */
+#define SERVICE_MAX_RESTARTS 10
+
 /* ── Internal service entry ───────────────────────────────── */
 
 typedef struct {
@@ -242,6 +245,13 @@ void service_manager_tick(uint32_t current_time_s)
 
         /* ── Auto-restart crashed services ────────────────── */
         if (entry->info.state == SERVICE_STATE_ERROR && entry->info.auto_restart) {
+            /* Enforce maximum restart limit */
+            if (entry->info.restart_count >= SERVICE_MAX_RESTARTS) {
+                fprintf(stderr, "[service_manager] CRITICAL: '%s' exceeded max restarts (%d), not restarting\n",
+                        entry->reg.name, SERVICE_MAX_RESTARTS);
+                continue;
+            }
+
             /* Avoid restart storm: require at least 3 seconds between attempts */
             uint32_t elapsed = current_time_s - entry->info.start_time_s;
             if (elapsed < 3) continue;

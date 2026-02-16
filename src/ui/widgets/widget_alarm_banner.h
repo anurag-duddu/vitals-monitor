@@ -35,4 +35,10 @@ lv_obj_t * widget_alarm_banner_get_obj(widget_alarm_banner_t *w);
 /** Release back to pool on screen destroy. */
 void widget_alarm_banner_free(widget_alarm_banner_t *w);
 
+/** Set a callback for when alarm is acknowledged via the ACK button. */
+void widget_alarm_banner_set_ack_cb(widget_alarm_banner_t *w, void (*cb)(void));
+
+/** Set the total active alarm count and current display index (1-based). */
+void widget_alarm_banner_set_count(widget_alarm_banner_t *w, int count, int current_index);
+
 #endif /* WIDGET_ALARM_BANNER_H */

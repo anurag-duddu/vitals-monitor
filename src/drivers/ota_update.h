@@ -2,20 +2,27 @@
  * @file ota_update.h
  * @brief Over-the-Air update interface (Phase 11)
  *
- * Provides an abstraction over the SWUpdate A/B partition scheme used on
- * the STM32MP157F-DK2 target. The UI and network-service use this API to
- * check for updates, apply them, and roll back on failure.
+ * Provides an abstraction for firmware updates on the STM32MP157F-DK2 target.
+ * The UI and network-service use this API to check for updates, apply them,
+ * and roll back on failure.
  *
  * On the simulator build, all functions return safe stub values so the UI
  * can render the update screen without real OTA infrastructure.
  *
- * TARGET IMPLEMENTATION NOTES:
- *   - Uses SWUpdate (swupdate) under the hood
- *   - A/B partition layout: rootfsA + rootfsB, one active, one standby
- *   - Update packages are .swu files signed with RSA-2048 + SHA-256
- *   - On successful boot after update, the bootloader marks the new
- *     partition as confirmed; otherwise it rolls back automatically
- *   - ota_rollback() forces a revert to the previous partition
+ * CURRENT STATUS:
+ *   The API below defines the intended OTA state machine.  The simulator
+ *   build provides stub implementations only.  The following features are
+ *   PLANNED but NOT YET IMPLEMENTED in the production firmware:
+ *
+ * TODO (PLANNED - not yet implemented):
+ *   - SWUpdate integration for applying .swu packages
+ *   - A/B partition layout (rootfsA + rootfsB) with bootloader coordination
+ *   - RSA-2048 + SHA-256 cryptographic signature verification of update images
+ *   - Automatic bootloader-level rollback on failed boot after update
+ *   - ota_rollback() triggering a revert to the previous partition
+ *
+ *   These features require target hardware bring-up and integration with
+ *   the U-Boot bootloader.  Do not rely on them until this notice is removed.
  */
 
 #ifndef OTA_UPDATE_H

@@ -143,7 +143,8 @@ bool audit_log_init(const char *db_path) {
 
     /* Performance pragmas */
     sqlite3_exec(db, "PRAGMA journal_mode=WAL;", NULL, NULL, NULL);
-    sqlite3_exec(db, "PRAGMA synchronous=NORMAL;", NULL, NULL, NULL);
+    sqlite3_exec(db, "PRAGMA synchronous=FULL;", NULL, NULL, NULL);
+    sqlite3_exec(db, "PRAGMA busy_timeout=5000;", NULL, NULL, NULL);
 
     /* Create tables and indexes */
     char *err_msg = NULL;
@@ -223,8 +224,8 @@ void audit_log_record(audit_event_t event, const char *username,
 
     sqlite3_reset(stmt_insert);
     sqlite3_bind_int(stmt_insert, 1, (int)event);
-    sqlite3_bind_text(stmt_insert, 2, user, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt_insert, 3, msg, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt_insert, 2, user, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt_insert, 3, msg, -1, SQLITE_STATIC);
     sqlite3_bind_int(stmt_insert, 4, (int)ts);
 
     int rc = sqlite3_step(stmt_insert);
