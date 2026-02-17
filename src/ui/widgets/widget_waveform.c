@@ -7,6 +7,7 @@
  */
 
 #include "widget_waveform.h"
+#include "theme_styles.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -67,11 +68,8 @@ widget_waveform_t * widget_waveform_create(
     w->container = lv_obj_create(parent);
     lv_obj_remove_flag(w->container, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(w->container, lv_pct(100), lv_pct(100));
-    lv_obj_set_style_bg_opa(w->container, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(w->container, 0, 0);
-    lv_obj_set_style_pad_all(w->container, 0, 0);
+    lv_obj_add_style(w->container, &s_col, 0);
     lv_obj_set_style_pad_gap(w->container, VM_PAD_TINY, 0);
-    lv_obj_set_flex_flow(w->container, LV_FLEX_FLOW_COLUMN);
 
     /* ── Title label ───────────────────────────────────── */
     w->label_obj = lv_label_create(w->container);
@@ -91,10 +89,7 @@ widget_waveform_t * widget_waveform_create(
     lv_chart_set_div_line_count(w->chart_obj, 0, 0);
 
     /* Chart styling: dark background, no border, no padding */
-    lv_obj_set_style_bg_color(w->chart_obj, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(w->chart_obj, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_width(w->chart_obj, 0, 0);
-    lv_obj_set_style_pad_all(w->chart_obj, 0, 0);
+    lv_obj_add_style(w->chart_obj, &s_chart, 0);
 
     /* Trace line: 2px width, colored */
     lv_obj_set_style_line_width(w->chart_obj, 2, LV_PART_ITEMS);
@@ -114,7 +109,7 @@ widget_waveform_t * widget_waveform_create(
     w->lead_off_lbl = lv_label_create(w->chart_obj);
     lv_label_set_text(w->lead_off_lbl, "LEAD OFF");
     lv_obj_set_style_text_font(w->lead_off_lbl, VM_FONT_LABEL, 0);
-    lv_obj_set_style_text_color(w->lead_off_lbl, lv_color_hex(0xFF0000), 0);
+    lv_obj_set_style_text_color(w->lead_off_lbl, VM_COLOR_ALARM_HIGH, 0);
     lv_obj_center(w->lead_off_lbl);
     lv_obj_add_flag(w->lead_off_lbl, LV_OBJ_FLAG_HIDDEN);
     w->lead_off = false;

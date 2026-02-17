@@ -14,6 +14,7 @@
  */
 
 #include "widget_alarm_banner.h"
+#include "theme_styles.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -113,7 +114,7 @@ widget_alarm_banner_t * widget_alarm_banner_create(lv_obj_t *parent) {
     w->ack_btn = lv_button_create(w->container);
     lv_obj_set_size(w->ack_btn, VM_SCALE_W(40), VM_SCALE_H(22));
     lv_obj_set_style_radius(w->ack_btn, VM_SCALE_H(4), 0);
-    lv_obj_set_style_bg_color(w->ack_btn, lv_color_hex(0x444444), 0);
+    lv_obj_set_style_bg_color(w->ack_btn, lv_color_hex(vm_active_scheme->surface_container_high), 0);
     lv_obj_set_style_bg_opa(w->ack_btn, LV_OPA_COVER, 0);
     lv_obj_set_style_pad_all(w->ack_btn, 0, 0);
     lv_obj_add_flag(w->ack_btn, LV_OBJ_FLAG_HIDDEN);
@@ -290,11 +291,11 @@ static void update_visual(widget_alarm_banner_t *w) {
     switch (w->severity) {
         case VM_ALARM_HIGH:
             bg_color = w->flash_state ? VM_COLOR_BG : VM_COLOR_ALARM_HIGH;
-            text_color = w->flash_state ? VM_COLOR_ALARM_HIGH : lv_color_hex(0xFFFFFF);
+            text_color = w->flash_state ? VM_COLOR_ALARM_HIGH : lv_color_hex(vm_active_scheme->on_surface);
             break;
         case VM_ALARM_MEDIUM:
             bg_color = w->flash_state ? VM_COLOR_BG : VM_COLOR_ALARM_MEDIUM;
-            text_color = w->flash_state ? VM_COLOR_ALARM_MEDIUM : lv_color_hex(0x000000);
+            text_color = w->flash_state ? VM_COLOR_ALARM_MEDIUM : lv_color_hex(VM_BLACK);
             break;
         case VM_ALARM_LOW:
             bg_color = VM_COLOR_BG_PANEL;

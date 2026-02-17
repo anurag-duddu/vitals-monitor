@@ -10,6 +10,7 @@
  */
 
 #include "widget_numeric_display.h"
+#include "theme_styles.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -83,13 +84,11 @@ widget_numeric_display_t * widget_numeric_display_create(
     /* ── Container ────────────────────────────────────────── */
     w->container = lv_obj_create(parent);
     lv_obj_remove_flag(w->container, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_style_bg_color(w->container, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(w->container, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(w->container, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(w->container, 2, 0);
-    lv_obj_set_style_radius(w->container, 4, 0);
+    lv_obj_add_style(w->container, &s_card, 0);
     lv_obj_set_style_pad_all(w->container, VM_PAD_SMALL, 0);
     lv_obj_set_style_pad_gap(w->container, VM_PAD_TINY, 0);
+    lv_obj_set_style_border_color(w->container, color, 0);     /* parameter color */
+    lv_obj_set_style_border_width(w->container, VM_BORDER_MEDIUM, 0);
 
     /* Size depends on variant */
     lv_obj_set_width(w->container, lv_pct(100));
@@ -116,11 +115,8 @@ widget_numeric_display_t * widget_numeric_display_create(
     lv_obj_remove_flag(w->top_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(w->top_row, lv_pct(100));
     lv_obj_set_height(w->top_row, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(w->top_row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(w->top_row, 0, 0);
-    lv_obj_set_style_pad_all(w->top_row, 0, 0);
+    lv_obj_add_style(w->top_row, &s_row, 0);
     lv_obj_set_style_pad_gap(w->top_row, VM_PAD_TINY, 0);
-    lv_obj_set_flex_flow(w->top_row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(w->top_row, LV_FLEX_ALIGN_SPACE_BETWEEN,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -128,11 +124,8 @@ widget_numeric_display_t * widget_numeric_display_create(
     lv_obj_t *left_group = lv_obj_create(w->top_row);
     lv_obj_remove_flag(left_group, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(left_group, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(left_group, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(left_group, 0, 0);
-    lv_obj_set_style_pad_all(left_group, 0, 0);
+    lv_obj_add_style(left_group, &s_row, 0);
     lv_obj_set_style_pad_gap(left_group, VM_PAD_TINY, 0);
-    lv_obj_set_flex_flow(left_group, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(left_group, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -179,12 +172,12 @@ void widget_numeric_display_set_alarm(widget_numeric_display_t *w, vm_alarm_seve
     w->alarm_state = severity;
 
     if (severity == VM_ALARM_NONE) {
-        lv_obj_set_style_border_color(w->container, VM_COLOR_BG_PANEL_BORDER, 0);
-        lv_obj_set_style_border_width(w->container, 2, 0);
+        lv_obj_set_style_border_color(w->container, w->param_color, 0);
+        lv_obj_set_style_border_width(w->container, VM_BORDER_MEDIUM, 0);
     } else {
         lv_color_t alarm_color = theme_vitals_alarm_color(severity);
         lv_obj_set_style_border_color(w->container, alarm_color, 0);
-        lv_obj_set_style_border_width(w->container, 3, 0);
+        lv_obj_set_style_border_width(w->container, VM_BORDER_THICK, 0);
     }
 }
 

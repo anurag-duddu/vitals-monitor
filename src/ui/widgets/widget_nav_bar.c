@@ -10,6 +10,7 @@
 
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include "phosphor_icons.h"
 #include <string.h>
 #include <stdio.h>
@@ -77,17 +78,15 @@ widget_nav_bar_t * widget_nav_bar_create(lv_obj_t *parent) {
     lv_obj_remove_flag(w->container, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(w->container, VM_SCREEN_WIDTH, VM_NAV_BAR_HEIGHT);
     lv_obj_align(w->container, LV_ALIGN_BOTTOM_MID, 0, 0);
-    lv_obj_set_style_radius(w->container, 0, 0);
+    lv_obj_add_style(w->container, &s_row, 0);
+    /* Override what differs from s_row defaults */
     lv_obj_set_style_bg_color(w->container, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(w->container, LV_OPA_COVER, 0);
+    lv_obj_set_style_bg_opa(w->container, VM_OPA_COVER, 0);
     lv_obj_set_style_border_color(w->container, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(w->container, 1, 0);
+    lv_obj_set_style_border_width(w->container, VM_BORDER_THIN, 0);
     lv_obj_set_style_border_side(w->container, LV_BORDER_SIDE_TOP, 0);
     lv_obj_set_style_pad_hor(w->container, VM_PAD_NORMAL, 0);
     lv_obj_set_style_pad_ver(w->container, VM_PAD_SMALL, 0);
-
-    /* Row layout */
-    lv_obj_set_flex_flow(w->container, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(w->container, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -104,14 +103,14 @@ widget_nav_bar_t * widget_nav_bar_create(lv_obj_t *parent) {
         w->buttons[i] = lv_button_create(w->container);
         lv_obj_set_height(w->buttons[i], VM_NAV_BAR_HEIGHT - VM_PAD_SMALL * 2);
         lv_obj_set_flex_grow(w->buttons[i], 1);
-        lv_obj_set_style_radius(w->buttons[i], 4, 0);
+        lv_obj_set_style_radius(w->buttons[i], VM_RADIUS_SM, 0);
         lv_obj_set_style_pad_all(w->buttons[i], VM_PAD_TINY, 0);
         lv_obj_set_style_pad_gap(w->buttons[i], VM_PAD_TINY, 0);
 
         /* Default (inactive) style */
         lv_obj_set_style_bg_color(w->buttons[i], VM_COLOR_BG, 0);
-        lv_obj_set_style_bg_opa(w->buttons[i], LV_OPA_COVER, 0);
-        lv_obj_set_style_border_width(w->buttons[i], 0, 0);
+        lv_obj_set_style_bg_opa(w->buttons[i], VM_OPA_COVER, 0);
+        lv_obj_set_style_border_width(w->buttons[i], VM_BORDER_NONE, 0);
 
         /* Column layout: icon on top, text below */
         lv_obj_set_flex_flow(w->buttons[i], LV_FLEX_FLOW_COLUMN);
