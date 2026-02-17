@@ -41,6 +41,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -48,6 +49,7 @@
 
 static bool running = true;
 static lv_timer_t *purge_timer = NULL;
+static const char *screenshot_path = NULL;  /* --screenshot <path> */
 
 /* UI-4.1: Alarm ACK callback — acknowledges all active alarms */
 static void alarm_ack_callback(void) {
@@ -175,8 +177,12 @@ static void trend_purge_timer_cb(lv_timer_t *timer) {
 /* ── Main ──────────────────────────────────────────────────── */
 
 int main(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
+    /* Parse CLI arguments */
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--screenshot") == 0 && i + 1 < argc) {
+            screenshot_path = argv[++i];
+        }
+    }
 
     printf("========================================\n");
     printf("  Bedside Vitals Monitor - Simulator\n");
@@ -275,6 +281,7 @@ int main(int argc, char **argv) {
            VM_SCREEN_WIDTH, VM_SCREEN_HEIGHT);
 
     /* Main event loop (PERF-2.1: account for processing time in sleep) */
+    int frame_count = 0;
     while (running) {
         uint32_t frame_start = SDL_GetTicks();
 
@@ -286,6 +293,24 @@ int main(int argc, char **argv) {
 
         /* Handle LVGL tasks */
         uint32_t time_till_next = lv_timer_handler();
+
+        /* Screenshot mode: save BMP after enough frames for waveforms to populate */
+        if (screenshot_path && ++frame_count >= 120) {
+            SDL_Surface *sshot = SDL_CreateRGBSurface(0, VM_SCREEN_WIDTH, VM_SCREEN_HEIGHT,
+                                                       32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+            if (sshot) {
+                SDL_Renderer *r = SDL_GetRenderer(SDL_GetWindowFromID(1));
+                if (r) {
+                    SDL_RenderReadPixels(r, NULL, SDL_PIXELFORMAT_ARGB8888,
+                                         sshot->pixels, sshot->pitch);
+                    SDL_SaveBMP(sshot, screenshot_path);
+                    printf("[screenshot] Saved to %s\n", screenshot_path);
+                }
+                SDL_FreeSurface(sshot);
+            }
+            running = false;
+            break;
+        }
 
         /* Calculate how long processing took and sleep only remaining time */
         uint32_t elapsed = SDL_GetTicks() - frame_start;
