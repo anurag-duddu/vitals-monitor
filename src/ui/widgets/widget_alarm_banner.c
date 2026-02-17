@@ -8,8 +8,8 @@
  *   +--------------------------------------------------------------+
  *
  * Flash rates (IEC 60601-1-8):
- *   High:   ~2 Hz   (250ms toggle period)
- *   Medium: ~0.5 Hz (1000ms toggle period)
+ *   High:   ~2 Hz   (250ms half-period, step toggle)
+ *   Medium: ~0.5 Hz (1000ms half-period, step toggle)
  *   Low:    steady color (no flash)
  */
 
@@ -179,7 +179,7 @@ void widget_alarm_banner_set(widget_alarm_banner_t *w,
         lv_anim_set_values(&w->flash_anim, 0, 255);
         lv_anim_set_duration(&w->flash_anim, half_period);
         lv_anim_set_exec_cb(&w->flash_anim, flash_anim_cb);
-        lv_anim_set_path_cb(&w->flash_anim, lv_anim_path_ease_in_out);
+        lv_anim_set_path_cb(&w->flash_anim, lv_anim_path_step);
         lv_anim_set_playback_duration(&w->flash_anim, half_period);
         lv_anim_set_repeat_count(&w->flash_anim, LV_ANIM_REPEAT_INFINITE);
         lv_anim_start(&w->flash_anim);
@@ -220,7 +220,7 @@ void widget_alarm_banner_clear(widget_alarm_banner_t *w) {
 }
 
 void widget_alarm_banner_set_time(widget_alarm_banner_t *w, const char *time_str) {
-    if (!w || !w->in_use || !w->time_lbl) return;
+    if (!w || !w->in_use || !w->time_lbl || !time_str) return;
     lv_label_set_text(w->time_lbl, time_str);
 }
 
@@ -230,13 +230,18 @@ lv_obj_t * widget_alarm_banner_get_obj(widget_alarm_banner_t *w) {
 }
 
 void widget_alarm_banner_free(widget_alarm_banner_t *w) {
-    if (!w) return;
+    if (!w || !w->in_use) return;
     if (w->anim_running) {
         lv_anim_delete(w, flash_anim_cb);
         w->anim_running = false;
     }
     w->in_use = false;
     w->container = NULL;
+    w->icon_lbl = NULL;
+    w->message_lbl = NULL;
+    w->count_lbl = NULL;
+    w->ack_btn = NULL;
+    w->time_lbl = NULL;
 }
 
 void widget_alarm_banner_set_ack_cb(widget_alarm_banner_t *w, void (*cb)(void)) {

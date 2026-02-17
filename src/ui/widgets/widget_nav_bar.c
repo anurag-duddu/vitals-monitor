@@ -210,12 +210,25 @@ static void nav_btn_event_cb(lv_event_t *e) {
 }
 
 static void accent_bar_anim_cb(void *var, int32_t v) {
+    if (!var) return;
     lv_obj_set_x((lv_obj_t *)var, v);
 }
 
 static void update_active_highlight(widget_nav_bar_t *w) {
+    int active_idx = (int)w->active_screen;
+
+    /* Bounds check: screens like LOGIN/AUDIT_LOG have no nav button */
+    if (active_idx < 0 || active_idx >= NAV_BTN_COUNT) {
+        for (int i = 0; i < NAV_BTN_COUNT; i++) {
+            lv_obj_set_style_bg_color(w->buttons[i], VM_COLOR_BG, 0);
+            lv_obj_set_style_text_color(w->btn_labels[i], VM_COLOR_TEXT_SECONDARY, 0);
+            lv_obj_set_style_image_recolor(w->btn_icons[i], VM_COLOR_TEXT_SECONDARY, 0);
+        }
+        return;
+    }
+
     for (int i = 0; i < NAV_BTN_COUNT; i++) {
-        if ((int)w->active_screen == i) {
+        if (i == active_idx) {
             /* Active button — highlighted */
             lv_obj_set_style_bg_color(w->buttons[i], VM_COLOR_BG_PANEL_BORDER, 0);
             lv_obj_set_style_text_color(w->btn_labels[i], VM_COLOR_TEXT_PRIMARY, 0);
@@ -229,8 +242,8 @@ static void update_active_highlight(widget_nav_bar_t *w) {
     }
 
     /* Animate accent bar to active button position */
-    if (w->accent_bar && w->buttons[(int)w->active_screen]) {
-        lv_obj_t *active_btn = w->buttons[(int)w->active_screen];
+    if (w->accent_bar && w->buttons[active_idx]) {
+        lv_obj_t *active_btn = w->buttons[active_idx];
         int32_t btn_w = lv_obj_get_width(active_btn);
         int32_t target_x = lv_obj_get_x(active_btn);
 
