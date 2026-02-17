@@ -26,7 +26,7 @@
 
 /* ---- Backgrounds / surfaces ----------------------------------- */
 #define VM_COLOR_BG               lv_color_hex(vm_active_scheme->background)
-#define VM_COLOR_BG_PANEL         lv_color_hex(vm_active_scheme->surface)
+#define VM_COLOR_BG_PANEL         lv_color_hex(vm_active_scheme->surface_container)
 #define VM_COLOR_BG_PANEL_BORDER  lv_color_hex(vm_active_scheme->outline)
 
 /* ---- Alarm severity colors (IEC 60601-1-8) -------------------- */
