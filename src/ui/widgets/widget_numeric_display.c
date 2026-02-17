@@ -105,9 +105,9 @@ widget_numeric_display_t * widget_numeric_display_create(
             break;
     }
 
-    /* Column flex layout: top_row + value */
+    /* Column flex layout: top_row + value, vertically centered */
     lv_obj_set_flex_flow(w->container, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(w->container, LV_FLEX_ALIGN_START,
+    lv_obj_set_flex_align(w->container, LV_FLEX_ALIGN_SPACE_EVENLY,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
     /* ── Top row: [icon] label (left) + unit (right) ──── */
