@@ -64,6 +64,7 @@ set(MODULES_UNDER_TEST
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/core/audit_log.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/core/trend_db.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/ui/themes/theme_vitals.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/ui/themes/theme_styles.c
 )
 
 # ── Test executable ────────────────────────────────────────

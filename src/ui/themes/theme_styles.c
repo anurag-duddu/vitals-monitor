@@ -119,7 +119,7 @@ void vm_styles_init(const vm_color_scheme_t *scheme)
     lv_style_set_shadow_ofs_x(&s_card_elevated, VM_SHADOW_MD.ofs_x);
     lv_style_set_shadow_ofs_y(&s_card_elevated, VM_SHADOW_MD.ofs_y);
     lv_style_set_shadow_opa(&s_card_elevated, VM_SHADOW_MD.opa);
-    lv_style_set_shadow_color(&s_card_elevated, lv_color_hex(VM_BLACK));
+    lv_style_set_shadow_color(&s_card_elevated, lv_color_hex(scheme->background));
 #endif
 
     /* ---- s_divider: horizontal separator ---------------------- */
@@ -188,7 +188,7 @@ void vm_styles_init(const vm_color_scheme_t *scheme)
     safe_init(&s_btn_danger);
     lv_style_set_bg_color(&s_btn_danger, lv_color_hex(scheme->alarm_high));
     lv_style_set_bg_opa(&s_btn_danger, VM_OPA_COVER);
-    lv_style_set_text_color(&s_btn_danger, lv_color_hex(VM_WHITE));
+    lv_style_set_text_color(&s_btn_danger, lv_color_hex(scheme->on_surface));
 
     /* ---- s_label: default body text --------------------------- */
     safe_init(&s_label);
@@ -242,7 +242,7 @@ void vm_styles_init(const vm_color_scheme_t *scheme)
     safe_init(&s_slider_knob);
     lv_style_set_bg_color(&s_slider_knob, lv_color_hex(scheme->primary));
     lv_style_set_bg_opa(&s_slider_knob, VM_OPA_COVER);
-    lv_style_set_pad_all(&s_slider_knob, 4);
+    lv_style_set_pad_all(&s_slider_knob, VM_SPACE_4);
 
     /* ---- s_table: table container ----------------------------- */
     safe_init(&s_table);
