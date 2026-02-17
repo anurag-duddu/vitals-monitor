@@ -4,6 +4,8 @@
  */
 
 #include "screen_manager.h"
+#include "design_tokens.h"
+#include "alarm_engine.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -241,9 +243,12 @@ static void load_screen(screen_id_t id) {
     /* PERF-7.2: Use no animation for initial screen load (no previous screen) */
     if (nav_stack_top == 0 && old_scr == NULL) {
         lv_screen_load_anim(new_scr, LV_SCR_LOAD_ANIM_NONE, 0, 0, true);
+    } else if (alarm_engine_get_active_count() > 0) {
+        /* Alarm active — instant transition, no animation delay */
+        lv_screen_load_anim(new_scr, LV_SCR_LOAD_ANIM_NONE, VM_MOTION_INSTANT, 0, true);
     } else {
         /* Load with fade animation; auto-delete old screen */
-        lv_screen_load_anim(new_scr, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0, true);
+        lv_screen_load_anim(new_scr, LV_SCR_LOAD_ANIM_FADE_IN, VM_MOTION_NORMAL, 0, true);
     }
 }
 

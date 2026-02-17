@@ -11,6 +11,7 @@
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
 #include "theme_styles.h"
+#include "design_tokens.h"
 #include "phosphor_icons.h"
 #include <string.h>
 #include <stdio.h>
@@ -28,6 +29,7 @@ struct widget_nav_bar {
     lv_obj_t *buttons[NAV_BTN_COUNT];
     lv_obj_t *btn_icons[NAV_BTN_COUNT];
     lv_obj_t *btn_labels[NAV_BTN_COUNT];
+    lv_obj_t *accent_bar;
     screen_id_t active_screen;
 };
 
@@ -51,6 +53,7 @@ static const lv_image_dsc_t *btn_icons[NAV_BTN_COUNT] = {
 
 static void nav_btn_event_cb(lv_event_t *e);
 static void update_active_highlight(widget_nav_bar_t *w);
+static void accent_bar_anim_cb(void *var, int32_t v);
 
 /* ── Pool ──────────────────────────────────────────────────── */
 
@@ -134,6 +137,17 @@ widget_nav_bar_t * widget_nav_bar_create(lv_obj_t *parent) {
                             LV_EVENT_CLICKED, (void *)(intptr_t)i);
     }
 
+    /* Accent bar — 2px indicator that slides under the active button */
+    w->accent_bar = lv_obj_create(w->container);
+    lv_obj_remove_flag(w->accent_bar, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_size(w->accent_bar, 0, VM_BORDER_MEDIUM);
+    lv_obj_set_style_bg_color(w->accent_bar, lv_color_hex(vm_active_scheme->primary), 0);
+    lv_obj_set_style_bg_opa(w->accent_bar, LV_OPA_COVER, 0);
+    lv_obj_set_style_radius(w->accent_bar, 0, 0);
+    lv_obj_set_style_border_width(w->accent_bar, 0, 0);
+    lv_obj_set_style_pad_all(w->accent_bar, 0, 0);
+    lv_obj_align(w->accent_bar, LV_ALIGN_BOTTOM_LEFT, 0, 0);
+
     update_active_highlight(w);
     return w;
 }
@@ -156,9 +170,13 @@ lv_obj_t * widget_nav_bar_get_obj(widget_nav_bar_t *w) {
 
 void widget_nav_bar_free(widget_nav_bar_t *w) {
     if (!w) return;
+    if (w->accent_bar) {
+        lv_anim_delete(w->accent_bar, accent_bar_anim_cb);
+    }
     w->in_use = false;
     w->container = NULL;
     w->patient_lbl = NULL;
+    w->accent_bar = NULL;
     for (int i = 0; i < NAV_BTN_COUNT; i++) {
         w->buttons[i] = NULL;
         w->btn_icons[i] = NULL;
@@ -191,6 +209,10 @@ static void nav_btn_event_cb(lv_event_t *e) {
     }
 }
 
+static void accent_bar_anim_cb(void *var, int32_t v) {
+    lv_obj_set_x((lv_obj_t *)var, v);
+}
+
 static void update_active_highlight(widget_nav_bar_t *w) {
     for (int i = 0; i < NAV_BTN_COUNT; i++) {
         if ((int)w->active_screen == i) {
@@ -204,5 +226,27 @@ static void update_active_highlight(widget_nav_bar_t *w) {
             lv_obj_set_style_text_color(w->btn_labels[i], VM_COLOR_TEXT_SECONDARY, 0);
             lv_obj_set_style_image_recolor(w->btn_icons[i], VM_COLOR_TEXT_SECONDARY, 0);
         }
+    }
+
+    /* Animate accent bar to active button position */
+    if (w->accent_bar && w->buttons[(int)w->active_screen]) {
+        lv_obj_t *active_btn = w->buttons[(int)w->active_screen];
+        int32_t btn_w = lv_obj_get_width(active_btn);
+        int32_t target_x = lv_obj_get_x(active_btn);
+
+        /* Match accent bar width to button width */
+        lv_obj_set_width(w->accent_bar, btn_w);
+
+        /* Delete any in-flight animation before starting a new one */
+        lv_anim_delete(w->accent_bar, accent_bar_anim_cb);
+
+        lv_anim_t a;
+        lv_anim_init(&a);
+        lv_anim_set_var(&a, w->accent_bar);
+        lv_anim_set_values(&a, lv_obj_get_x(w->accent_bar), target_x);
+        lv_anim_set_duration(&a, VM_MOTION_FAST);
+        lv_anim_set_exec_cb(&a, accent_bar_anim_cb);
+        lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
+        lv_anim_start(&a);
     }
 }

@@ -15,6 +15,7 @@
 
 #include "widget_alarm_banner.h"
 #include "theme_styles.h"
+#include "design_tokens.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -30,20 +31,18 @@ struct widget_alarm_banner {
     lv_obj_t *ack_btn;        /* ACK button (UI-4.1) */
     lv_obj_t *time_lbl;       /* Clock (right-aligned) */
     vm_alarm_severity_t severity;
-    lv_timer_t *flash_timer;
-    bool flash_state;         /* Toggle for flashing */
+    lv_anim_t flash_anim;
+    bool anim_running;        /* Whether flash animation is active */
     void (*ack_cb)(void);     /* Acknowledge callback (UI-4.1) */
     int alarm_count;          /* Total active alarms (UI-4.3) */
     int alarm_index;          /* Current display index, 1-based (UI-4.3) */
-    vm_alarm_severity_t prev_severity;  /* Cached for PERF-1.5 */
-    bool prev_flash_state;              /* Cached for PERF-1.5 */
 };
 
 static widget_alarm_banner_t banner_pool[MAX_ALARM_BANNERS];
 
 /* -- Forward declarations ----------------------------------------- */
 
-static void flash_timer_cb(lv_timer_t *timer);
+static void flash_anim_cb(void *var, int32_t v);
 static void update_visual(widget_alarm_banner_t *w);
 static void ack_btn_event_cb(lv_event_t *e);
 
@@ -67,13 +66,10 @@ widget_alarm_banner_t * widget_alarm_banner_create(lv_obj_t *parent) {
     if (!w) return NULL;
 
     w->severity = VM_ALARM_NONE;
-    w->flash_state = false;
+    w->anim_running = false;
     w->ack_cb = NULL;
     w->alarm_count = 0;
     w->alarm_index = 0;
-    /* Initialize cached state to force first update_visual to apply styles */
-    w->prev_severity = (vm_alarm_severity_t)(-1);
-    w->prev_flash_state = false;
 
     /* Container -- full width, fixed height at top */
     w->container = lv_obj_create(parent);
@@ -144,7 +140,6 @@ void widget_alarm_banner_set(widget_alarm_banner_t *w,
     if (!w || !w->in_use) return;
 
     w->severity = severity;
-    w->flash_state = false;
 
     /* Update icon */
     if (severity == VM_ALARM_HIGH) {
@@ -164,19 +159,31 @@ void widget_alarm_banner_set(widget_alarm_banner_t *w,
         lv_label_set_text(w->message_lbl, buf);
     }
 
-    /* Manage flash timer (UI-4.2: pause before delete for safety) */
-    if (w->flash_timer) {
-        lv_timer_pause(w->flash_timer);
-        lv_timer_delete(w->flash_timer);
-        w->flash_timer = NULL;
+    /* Stop any existing flash animation before starting new one */
+    if (w->anim_running) {
+        lv_anim_delete(w, flash_anim_cb);
+        w->anim_running = false;
     }
 
-    if (severity == VM_ALARM_HIGH) {
-        /* ~2 Hz flash (250ms toggle) */
-        w->flash_timer = lv_timer_create(flash_timer_cb, 250, w);
-    } else if (severity == VM_ALARM_MEDIUM) {
-        /* ~0.5 Hz flash (1000ms toggle) */
-        w->flash_timer = lv_timer_create(flash_timer_cb, 1000, w);
+    if (severity == VM_ALARM_HIGH || severity == VM_ALARM_MEDIUM) {
+        /* Smooth opacity pulse using lv_anim_t (IEC 60601-1-8 compliant):
+         *   HIGH:   period = VM_ALARM_HIGH_PERIOD_MS   (500ms)  => ~2 Hz
+         *   MEDIUM: period = VM_ALARM_MEDIUM_PERIOD_MS (2000ms) => ~0.5 Hz
+         */
+        uint32_t half_period = (severity == VM_ALARM_HIGH)
+            ? (VM_ALARM_HIGH_PERIOD_MS / 2)
+            : (VM_ALARM_MEDIUM_PERIOD_MS / 2);
+
+        lv_anim_init(&w->flash_anim);
+        lv_anim_set_var(&w->flash_anim, w);
+        lv_anim_set_values(&w->flash_anim, 0, 255);
+        lv_anim_set_duration(&w->flash_anim, half_period);
+        lv_anim_set_exec_cb(&w->flash_anim, flash_anim_cb);
+        lv_anim_set_path_cb(&w->flash_anim, lv_anim_path_ease_in_out);
+        lv_anim_set_playback_duration(&w->flash_anim, half_period);
+        lv_anim_set_repeat_count(&w->flash_anim, LV_ANIM_REPEAT_INFINITE);
+        lv_anim_start(&w->flash_anim);
+        w->anim_running = true;
     }
 
     /* UI-4.1: Show ACK button for HIGH/MEDIUM, hide for LOW/NONE */
@@ -193,13 +200,11 @@ void widget_alarm_banner_clear(widget_alarm_banner_t *w) {
     if (!w || !w->in_use) return;
 
     w->severity = VM_ALARM_NONE;
-    w->flash_state = false;
 
-    /* UI-4.2: Pause before delete for safety */
-    if (w->flash_timer) {
-        lv_timer_pause(w->flash_timer);
-        lv_timer_delete(w->flash_timer);
-        w->flash_timer = NULL;
+    /* Stop flash animation if running */
+    if (w->anim_running) {
+        lv_anim_delete(w, flash_anim_cb);
+        w->anim_running = false;
     }
 
     lv_label_set_text(w->icon_lbl, LV_SYMBOL_OK);
@@ -226,10 +231,9 @@ lv_obj_t * widget_alarm_banner_get_obj(widget_alarm_banner_t *w) {
 
 void widget_alarm_banner_free(widget_alarm_banner_t *w) {
     if (!w) return;
-    if (w->flash_timer) {
-        lv_timer_pause(w->flash_timer);
-        lv_timer_delete(w->flash_timer);
-        w->flash_timer = NULL;
+    if (w->anim_running) {
+        lv_anim_delete(w, flash_anim_cb);
+        w->anim_running = false;
     }
     w->in_use = false;
     w->container = NULL;
@@ -271,31 +275,46 @@ static void ack_btn_event_cb(lv_event_t *e) {
     }
 }
 
-static void flash_timer_cb(lv_timer_t *timer) {
-    widget_alarm_banner_t *w = (widget_alarm_banner_t *)lv_timer_get_user_data(timer);
-    if (!w || !w->in_use) return;
+static void flash_anim_cb(void *var, int32_t v) {
+    widget_alarm_banner_t *w = (widget_alarm_banner_t *)var;
+    if (!w || !w->in_use || !w->container) return;
 
-    w->flash_state = !w->flash_state;
-    update_visual(w);
+    lv_color_t alarm_color;
+    lv_color_t text_on_alarm;
+
+    if (w->severity == VM_ALARM_HIGH) {
+        alarm_color = VM_COLOR_ALARM_HIGH;
+        text_on_alarm = lv_color_hex(vm_active_scheme->on_surface);
+    } else {
+        alarm_color = VM_COLOR_ALARM_MEDIUM;
+        text_on_alarm = lv_color_hex(VM_BLACK);
+    }
+
+    /* v=0: alarm color at full intensity, v=255: background color */
+    lv_opa_t alarm_opa = (lv_opa_t)(255 - v);
+
+    /* Mix colors: interpolate between alarm and background */
+    lv_color_t bg = lv_color_mix(alarm_color, VM_COLOR_BG, alarm_opa);
+    lv_color_t text = lv_color_mix(text_on_alarm, alarm_color, alarm_opa);
+
+    lv_obj_set_style_bg_color(w->container, bg, 0);
+    lv_obj_set_style_bg_opa(w->container, LV_OPA_COVER, 0);
+    lv_obj_set_style_text_color(w->icon_lbl, text, 0);
+    lv_obj_set_style_text_color(w->message_lbl, text, 0);
 }
 
 static void update_visual(widget_alarm_banner_t *w) {
-    /* PERF-1.5: Only apply styles when state actually changes */
-    if (w->severity == w->prev_severity && w->flash_state == w->prev_flash_state) {
-        return;
-    }
-
     lv_color_t bg_color;
     lv_color_t text_color;
 
     switch (w->severity) {
         case VM_ALARM_HIGH:
-            bg_color = w->flash_state ? VM_COLOR_BG : VM_COLOR_ALARM_HIGH;
-            text_color = w->flash_state ? VM_COLOR_ALARM_HIGH : lv_color_hex(vm_active_scheme->on_surface);
+            bg_color = VM_COLOR_ALARM_HIGH;
+            text_color = lv_color_hex(vm_active_scheme->on_surface);
             break;
         case VM_ALARM_MEDIUM:
-            bg_color = w->flash_state ? VM_COLOR_BG : VM_COLOR_ALARM_MEDIUM;
-            text_color = w->flash_state ? VM_COLOR_ALARM_MEDIUM : lv_color_hex(VM_BLACK);
+            bg_color = VM_COLOR_ALARM_MEDIUM;
+            text_color = lv_color_hex(VM_BLACK);
             break;
         case VM_ALARM_LOW:
             bg_color = VM_COLOR_BG_PANEL;
@@ -311,8 +330,4 @@ static void update_visual(widget_alarm_banner_t *w) {
     lv_obj_set_style_bg_opa(w->container, LV_OPA_COVER, 0);
     lv_obj_set_style_text_color(w->icon_lbl, text_color, 0);
     lv_obj_set_style_text_color(w->message_lbl, text_color, 0);
-
-    /* Cache the current state */
-    w->prev_severity = w->severity;
-    w->prev_flash_state = w->flash_state;
 }
