@@ -138,6 +138,7 @@ set(UI_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_nav_bar.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/widgets/widget_waveform.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/themes/theme_vitals.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/ui/themes/theme_styles.c
 )
 
 # SQLite amalgamation (single-file build, no external dependency)

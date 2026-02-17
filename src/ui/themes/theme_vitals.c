@@ -1,9 +1,22 @@
 /**
  * @file theme_vitals.c
- * @brief Vitals monitor theme initialization and helpers
+ * @brief Vitals monitor theme engine, scheme definitions, and helpers
+ *
+ * Implements a proper lv_theme_t engine that:
+ *   1. Initializes all reusable style objects via vm_styles_init()
+ *   2. Creates an LVGL theme with an apply_cb that auto-styles screens
+ *   3. Registers the theme on the default display
+ *   4. Supports run-time scheme switching (dark / high-contrast / dimmed)
  */
 
 #include "theme_vitals.h"
+#include "theme_styles.h"
+
+/*
+ * lv_theme_t is an opaque struct in LVGL v9.  We need the private
+ * header to allocate and populate the struct fields directly.
+ */
+#include "src/themes/lv_theme_private.h"
 
 /* ================================================================
  *  Color scheme instances (extern declared in design_tokens.h)
@@ -94,16 +107,83 @@ static const vm_color_scheme_t * const s_scheme_table[VM_THEME_COUNT] = {
 
 static vm_theme_mode_t s_current_mode = VM_THEME_DARK;
 
+/* ================================================================
+ *  LVGL Theme Engine
+ * ================================================================ */
+
+/** Static theme instance -- lives for the entire program lifetime */
+static lv_theme_t theme_vitals;
+
+/**
+ * Theme apply callback.
+ *
+ * Called by LVGL whenever a new object is created.  We auto-apply
+ * the s_screen style to screen objects (objects whose parent is NULL)
+ * so that every screen automatically gets the correct background.
+ */
+static void apply_cb(lv_theme_t *th, lv_obj_t *obj)
+{
+    (void)th;  /* unused */
+
+    if (lv_obj_get_parent(obj) == NULL) {
+        /* This is a screen object -- apply screen background style */
+        lv_obj_add_style(obj, &s_screen, LV_PART_MAIN);
+    }
+}
+
+/* ================================================================
+ *  Public API
+ * ================================================================ */
+
 void theme_vitals_init(void) {
-    lv_obj_t *scr = lv_screen_active();
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    /* 1. Initialize all reusable style objects from the active scheme */
+    vm_styles_init(vm_active_scheme);
+
+    /* 2. Get the default display */
+    lv_display_t *disp = lv_display_get_default();
+    if (disp == NULL) return;
+
+    /* 3. Create the LVGL default theme as the parent */
+    lv_theme_t *parent = lv_theme_default_init(
+        disp,
+        lv_color_hex(vm_active_scheme->primary),
+        lv_color_hex(vm_active_scheme->primary),   /* secondary = primary */
+        true,                                       /* dark mode */
+        VM_FONT_BODY
+    );
+
+    /* 4. Set up the vitals theme */
+    lv_theme_set_parent(&theme_vitals, parent);
+    lv_theme_set_apply_cb(&theme_vitals, apply_cb);
+    theme_vitals.user_data = (void *)vm_active_scheme;
+    theme_vitals.color_primary = lv_color_hex(vm_active_scheme->primary);
+    theme_vitals.color_secondary = lv_color_hex(vm_active_scheme->primary);
+    theme_vitals.font_small = VM_FONT_SMALL;
+    theme_vitals.font_normal = VM_FONT_BODY;
+    theme_vitals.font_large = VM_FONT_LABEL;
+
+    /* 5. Register the theme on the default display */
+    lv_display_set_theme(disp, &theme_vitals);
 }
 
 void theme_vitals_set_mode(vm_theme_mode_t mode) {
     if (mode >= VM_THEME_COUNT) return;
     s_current_mode = mode;
     vm_active_scheme = s_scheme_table[mode];
+
+    /* Reinitialize all styles with the new scheme colors */
+    vm_styles_init(vm_active_scheme);
+
+    /* Update theme metadata to reflect new scheme */
+    theme_vitals.user_data = (void *)vm_active_scheme;
+    theme_vitals.color_primary = lv_color_hex(vm_active_scheme->primary);
+    theme_vitals.color_secondary = lv_color_hex(vm_active_scheme->primary);
+
+    /* Force a full redraw of the active screen */
+    lv_obj_t *scr = lv_screen_active();
+    if (scr != NULL) {
+        lv_obj_invalidate(scr);
+    }
 }
 
 vm_theme_mode_t theme_vitals_get_mode(void) {
