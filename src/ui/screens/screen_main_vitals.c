@@ -22,6 +22,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "widget_waveform.h"
+#include "theme_styles.h"
 #include "phosphor_icons.h"
 #include <stdio.h>
 #include <string.h>
@@ -58,8 +59,7 @@ void screen_main_vitals_reset_cache(void);
 
 lv_obj_t * screen_main_vitals_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* ── 1. Alarm banner (top, 32px) ──────────────────────── */
@@ -73,33 +73,28 @@ lv_obj_t * screen_main_vitals_create(void) {
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
     lv_obj_set_size(content, VM_SCREEN_WIDTH, VM_CONTENT_HEIGHT);
-    lv_obj_set_style_bg_opa(content, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(content, 0, 0);
-    lv_obj_set_style_pad_all(content, 0, 0);
-    lv_obj_set_flex_flow(content, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(content, &s_row, 0);
     lv_obj_set_style_pad_gap(content, 0, 0);
 
     /* ── 2a. Waveform area (left, ~60%) ─────────────────────── */
     lv_obj_t *wave_area = lv_obj_create(content);
     lv_obj_remove_flag(wave_area, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(wave_area, lv_pct(VM_WAVEFORM_WIDTH_PCT), lv_pct(100));
-    lv_obj_set_style_bg_color(wave_area, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(wave_area, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(wave_area, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(wave_area, 1, 0);
+    lv_obj_add_style(wave_area, &s_col, 0);
+    lv_obj_set_style_bg_color(wave_area, lv_color_hex(vm_active_scheme->background), 0);
+    lv_obj_set_style_bg_opa(wave_area, VM_OPA_COVER, 0);
+    lv_obj_set_style_border_color(wave_area, lv_color_hex(vm_active_scheme->outline), 0);
+    lv_obj_set_style_border_width(wave_area, VM_BORDER_THIN, 0);
     lv_obj_set_style_border_side(wave_area, LV_BORDER_SIDE_RIGHT, 0);
     lv_obj_set_style_pad_all(wave_area, VM_PAD_SMALL, 0);
     lv_obj_set_style_pad_gap(wave_area, VM_PAD_SMALL, 0);
-    lv_obj_set_flex_flow(wave_area, LV_FLEX_FLOW_COLUMN);
 
     /* ECG waveform (top, ~55% of waveform area) */
     lv_obj_t *ecg_container = lv_obj_create(wave_area);
     lv_obj_remove_flag(ecg_container, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(ecg_container, lv_pct(100));
     lv_obj_set_flex_grow(ecg_container, VM_WAVEFORM_ECG_HEIGHT_PCT);
-    lv_obj_set_style_bg_opa(ecg_container, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(ecg_container, 0, 0);
-    lv_obj_set_style_pad_all(ecg_container, 0, 0);
+    lv_obj_add_style(ecg_container, &s_base, 0);
 
     ecg_waveform = widget_waveform_create(
         ecg_container, "ECG  Lead II  25mm/s", VM_COLOR_HR,
@@ -113,9 +108,7 @@ lv_obj_t * screen_main_vitals_create(void) {
     lv_obj_remove_flag(pleth_container, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(pleth_container, lv_pct(100));
     lv_obj_set_flex_grow(pleth_container, VM_WAVEFORM_PLETH_HEIGHT_PCT);
-    lv_obj_set_style_bg_opa(pleth_container, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(pleth_container, 0, 0);
-    lv_obj_set_style_pad_all(pleth_container, 0, 0);
+    lv_obj_add_style(pleth_container, &s_base, 0);
 
     pleth_waveform = widget_waveform_create(
         pleth_container, "Pleth", VM_COLOR_SPO2,
@@ -128,11 +121,9 @@ lv_obj_t * screen_main_vitals_create(void) {
     lv_obj_t *vitals_panel = lv_obj_create(content);
     lv_obj_remove_flag(vitals_panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(vitals_panel, lv_pct(VM_VITALS_WIDTH_PCT), lv_pct(100));
-    lv_obj_set_style_bg_opa(vitals_panel, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(vitals_panel, 0, 0);
+    lv_obj_add_style(vitals_panel, &s_col, 0);
     lv_obj_set_style_pad_all(vitals_panel, VM_PAD_SMALL, 0);
     lv_obj_set_style_pad_gap(vitals_panel, VM_PAD_SMALL, 0);
-    lv_obj_set_flex_flow(vitals_panel, LV_FLEX_FLOW_COLUMN);
 
     /* HR — large */
     hr_display = widget_numeric_display_create(
@@ -154,11 +145,8 @@ lv_obj_t * screen_main_vitals_create(void) {
     lv_obj_remove_flag(bottom_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(bottom_row, lv_pct(100));
     lv_obj_set_flex_grow(bottom_row, 2);
-    lv_obj_set_style_bg_opa(bottom_row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(bottom_row, 0, 0);
-    lv_obj_set_style_pad_all(bottom_row, 0, 0);
+    lv_obj_add_style(bottom_row, &s_row, 0);
     lv_obj_set_style_pad_gap(bottom_row, VM_PAD_SMALL, 0);
-    lv_obj_set_flex_flow(bottom_row, LV_FLEX_FLOW_ROW);
 
     /* Temp — small */
     temp_display = widget_numeric_display_create(

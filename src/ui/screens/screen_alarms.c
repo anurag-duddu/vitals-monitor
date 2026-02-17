@@ -28,6 +28,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include "vitals_provider.h"
 #include "alarm_engine.h"
 #include "patient_data.h"
@@ -93,8 +94,7 @@ static void format_limit(char *buf, size_t len, alarm_param_t param,
 
 lv_obj_t *screen_alarms_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* -- Alarm banner (top) ---------------------------------------- */
@@ -105,23 +105,15 @@ lv_obj_t *screen_alarms_create(void) {
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
     lv_obj_set_size(content, VM_SCREEN_WIDTH, VM_CONTENT_HEIGHT);
-    lv_obj_set_style_bg_opa(content, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(content, 0, 0);
+    lv_obj_add_style(content, &s_row, 0);
     lv_obj_set_style_pad_all(content, VM_PAD_NORMAL, 0);
     lv_obj_set_style_pad_gap(content, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(content, LV_FLEX_FLOW_ROW);
 
     /* Left panel: Alarm history log (58%) */
     lv_obj_t *left_panel = lv_obj_create(content);
     lv_obj_remove_flag(left_panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(left_panel, lv_pct(58), lv_pct(100));
-    lv_obj_set_style_bg_color(left_panel, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(left_panel, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(left_panel, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(left_panel, 1, 0);
-    lv_obj_set_style_radius(left_panel, 4, 0);
-    lv_obj_set_style_pad_all(left_panel, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(left_panel, VM_PAD_SMALL, 0);
+    lv_obj_add_style(left_panel, &s_card, 0);
     lv_obj_set_flex_flow(left_panel, LV_FLEX_FLOW_COLUMN);
 
     /* Title */
@@ -140,11 +132,8 @@ lv_obj_t *screen_alarms_create(void) {
     lv_obj_remove_flag(btn_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(btn_row, lv_pct(100));
     lv_obj_set_height(btn_row, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(btn_row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(btn_row, 0, 0);
-    lv_obj_set_style_pad_all(btn_row, 0, 0);
+    lv_obj_add_style(btn_row, &s_row, 0);
     lv_obj_set_style_pad_gap(btn_row, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(btn_row, LV_FLEX_FLOW_ROW);
 
     /* Ack All button */
     lv_obj_t *btn_ack = lv_button_create(btn_row);
@@ -156,7 +145,7 @@ lv_obj_t *screen_alarms_create(void) {
     lv_label_set_text(lbl_ack, "Ack All");
     lv_obj_center(lbl_ack);
     lv_obj_set_style_text_font(lbl_ack, VM_FONT_CAPTION, 0);
-    lv_obj_set_style_text_color(lbl_ack, lv_color_black(), 0);
+    lv_obj_set_style_text_color(lbl_ack, lv_color_hex(VM_BLACK), 0);
 
     /* Silence 2min button */
     lv_obj_t *btn_silence = lv_button_create(btn_row);
@@ -168,7 +157,7 @@ lv_obj_t *screen_alarms_create(void) {
     lv_label_set_text(lbl_silence, "Silence 2min");
     lv_obj_center(lbl_silence);
     lv_obj_set_style_text_font(lbl_silence, VM_FONT_CAPTION, 0);
-    lv_obj_set_style_text_color(lbl_silence, lv_color_black(), 0);
+    lv_obj_set_style_text_color(lbl_silence, lv_color_hex(VM_BLACK), 0);
 
     /* Alarm log list */
     build_alarm_log_list(left_panel);
@@ -178,13 +167,7 @@ lv_obj_t *screen_alarms_create(void) {
     lv_obj_remove_flag(right_panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_grow(right_panel, 1);
     lv_obj_set_height(right_panel, lv_pct(100));
-    lv_obj_set_style_bg_color(right_panel, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(right_panel, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(right_panel, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(right_panel, 1, 0);
-    lv_obj_set_style_radius(right_panel, 4, 0);
-    lv_obj_set_style_pad_all(right_panel, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(right_panel, VM_PAD_SMALL, 0);
+    lv_obj_add_style(right_panel, &s_card, 0);
     lv_obj_set_flex_flow(right_panel, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_t *limits_title = lv_label_create(right_panel);
@@ -329,10 +312,7 @@ static void add_log_entry_to_list(const vitals_alarm_entry_t *entry) {
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(row, lv_pct(100));
     lv_obj_set_height(row, 28);
-    lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(row, 0, 0);
-    lv_obj_set_style_pad_all(row, 0, 0);
-    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(row, &s_row, 0);
     lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -363,11 +343,8 @@ static void build_alarm_log_list(lv_obj_t *parent) {
     log_list = lv_obj_create(parent);
     lv_obj_set_width(log_list, lv_pct(100));
     lv_obj_set_flex_grow(log_list, 1);
-    lv_obj_set_style_bg_opa(log_list, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(log_list, 0, 0);
-    lv_obj_set_style_pad_all(log_list, 0, 0);
-    lv_obj_set_style_pad_gap(log_list, 2, 0);
-    lv_obj_set_flex_flow(log_list, LV_FLEX_FLOW_COLUMN);
+    lv_obj_add_style(log_list, &s_col, 0);
+    lv_obj_set_style_pad_gap(log_list, VM_PAD_TINY, 0);
     lv_obj_add_flag(log_list, LV_OBJ_FLAG_SCROLLABLE);
 
     const vitals_alarm_log_t *alog = vitals_provider_get_alarm_log();
@@ -394,20 +371,18 @@ static void build_alarm_log_list(lv_obj_t *parent) {
 static void style_limits_table(lv_obj_t *table) {
     lv_obj_set_width(table, lv_pct(100));
     lv_obj_set_flex_grow(table, 1);
-    lv_obj_set_style_bg_color(table, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(table, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_width(table, 0, 0);
+    lv_obj_add_style(table, &s_table, 0);
+    lv_obj_set_style_border_width(table, VM_BORDER_NONE, 0);
     lv_obj_set_style_pad_all(table, 0, 0);
 
     /* Cell styling */
-    lv_obj_set_style_border_color(table, VM_COLOR_BG_PANEL_BORDER, LV_PART_ITEMS);
-    lv_obj_set_style_border_width(table, 1, LV_PART_ITEMS);
+    lv_obj_add_style(table, &s_table_cell, LV_PART_ITEMS);
     lv_obj_set_style_text_font(table, VM_FONT_SMALL, LV_PART_ITEMS);
-    lv_obj_set_style_bg_color(table, VM_COLOR_BG, LV_PART_ITEMS);
-    lv_obj_set_style_pad_top(table, 4, LV_PART_ITEMS);
-    lv_obj_set_style_pad_bottom(table, 4, LV_PART_ITEMS);
-    lv_obj_set_style_pad_left(table, 6, LV_PART_ITEMS);
-    lv_obj_set_style_pad_right(table, 6, LV_PART_ITEMS);
+    lv_obj_set_style_bg_color(table, lv_color_hex(vm_active_scheme->background), LV_PART_ITEMS);
+    lv_obj_set_style_pad_top(table, VM_PAD_SMALL, LV_PART_ITEMS);
+    lv_obj_set_style_pad_bottom(table, VM_PAD_SMALL, LV_PART_ITEMS);
+    lv_obj_set_style_pad_left(table, VM_PAD_SMALL, LV_PART_ITEMS);
+    lv_obj_set_style_pad_right(table, VM_PAD_SMALL, LV_PART_ITEMS);
 }
 
 /** Populate one limits table (critical or warning) for all params. */

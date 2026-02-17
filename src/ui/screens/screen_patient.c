@@ -28,6 +28,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include "vitals_provider.h"
 #include "patient_data.h"
 #include <stdio.h>
@@ -48,8 +49,7 @@ static void discharge_cb(lv_event_t *e);
 
 lv_obj_t * screen_patient_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* Fetch active patient for slot 0 */
@@ -63,11 +63,9 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
     lv_obj_set_size(content, VM_SCREEN_WIDTH, VM_CONTENT_HEIGHT);
-    lv_obj_set_style_bg_opa(content, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(content, 0, 0);
+    lv_obj_add_style(content, &s_row, 0);
     lv_obj_set_style_pad_all(content, VM_PAD_NORMAL, 0);
     lv_obj_set_style_pad_gap(content, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(content, LV_FLEX_FLOW_ROW);
 
     /* -- Left panel: Demographics ----------------------------------- */
     lv_obj_t *demo_panel = create_section(content, "Patient Demographics", 50);
@@ -103,9 +101,9 @@ lv_obj_t * screen_patient_create(void) {
         /* Discharge button */
         lv_obj_t *discharge_btn = lv_button_create(demo_panel);
         lv_obj_set_size(discharge_btn, VM_SCALE_W(120), VM_SCALE_H(36));
+        lv_obj_add_style(discharge_btn, &s_btn, 0);
         lv_obj_set_style_bg_color(discharge_btn, VM_COLOR_ALARM_MEDIUM, 0);
-        lv_obj_set_style_bg_opa(discharge_btn, LV_OPA_COVER, 0);
-        lv_obj_set_style_radius(discharge_btn, 4, 0);
+        lv_obj_set_style_radius(discharge_btn, VM_RADIUS_SM, 0);
         lv_obj_add_event_cb(discharge_btn, discharge_cb, LV_EVENT_CLICKED, NULL);
 
         lv_obj_t *btn_lbl = lv_label_create(discharge_btn);
@@ -126,24 +124,15 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_remove_flag(right_col, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_grow(right_col, 1);
     lv_obj_set_height(right_col, lv_pct(100));
-    lv_obj_set_style_bg_opa(right_col, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(right_col, 0, 0);
-    lv_obj_set_style_pad_all(right_col, 0, 0);
+    lv_obj_add_style(right_col, &s_col, 0);
     lv_obj_set_style_pad_gap(right_col, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(right_col, LV_FLEX_FLOW_COLUMN);
 
     /* Current vitals snapshot */
     lv_obj_t *vitals_panel = lv_obj_create(right_col);
     lv_obj_remove_flag(vitals_panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(vitals_panel, lv_pct(100));
     lv_obj_set_flex_grow(vitals_panel, 1);
-    lv_obj_set_style_bg_color(vitals_panel, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(vitals_panel, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(vitals_panel, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(vitals_panel, 1, 0);
-    lv_obj_set_style_radius(vitals_panel, 4, 0);
-    lv_obj_set_style_pad_all(vitals_panel, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(vitals_panel, VM_PAD_SMALL, 0);
+    lv_obj_add_style(vitals_panel, &s_card, 0);
     lv_obj_set_flex_flow(vitals_panel, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_t *vt = lv_label_create(vitals_panel);
@@ -169,13 +158,7 @@ lv_obj_t * screen_patient_create(void) {
     lv_obj_remove_flag(notes_panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(notes_panel, lv_pct(100));
     lv_obj_set_flex_grow(notes_panel, 1);
-    lv_obj_set_style_bg_color(notes_panel, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(notes_panel, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(notes_panel, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(notes_panel, 1, 0);
-    lv_obj_set_style_radius(notes_panel, 4, 0);
-    lv_obj_set_style_pad_all(notes_panel, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(notes_panel, VM_PAD_SMALL, 0);
+    lv_obj_add_style(notes_panel, &s_card, 0);
     lv_obj_set_flex_flow(notes_panel, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_t *nt = lv_label_create(notes_panel);
@@ -234,13 +217,7 @@ static lv_obj_t * create_section(lv_obj_t *parent, const char *title, int width_
     lv_obj_t *panel = lv_obj_create(parent);
     lv_obj_remove_flag(panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(panel, lv_pct(width_pct), lv_pct(100));
-    lv_obj_set_style_bg_color(panel, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(panel, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(panel, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(panel, 1, 0);
-    lv_obj_set_style_radius(panel, 4, 0);
-    lv_obj_set_style_pad_all(panel, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(panel, VM_PAD_SMALL, 0);
+    lv_obj_add_style(panel, &s_card, 0);
     lv_obj_set_flex_flow(panel, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_t *lbl = lv_label_create(panel);
@@ -257,10 +234,7 @@ static void add_info_row(lv_obj_t *parent, const char *label, const char *value,
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(row, lv_pct(100));
     lv_obj_set_height(row, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(row, 0, 0);
-    lv_obj_set_style_pad_all(row, 0, 0);
-    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(row, &s_row, 0);
     lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
 
     /* Label */

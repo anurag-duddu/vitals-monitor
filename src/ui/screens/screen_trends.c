@@ -32,6 +32,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include "vitals_provider.h"
 #include "trend_db.h"
 #include <stdio.h>
@@ -127,8 +128,7 @@ static uint32_t get_current_ts(void);
 
 lv_obj_t * screen_trends_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* ── Alarm banner (top) ──────────────────────────────── */
@@ -139,22 +139,17 @@ lv_obj_t * screen_trends_create(void) {
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
     lv_obj_set_size(content, VM_SCREEN_WIDTH, VM_CONTENT_HEIGHT);
-    lv_obj_set_style_bg_opa(content, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(content, 0, 0);
+    lv_obj_add_style(content, &s_col, 0);
     lv_obj_set_style_pad_all(content, VM_PAD_SMALL, 0);
     lv_obj_set_style_pad_gap(content, VM_PAD_TINY, 0);
-    lv_obj_set_flex_flow(content, LV_FLEX_FLOW_COLUMN);
 
     /* ── Title row with time range buttons ───────────────── */
     lv_obj_t *title_row = lv_obj_create(content);
     lv_obj_remove_flag(title_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(title_row, lv_pct(100));
     lv_obj_set_height(title_row, 28);
-    lv_obj_set_style_bg_opa(title_row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(title_row, 0, 0);
-    lv_obj_set_style_pad_all(title_row, 0, 0);
+    lv_obj_add_style(title_row, &s_row, 0);
     lv_obj_set_style_pad_gap(title_row, VM_PAD_SMALL, 0);
-    lv_obj_set_flex_flow(title_row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(title_row, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -167,11 +162,11 @@ lv_obj_t * screen_trends_create(void) {
     for (int i = 0; i < RANGE_COUNT; i++) {
         range_btns[i] = lv_button_create(title_row);
         lv_obj_set_size(range_btns[i], 48, 24);
-        lv_obj_set_style_radius(range_btns[i], 4, 0);
-        lv_obj_set_style_pad_all(range_btns[i], 2, 0);
-        lv_obj_set_style_bg_opa(range_btns[i], LV_OPA_COVER, 0);
-        lv_obj_set_style_border_width(range_btns[i], 1, 0);
-        lv_obj_set_style_border_color(range_btns[i], VM_COLOR_BG_PANEL_BORDER, 0);
+        lv_obj_set_style_radius(range_btns[i], VM_RADIUS_SM, 0);
+        lv_obj_set_style_pad_all(range_btns[i], VM_PAD_TINY, 0);
+        lv_obj_set_style_bg_opa(range_btns[i], VM_OPA_COVER, 0);
+        lv_obj_set_style_border_width(range_btns[i], VM_BORDER_THIN, 0);
+        lv_obj_set_style_border_color(range_btns[i], lv_color_hex(vm_active_scheme->outline), 0);
 
         range_btn_labels[i] = lv_label_create(range_btns[i]);
         lv_label_set_text(range_btn_labels[i], range_texts[i]);
@@ -213,7 +208,7 @@ lv_obj_t * screen_trends_create(void) {
     nibp_sys_series = lv_chart_add_series(nibp_temp_chart, VM_COLOR_NIBP,
                                            LV_CHART_AXIS_PRIMARY_Y);
     nibp_dia_series = lv_chart_add_series(nibp_temp_chart,
-                                           lv_color_hex(0xBBBBBB),
+                                           lv_color_hex(VM_GRAY_200),
                                            LV_CHART_AXIS_PRIMARY_Y);
     temp_series = lv_chart_add_series(nibp_temp_chart, VM_COLOR_TEMP,
                                        LV_CHART_AXIS_SECONDARY_Y);
@@ -267,11 +262,11 @@ static uint32_t get_current_ts(void) {
 static void update_range_highlight(void) {
     for (int i = 0; i < RANGE_COUNT; i++) {
         if (i == active_range_idx) {
-            lv_obj_set_style_bg_color(range_btns[i], VM_COLOR_BG_PANEL_BORDER, 0);
-            lv_obj_set_style_text_color(range_btn_labels[i], VM_COLOR_TEXT_PRIMARY, 0);
+            lv_obj_set_style_bg_color(range_btns[i], lv_color_hex(vm_active_scheme->outline), 0);
+            lv_obj_set_style_text_color(range_btn_labels[i], lv_color_hex(vm_active_scheme->on_surface), 0);
         } else {
-            lv_obj_set_style_bg_color(range_btns[i], VM_COLOR_BG, 0);
-            lv_obj_set_style_text_color(range_btn_labels[i], VM_COLOR_TEXT_SECONDARY, 0);
+            lv_obj_set_style_bg_color(range_btns[i], lv_color_hex(vm_active_scheme->background), 0);
+            lv_obj_set_style_text_color(range_btn_labels[i], lv_color_hex(vm_active_scheme->on_surface_secondary), 0);
         }
     }
 }
@@ -295,11 +290,7 @@ static lv_obj_t * create_trend_chart(lv_obj_t *parent, const char *title,
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(row, lv_pct(100));
     lv_obj_set_flex_grow(row, 1);
-    lv_obj_set_style_bg_color(row, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(row, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(row, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(row, 1, 0);
-    lv_obj_set_style_radius(row, 4, 0);
+    lv_obj_add_style(row, &s_card, 0);
     lv_obj_set_style_pad_all(row, VM_PAD_SMALL, 0);
     lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
     lv_obj_set_style_pad_gap(row, VM_PAD_SMALL, 0);
@@ -323,12 +314,10 @@ static lv_obj_t * create_trend_chart(lv_obj_t *parent, const char *title,
     lv_chart_set_div_line_count(chart, 3, 0);
 
     /* Chart styling */
-    lv_obj_set_style_bg_color(chart, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(chart, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_width(chart, 0, 0);
-    lv_obj_set_style_line_color(chart, lv_color_hex(0x222222), LV_PART_MAIN);
+    lv_obj_add_style(chart, &s_chart, 0);
+    lv_obj_set_style_line_color(chart, lv_color_hex(VM_GRAY_700), LV_PART_MAIN);
     lv_obj_set_style_pad_all(chart, VM_PAD_TINY, 0);
-    lv_obj_set_style_line_width(chart, 2, LV_PART_ITEMS);
+    lv_obj_set_style_line_width(chart, VM_BORDER_MEDIUM, LV_PART_ITEMS);
     lv_obj_set_style_size(chart, 0, 0, LV_PART_INDICATOR);
 
     return chart;
@@ -451,9 +440,9 @@ static void update_alarm_markers(uint32_t start_ts, uint32_t end_ts) {
         lv_obj_remove_flag(m, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
         lv_obj_set_size(m, 2, chart_h);
         lv_obj_set_pos(m, x, 0);
-        lv_obj_set_style_border_width(m, 0, 0);
-        lv_obj_set_style_radius(m, 0, 0);
-        lv_obj_set_style_bg_opa(m, LV_OPA_50, 0);
+        lv_obj_set_style_border_width(m, VM_BORDER_NONE, 0);
+        lv_obj_set_style_radius(m, VM_RADIUS_NONE, 0);
+        lv_obj_set_style_bg_opa(m, VM_OPA_50, 0);
 
         lv_color_t color = (alarm_buf.severity[i] >= VM_ALARM_HIGH)
                             ? VM_COLOR_ALARM_HIGH : VM_COLOR_ALARM_MEDIUM;

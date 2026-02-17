@@ -30,6 +30,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include "vitals_provider.h"
 #include "settings_store.h"
 #include "network_manager.h"
@@ -59,8 +60,7 @@ static void reset_defaults_cb(lv_event_t *e);
 
 lv_obj_t * screen_settings_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* -- Alarm banner (top) --------------------------------------- */
@@ -71,21 +71,16 @@ lv_obj_t * screen_settings_create(void) {
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
     lv_obj_set_size(content, VM_SCREEN_WIDTH, VM_CONTENT_HEIGHT);
-    lv_obj_set_style_bg_opa(content, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(content, 0, 0);
+    lv_obj_add_style(content, &s_row, 0);
     lv_obj_set_style_pad_all(content, VM_PAD_NORMAL, 0);
     lv_obj_set_style_pad_gap(content, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(content, LV_FLEX_FLOW_ROW);
 
     /* -- Left column ---------------------------------------------- */
     lv_obj_t *left_col = lv_obj_create(content);
     lv_obj_remove_flag(left_col, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(left_col, lv_pct(50), lv_pct(100));
-    lv_obj_set_style_bg_opa(left_col, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(left_col, 0, 0);
-    lv_obj_set_style_pad_all(left_col, 0, 0);
+    lv_obj_add_style(left_col, &s_col, 0);
     lv_obj_set_style_pad_gap(left_col, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(left_col, LV_FLEX_FLOW_COLUMN);
 
     /* Display Settings */
     lv_obj_t *display_section = create_section_panel(left_col, "Display Settings");
@@ -98,11 +93,8 @@ lv_obj_t * screen_settings_create(void) {
         lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_set_width(row, lv_pct(100));
         lv_obj_set_height(row, 36);
-        lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
-        lv_obj_set_style_border_width(row, 0, 0);
-        lv_obj_set_style_pad_all(row, 0, 0);
+        lv_obj_add_style(row, &s_row, 0);
         lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
-        lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
         lv_obj_set_flex_align(row, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
         lv_obj_t *lbl = lv_label_create(row);
@@ -148,11 +140,8 @@ lv_obj_t * screen_settings_create(void) {
         lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_set_width(row, lv_pct(100));
         lv_obj_set_height(row, 36);
-        lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
-        lv_obj_set_style_border_width(row, 0, 0);
-        lv_obj_set_style_pad_all(row, 0, 0);
+        lv_obj_add_style(row, &s_row, 0);
         lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
-        lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
         lv_obj_set_flex_align(row, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
         lv_obj_t *lbl = lv_label_create(row);
@@ -191,9 +180,8 @@ lv_obj_t * screen_settings_create(void) {
     {
         lv_obj_t *reset_btn = lv_button_create(left_col);
         lv_obj_set_size(reset_btn, 140, 36);
-        lv_obj_set_style_bg_color(reset_btn, VM_COLOR_ALARM_HIGH, 0);
-        lv_obj_set_style_bg_opa(reset_btn, LV_OPA_COVER, 0);
-        lv_obj_set_style_radius(reset_btn, 4, 0);
+        lv_obj_add_style(reset_btn, &s_btn_danger, 0);
+        lv_obj_set_style_radius(reset_btn, VM_RADIUS_SM, 0);
         lv_obj_add_event_cb(reset_btn, reset_defaults_cb, LV_EVENT_CLICKED, NULL);
 
         lv_obj_t *btn_lbl = lv_label_create(reset_btn);
@@ -208,11 +196,8 @@ lv_obj_t * screen_settings_create(void) {
     lv_obj_remove_flag(right_col, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_grow(right_col, 1);
     lv_obj_set_height(right_col, lv_pct(100));
-    lv_obj_set_style_bg_opa(right_col, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(right_col, 0, 0);
-    lv_obj_set_style_pad_all(right_col, 0, 0);
+    lv_obj_add_style(right_col, &s_col, 0);
     lv_obj_set_style_pad_gap(right_col, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(right_col, LV_FLEX_FLOW_COLUMN);
 
     /* Device Info */
     lv_obj_t *info_section = create_section_panel(right_col, "Device Info");
@@ -281,13 +266,7 @@ static lv_obj_t * create_section_panel(lv_obj_t *parent, const char *title) {
     lv_obj_remove_flag(panel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(panel, lv_pct(100));
     lv_obj_set_flex_grow(panel, 1);
-    lv_obj_set_style_bg_color(panel, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(panel, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(panel, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(panel, 1, 0);
-    lv_obj_set_style_radius(panel, 4, 0);
-    lv_obj_set_style_pad_all(panel, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(panel, VM_PAD_SMALL, 0);
+    lv_obj_add_style(panel, &s_card, 0);
     lv_obj_set_flex_flow(panel, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_t *lbl = lv_label_create(panel);
@@ -303,10 +282,7 @@ static void add_setting_row(lv_obj_t *parent, const char *label, const char *val
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(row, lv_pct(100));
     lv_obj_set_height(row, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(row, 0, 0);
-    lv_obj_set_style_pad_all(row, 0, 0);
-    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(row, &s_row, 0);
     lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
 
     lv_obj_t *lbl = lv_label_create(row);
@@ -327,10 +303,7 @@ static void add_switch_row(lv_obj_t *parent, const char *label, bool initial_sta
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(row, lv_pct(100));
     lv_obj_set_height(row, 30);
-    lv_obj_set_style_bg_opa(row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(row, 0, 0);
-    lv_obj_set_style_pad_all(row, 0, 0);
-    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(row, &s_row, 0);
     lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 

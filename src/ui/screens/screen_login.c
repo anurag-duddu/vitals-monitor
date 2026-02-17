@@ -27,6 +27,7 @@
 #include "screen_manager.h"
 #include "auth_manager.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -69,8 +70,7 @@ lv_obj_t * screen_login_create(void) {
     failed_attempts = 0;       /* UI-7.2: reset progressive delay counter */
 
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* Reset state */
@@ -95,13 +95,7 @@ lv_obj_t * screen_login_create(void) {
     lv_obj_remove_flag(card, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_size(card, CARD_WIDTH, VM_SCALE_H(370));
     lv_obj_align(card, LV_ALIGN_CENTER, 0, VM_SCALE_H(20));
-    lv_obj_set_style_bg_color(card, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(card, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(card, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(card, 1, 0);
-    lv_obj_set_style_radius(card, 8, 0);
-    lv_obj_set_style_pad_all(card, VM_PAD_NORMAL, 0);
-    lv_obj_set_style_pad_gap(card, VM_PAD_SMALL, 0);
+    lv_obj_add_style(card, &s_card_elevated, 0);
     lv_obj_set_flex_flow(card, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_flex_cross_place(card, LV_FLEX_ALIGN_CENTER, 0);
 
@@ -110,10 +104,7 @@ lv_obj_t * screen_login_create(void) {
     lv_obj_remove_flag(user_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(user_row, lv_pct(100));
     lv_obj_set_height(user_row, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(user_row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(user_row, 0, 0);
-    lv_obj_set_style_pad_all(user_row, 0, 0);
-    lv_obj_set_flex_flow(user_row, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(user_row, &s_row, 0);
     lv_obj_set_style_flex_cross_place(user_row, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_pad_gap(user_row, VM_PAD_NORMAL, 0);
 
@@ -144,10 +135,7 @@ lv_obj_t * screen_login_create(void) {
     lv_obj_remove_flag(pin_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(pin_row, lv_pct(100));
     lv_obj_set_height(pin_row, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(pin_row, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(pin_row, 0, 0);
-    lv_obj_set_style_pad_all(pin_row, 0, 0);
-    lv_obj_set_flex_flow(pin_row, LV_FLEX_FLOW_ROW);
+    lv_obj_add_style(pin_row, &s_row, 0);
     lv_obj_set_style_flex_cross_place(pin_row, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_pad_gap(pin_row, VM_PAD_NORMAL, 0);
 
@@ -167,8 +155,7 @@ lv_obj_t * screen_login_create(void) {
     lv_obj_remove_flag(pad, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(pad, 3 * BTN_WIDTH + 2 * BTN_GAP + 2 * VM_PAD_SMALL);
     lv_obj_set_height(pad, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(pad, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(pad, 0, 0);
+    lv_obj_add_style(pad, &s_base, 0);
     lv_obj_set_style_pad_all(pad, VM_PAD_SMALL, 0);
     lv_obj_set_style_pad_gap(pad, BTN_GAP, 0);
     lv_obj_set_style_pad_row(pad, BTN_GAP, 0);
@@ -258,10 +245,10 @@ static lv_obj_t * create_numpad_btn(lv_obj_t *parent, const char *text,
     lv_obj_t *btn = lv_button_create(parent);
     lv_obj_set_size(btn, BTN_WIDTH, BTN_HEIGHT);
     lv_obj_set_style_bg_color(btn, bg_color, 0);
-    lv_obj_set_style_bg_opa(btn, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(btn, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(btn, 1, 0);
-    lv_obj_set_style_radius(btn, 4, 0);
+    lv_obj_set_style_bg_opa(btn, VM_OPA_COVER, 0);
+    lv_obj_set_style_border_color(btn, lv_color_hex(vm_active_scheme->outline), 0);
+    lv_obj_set_style_border_width(btn, VM_BORDER_THIN, 0);
+    lv_obj_set_style_radius(btn, VM_RADIUS_SM, 0);
 
     lv_obj_t *lbl = lv_label_create(btn);
     lv_label_set_text(lbl, text);

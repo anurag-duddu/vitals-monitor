@@ -25,6 +25,7 @@
 #include "widget_alarm_banner.h"
 #include "widget_nav_bar.h"
 #include "theme_vitals.h"
+#include "theme_styles.h"
 #include "audit_log.h"
 #include "patient_data.h"
 #include <stdio.h>
@@ -77,8 +78,7 @@ static const char *filter_labels[FILTER_COUNT] = {
 
 lv_obj_t *screen_audit_log_create(void) {
     lv_obj_t *scr = lv_obj_create(NULL);
-    lv_obj_set_style_bg_color(scr, VM_COLOR_BG, 0);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
+    lv_obj_add_style(scr, &s_screen, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
     /* -- Alarm banner (top) ---------------------------------------- */
@@ -89,11 +89,9 @@ lv_obj_t *screen_audit_log_create(void) {
     lv_obj_remove_flag(content, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_pos(content, 0, VM_ALARM_BAR_HEIGHT);
     lv_obj_set_size(content, VM_SCREEN_WIDTH, VM_CONTENT_HEIGHT);
-    lv_obj_set_style_bg_opa(content, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(content, 0, 0);
+    lv_obj_add_style(content, &s_col, 0);
     lv_obj_set_style_pad_all(content, VM_PAD_NORMAL, 0);
     lv_obj_set_style_pad_gap(content, VM_PAD_SMALL, 0);
-    lv_obj_set_flex_flow(content, LV_FLEX_FLOW_COLUMN);
 
     /* Header with title and back button */
     build_header(content);
@@ -145,21 +143,15 @@ static void build_header(lv_obj_t *parent) {
     lv_obj_remove_flag(header, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(header, lv_pct(100));
     lv_obj_set_height(header, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(header, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(header, 0, 0);
-    lv_obj_set_style_pad_all(header, 0, 0);
+    lv_obj_add_style(header, &s_row, 0);
     lv_obj_set_style_pad_gap(header, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(header, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(header, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
     /* Back button */
     lv_obj_t *btn_back = lv_button_create(header);
     lv_obj_set_size(btn_back, VM_SCALE_W(70), VM_SCALE_H(32));
-    lv_obj_set_style_bg_color(btn_back, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_border_color(btn_back, VM_COLOR_BG_PANEL_BORDER, 0);
-    lv_obj_set_style_border_width(btn_back, 1, 0);
-    lv_obj_set_style_radius(btn_back, 4, 0);
+    lv_obj_add_style(btn_back, &s_btn, 0);
     lv_obj_add_event_cb(btn_back, back_btn_cb, LV_EVENT_CLICKED, NULL);
 
     lv_obj_t *lbl_back = lv_label_create(btn_back);
@@ -182,11 +174,8 @@ static void build_filter_bar(lv_obj_t *parent) {
     lv_obj_remove_flag(bar, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(bar, lv_pct(100));
     lv_obj_set_height(bar, LV_SIZE_CONTENT);
-    lv_obj_set_style_bg_opa(bar, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(bar, 0, 0);
-    lv_obj_set_style_pad_all(bar, 0, 0);
+    lv_obj_add_style(bar, &s_row, 0);
     lv_obj_set_style_pad_gap(bar, VM_PAD_SMALL, 0);
-    lv_obj_set_flex_flow(bar, LV_FLEX_FLOW_ROW);
 
     for (int i = 0; i < FILTER_COUNT; i++) {
         lv_obj_t *btn = lv_button_create(bar);
@@ -195,9 +184,9 @@ static void build_filter_bar(lv_obj_t *parent) {
         lv_obj_set_style_pad_right(btn, VM_PAD_NORMAL, 0);
         lv_obj_set_style_pad_top(btn, VM_PAD_SMALL, 0);
         lv_obj_set_style_pad_bottom(btn, VM_PAD_SMALL, 0);
-        lv_obj_set_style_radius(btn, 4, 0);
-        lv_obj_set_style_border_width(btn, 1, 0);
-        lv_obj_set_style_border_color(btn, VM_COLOR_BG_PANEL_BORDER, 0);
+        lv_obj_set_style_radius(btn, VM_RADIUS_SM, 0);
+        lv_obj_set_style_border_width(btn, VM_BORDER_THIN, 0);
+        lv_obj_set_style_border_color(btn, lv_color_hex(vm_active_scheme->outline), 0);
         lv_obj_add_event_cb(btn, filter_btn_cb, LV_EVENT_CLICKED,
                             (void *)(intptr_t)i);
 
@@ -220,12 +209,10 @@ static void build_entry_list(lv_obj_t *parent) {
     lv_obj_remove_flag(hdr_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(hdr_row, lv_pct(100));
     lv_obj_set_height(hdr_row, VM_SCALE_H(24));
-    lv_obj_set_style_bg_color(hdr_row, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(hdr_row, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_width(hdr_row, 0, 0);
-    lv_obj_set_style_pad_all(hdr_row, 0, 0);
+    lv_obj_add_style(hdr_row, &s_row, 0);
+    lv_obj_set_style_bg_color(hdr_row, lv_color_hex(vm_active_scheme->surface_container), 0);
+    lv_obj_set_style_bg_opa(hdr_row, VM_OPA_COVER, 0);
     lv_obj_set_style_pad_gap(hdr_row, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(hdr_row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(hdr_row, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -261,11 +248,8 @@ static void build_entry_list(lv_obj_t *parent) {
     entry_list = lv_obj_create(parent);
     lv_obj_set_width(entry_list, lv_pct(100));
     lv_obj_set_flex_grow(entry_list, 1);
-    lv_obj_set_style_bg_opa(entry_list, LV_OPA_TRANSP, 0);
-    lv_obj_set_style_border_width(entry_list, 0, 0);
-    lv_obj_set_style_pad_all(entry_list, 0, 0);
-    lv_obj_set_style_pad_gap(entry_list, 1, 0);
-    lv_obj_set_flex_flow(entry_list, LV_FLEX_FLOW_COLUMN);
+    lv_obj_add_style(entry_list, &s_col, 0);
+    lv_obj_set_style_pad_gap(entry_list, VM_SPACE_1, 0);
     lv_obj_add_flag(entry_list, LV_OBJ_FLAG_SCROLLABLE);
 }
 
@@ -421,12 +405,10 @@ static void add_entry_row(const audit_entry_t *entry) {
     lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(row, lv_pct(100));
     lv_obj_set_height(row, VM_SCALE_H(24));
-    lv_obj_set_style_bg_color(row, VM_COLOR_BG_PANEL, 0);
-    lv_obj_set_style_bg_opa(row, LV_OPA_50, 0);
-    lv_obj_set_style_border_width(row, 0, 0);
-    lv_obj_set_style_pad_all(row, 0, 0);
+    lv_obj_add_style(row, &s_row, 0);
+    lv_obj_set_style_bg_color(row, lv_color_hex(vm_active_scheme->surface_container), 0);
+    lv_obj_set_style_bg_opa(row, VM_OPA_50, 0);
     lv_obj_set_style_pad_gap(row, VM_PAD_NORMAL, 0);
-    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_START,
                           LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
@@ -525,18 +507,18 @@ static void update_filter_btn_styles(void) {
             /* Active filter: highlighted */
             lv_obj_set_style_bg_color(filter_buttons[i],
                                        VM_COLOR_ALARM_LOW, 0);
-            lv_obj_set_style_bg_opa(filter_buttons[i], LV_OPA_COVER, 0);
+            lv_obj_set_style_bg_opa(filter_buttons[i], VM_OPA_COVER, 0);
 
             /* Set child label text color to dark */
             lv_obj_t *lbl = lv_obj_get_child(filter_buttons[i], 0);
             if (lbl) {
-                lv_obj_set_style_text_color(lbl, lv_color_hex(0x000000), 0);
+                lv_obj_set_style_text_color(lbl, lv_color_hex(VM_BLACK), 0);
             }
         } else {
             /* Inactive filter: dimmed */
             lv_obj_set_style_bg_color(filter_buttons[i],
-                                       VM_COLOR_BG_PANEL, 0);
-            lv_obj_set_style_bg_opa(filter_buttons[i], LV_OPA_COVER, 0);
+                                       lv_color_hex(vm_active_scheme->surface_container), 0);
+            lv_obj_set_style_bg_opa(filter_buttons[i], VM_OPA_COVER, 0);
 
             /* Set child label text color to light */
             lv_obj_t *lbl = lv_obj_get_child(filter_buttons[i], 0);
